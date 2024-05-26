@@ -1,7 +1,7 @@
-package Main;
+package main;
 
 import javax.swing.*;
-import java.awt.*;
+
 // khởi tạo cửa sửa của game
 public class GameWindow {
     private JFrame jFrame;

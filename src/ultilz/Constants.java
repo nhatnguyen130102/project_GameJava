@@ -1,4 +1,4 @@
-package Ultilz;
+package ultilz;
 
 public class Constants {
 

@@ -1,4 +1,4 @@
-package Main;
+package main;
 // thực hiện việc chạy class game
 public class Main {
     public static void main(String[] args) {

@@ -1,11 +1,11 @@
-package Inputs;
+package inputs;
 
-import Main.GamePanel;
+import main.GamePanel;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import static Ultilz.Constants.Directions.*;
+import static ultilz.Constants.Directions.*;
 
 public class KeyboardInputs implements KeyListener {
 

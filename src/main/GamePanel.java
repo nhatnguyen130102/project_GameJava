@@ -1,7 +1,7 @@
-package Main;
+package main;
 
-import Inputs.KeyboardInputs;
-import Inputs.MouseInputs;
+import inputs.KeyboardInputs;
+import inputs.MouseInputs;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -10,9 +10,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static Ultilz.Constants.Directions.*;
-import static Ultilz.Constants.PlayerConstants.*;
-import static Ultilz.Constants.PlayerConstants.getSpriteAmout;
+import static ultilz.Constants.Directions.*;
+import static ultilz.Constants.PlayerConstants.*;
+import static ultilz.Constants.PlayerConstants.getSpriteAmout;
 
 // khởi tạo các nội dung của game
 public class GamePanel extends JPanel{
@@ -49,9 +49,6 @@ public class GamePanel extends JPanel{
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        updateFramesTick();
-        setAnimation();
-        updatePos();
         int scale = 2;
         g.drawImage(frames[playerAction][framesIndex],xDelta,yDelta, imgWidth * scale,imgHeight * scale,null);
     }
@@ -129,4 +126,9 @@ public class GamePanel extends JPanel{
         }
     }
 
+    public void updateGame() {
+        setAnimation();
+        updateFramesTick();
+        updatePos();
+    }
 }
