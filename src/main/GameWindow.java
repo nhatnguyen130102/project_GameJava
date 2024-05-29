@@ -1,6 +1,8 @@
 package main;
 
 import javax.swing.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 
 // khởi tạo cửa sửa của game
 public class GameWindow {
@@ -20,6 +22,17 @@ public class GameWindow {
         // đặt màn hình tại ví trí trung tâm khi được khởi tạo
 //        jFrame.setLocationRelativeTo(null);
         // cho phép hiển thị màn hình
+        jFrame.addWindowFocusListener(new WindowFocusListener() {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                gamePanel.getGame().windowFocusLost();
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+
+            }
+        });
         jFrame.setVisible(true);
         jFrame.pack();
 
