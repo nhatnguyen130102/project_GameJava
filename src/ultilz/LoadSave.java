@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
+
 public class LoadSave {
     public static final String PLAYER_ATLAS = "Player/player_sprites.png";
     public static final String LEVEL_ATLAS = "Map/outside_sprites.png";
@@ -31,14 +32,16 @@ public class LoadSave {
         int[][] lvlData = new int[Game.MAX_ROW][Game.MAX_COL];
         BufferedImage img = GetSpriteAtlas(LEVEL_ONE_DATA);
 
-        for (int j = 0; j < img.getHeight(); j++) {
-            for (int i = 0; i < img.getWidth(); i++) {
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
                  Color color = new Color(img.getRGB(i, j));
                 int value =  color.getRed();
                 if(value >= 48)
                     value = 0;
+//                System.out.print(value+" ");
                 lvlData[j][i] = value;
             }
+            System.out.println();
         }
         return lvlData;
     }

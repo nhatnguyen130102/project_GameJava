@@ -1,37 +1,32 @@
 package entities;
 
-import main.Game;
-
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 public abstract class Entity {
     protected float x,y;
     protected  int width, height;
-    protected Rectangle hitBox;
+    protected Rectangle2D.Float hitBox;
     public Entity(float x, float y, int width, int height){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        initHitBox();
+//        initHitBox();
     }
 
-    private void initHitBox() {
-        int hbWidth = width/4;
-        int hbHeight = height/2;
-        hitBox = new Rectangle((int) x, (int) y,width,height);
+    public void initHitBox(float x, float y, float width, float height) {
+        hitBox = new Rectangle2D.Float((int) x, (int) y,width,height);
     }
-    public void updateHitBox(){
-        hitBox.x = (int) x;
-        hitBox.y = (int) y;
-    }
-    public Rectangle getHitBox(){
+//    public void updateHitBox(){
+//        hitBox.x = (int) x;
+//        hitBox.y = (int) y;
+//    }
+    public Rectangle2D.Float getHitBox(){
         return hitBox;
     }
     public void drawHitBox(Graphics g){
         g.setColor(Color.pink);
-        int var1 = (int) (hitBox.x + hitBox.width * 1.5);
-        int var2 = (int)(hitBox.y + hitBox.height * 0.5);
-        g.drawRect(hitBox.x ,hitBox.y, hitBox.width, hitBox.height);
+        g.drawRect((int) hitBox.x, (int) hitBox.y, (int) hitBox.width, (int) hitBox.height);
     }
 }
