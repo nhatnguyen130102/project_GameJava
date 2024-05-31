@@ -29,18 +29,12 @@ public class Game implements Runnable {
         gamePanel = new GamePanel(this);
         gameWindow = new GameWindow(gamePanel);
         gamePanel.requestFocus();
-
         startGameLoop();
     }
 
     private void initClasses() {
         menu = new Menu(this);
         playing = new Playing(this);
-
-//        levelManager = new LevelManager(this);
-//
-//        player = new Player(200,200,Player.imgWidth,Player.imgHeight);
-//        player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
     }
 
     private void startGameLoop() {
@@ -56,8 +50,6 @@ public class Game implements Runnable {
                 break;
             case PLAYING:
                 playing.update();
-//                player.update();
-//                levelManager.update();
                 break;
             default:
                 break;
@@ -71,8 +63,6 @@ public class Game implements Runnable {
                 break;
             case PLAYING:
                 playing.draw(g);
-//                levelManager.draw(g);
-//                player.render(g);
                 break;
             default:
                 break;
@@ -114,15 +104,10 @@ public class Game implements Runnable {
         }
     }
 
-    //    public Player getPlayer(){
-//        return player;
-//    }
-//
     public void windowFocusLost() {
         if (GameState.state == GameState.PLAYING) {
             playing.getPlayer().resetDirBooleans();
         }
-//        player.resetDirBooleans();
     }
 
     public Menu getMenu() {
