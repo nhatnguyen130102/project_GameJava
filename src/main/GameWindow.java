@@ -6,7 +6,7 @@ import java.awt.event.WindowFocusListener;
 
 // khởi tạo cửa sửa của game
 public class GameWindow {
-    private JFrame jFrame;
+    private final JFrame jFrame;
 
     public GameWindow(GamePanel gamePanel){
         // khởi tạo màn hình

@@ -2,40 +2,59 @@ package gameStates;
 
 import main.Game;
 import ui.MenuButton;
+import ultilz.LoadSave;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 public class Menu extends State implements StateMethods {
     private MenuButton[] buttons = new MenuButton[3];
+    private BufferedImage backGroundImg;
+    private BufferedImage backGroundImg2;
+
+    private int menuX, menuY, menuWidth, menuHeight;
 
     public Menu(Game game) {
         super(game);
         loadButtons();
+        loadBackGround();
+        loadBackGround2();
+    }
+
+    private void loadBackGround2() {
+        backGroundImg2 = LoadSave.GetSpriteAtlas(LoadSave.BACKGROUND);
+    }
+
+    private void loadBackGround() {
+        backGroundImg = LoadSave.GetSpriteAtlas(LoadSave.MENU_BACKGROUND);
+        menuWidth = (int) (backGroundImg.getWidth() * Game.SCALE);
+        menuHeight = (int) (backGroundImg.getHeight() * Game.SCALE);
+        menuX = Game.SCREEN_WIDTH / 2 - menuWidth / 2;
+        menuY = Game.SCREEN_HEIGHT / 2 - menuHeight / 2;
     }
 
     private void loadButtons() {
         buttons[0] = new MenuButton(Game.SCREEN_WIDTH / 2, (int) (150 * Game.SCALE), 0, GameState.PLAYING);
-        buttons[1] = new MenuButton(Game.SCREEN_WIDTH / 2, (int) (220 * Game.SCALE), 0, GameState.OPTIONS);
-        buttons[2] = new MenuButton(Game.SCREEN_WIDTH / 2, (int) (290 * Game.SCALE), 0, GameState.QUIT);
-
+        buttons[1] = new MenuButton(Game.SCREEN_WIDTH / 2, (int) (220 * Game.SCALE), 1, GameState.OPTIONS);
+        buttons[2] = new MenuButton(Game.SCREEN_WIDTH / 2, (int) (290 * Game.SCALE), 2, GameState.QUIT);
     }
 
     @Override
     public void update() {
-        for(MenuButton mb : buttons){
+        for (MenuButton mb : buttons) {
             mb.update();
         }
     }
 
     @Override
     public void draw(Graphics g) {
-        for(MenuButton mb : buttons){
+        g.drawImage(backGroundImg2, 0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT, null);
+        g.drawImage(backGroundImg, menuX, menuY, menuWidth, menuHeight, null);
+        for (MenuButton mb : buttons) {
             mb.draw(g);
         }
-//        g.setColor(Color.black);
-//        g.drawString("Menu", Game.SCREEN_WIDTH / 2, 200);
     }
 
     @Override
@@ -45,8 +64,8 @@ public class Menu extends State implements StateMethods {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        for(MenuButton mb : buttons){
-            if(isIn(e,mb)){
+        for (MenuButton mb : buttons) {
+            if (isIn(e, mb)) {
                 mb.setMousePressed(true);
                 break;
             }
@@ -55,9 +74,9 @@ public class Menu extends State implements StateMethods {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        for(MenuButton mb : buttons){
-            if(isIn(e,mb)){
-                if(mb.isMousePressed()){
+        for (MenuButton mb : buttons) {
+            if (isIn(e, mb)) {
+                if (mb.isMousePressed()) {
                     mb.applyGamesLate();
                     break;
                 }
@@ -67,18 +86,18 @@ public class Menu extends State implements StateMethods {
     }
 
     private void resetButtons() {
-        for(MenuButton mb : buttons){
+        for (MenuButton mb : buttons) {
             mb.resetBoots();
         }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        for(MenuButton mb : buttons){
+        for (MenuButton mb : buttons) {
             mb.setMouseOver(false);
         }
-        for(MenuButton mb : buttons){
-            if(isIn(e,mb)){
+        for (MenuButton mb : buttons) {
+            if (isIn(e, mb)) {
                 mb.setMouseOver(true);
                 break;
             }

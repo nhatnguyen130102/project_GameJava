@@ -12,16 +12,11 @@ public abstract class Entity {
         this.y = y;
         this.width = width;
         this.height = height;
-//        initHitBox();
     }
 
-    public void initHitBox(float x, float y, float width, float height) {
+    public void initHitBox(float x, float y, int width, int height) {
         hitBox = new Rectangle2D.Float((int) x, (int) y,width,height);
     }
-//    public void updateHitBox(){
-//        hitBox.x = (int) x;
-//        hitBox.y = (int) y;
-//    }
     public Rectangle2D.Float getHitBox(){
         return hitBox;
     }

@@ -54,31 +54,23 @@ public class MenuButton {
     public boolean isMouseOver() {
         return mouseOver;
     }
-
     public void setMouseOver(boolean mouseOver) {
         this.mouseOver = mouseOver;
     }
-
     public boolean isMousePressed() {
         return mousePressed;
     }
-
     public void setMousePressed(boolean mousePressed) {
         this.mousePressed = mousePressed;
     }
-
     public void applyGamesLate() {
         GameState.state = state;
     }
-
     public void resetBoots() {
         mouseOver = false;
         mousePressed = false;
     }
-
     public Rectangle getBounds() {
         return bounds;
     }
-
-
 }
