@@ -23,5 +23,6 @@ public abstract class Entity {
     public void drawHitBox(Graphics g){
         g.setColor(Color.pink);
         g.drawRect((int) hitBox.x, (int) hitBox.y, (int) hitBox.width, (int) hitBox.height);
+
     }
 }
