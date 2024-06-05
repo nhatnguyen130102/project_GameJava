@@ -20,6 +20,10 @@ public class Game implements Runnable {
     public static int TILE_SIZE = (int) (SCALE * DEFAULT_TILE_SIZE);
     public final static int MAX_COL = 26;
     public final static int MAX_ROW = 14;
+//    public final static int WORLD_COL = 29;
+//    public final static int WORLD_ROW = 14;
+//    public static int WORLD_WIDTH = WORLD_COL * TILE_SIZE;
+//    public static int WORLD_HEIGHT = WORLD_ROW * TILE_SIZE;
     public static int SCREEN_WIDTH = MAX_COL * TILE_SIZE; // 832
     public static int SCREEN_HEIGHT = MAX_ROW * TILE_SIZE; // 448
 
@@ -69,7 +73,6 @@ public class Game implements Runnable {
             default:
                 break;
         }
-
     }
 
     @Override

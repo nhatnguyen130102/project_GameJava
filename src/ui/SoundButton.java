@@ -16,7 +16,7 @@ public class SoundButton extends PauseButton {
     private int rowIndex,colIndex;
     public SoundButton(int x, int y, int width, int height) {
         super(x, y, width, height);
-        loadSoundImgs();
+        loadSoundImgs();// cắt img lớn thành img con
     }
 
     private void loadSoundImgs() {
@@ -33,7 +33,9 @@ public class SoundButton extends PauseButton {
             rowIndex = 1;
         else
             rowIndex = 0;
+
         colIndex = 0;
+
         if(mouseOver)
             colIndex = 1;
         if(mousePressed)

@@ -7,16 +7,17 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class LevelManager {
-    private final Game game;
+//    private final Game game;
     private BufferedImage[] levelSprite;
     private final Level levelOne;
-    public LevelManager(Game game){
-        this.game = game;
+//    public LevelManager(Game game){
+         public LevelManager(){
+//        this.game = game;
 //        levelSprite = LoadSave.GetSpriteAtlas(LoadSave.LEVEL_ATLAS);
-        importOutsideSprites();
-        levelOne = new Level(LoadSave.getLevelData());
+        importOutsideSprites(); // lấy img nhỏ
+        levelOne = new Level(LoadSave.getLevelData()); // lấy toạ độ của tile
     }
-
+    // cắt img lớn thành img nhỏ
     private void importOutsideSprites() {
         int tileWidth, tileHeight;
         tileHeight=tileWidth=32;
@@ -35,13 +36,13 @@ public class LevelManager {
             for (int i = 0 ; i < Game.MAX_COL; i++){
                 int index = levelOne.getSpriteIndex(i,j);
                 g.drawImage(levelSprite[index],i * Game.TILE_SIZE ,j * Game.TILE_SIZE,Game.TILE_SIZE,Game.TILE_SIZE,null);
-
             }
         }
     }
     public void update(){
 
     }
+    // lấy level hiện tại
     public Level getCurrentLevel(){
         return levelOne;
     }

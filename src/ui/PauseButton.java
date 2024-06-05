@@ -1,7 +1,7 @@
 package ui;
 
 import java.awt.*;
-
+// tạo
 public class PauseButton {
     protected int x,y,width,height;
     protected Rectangle bounds;

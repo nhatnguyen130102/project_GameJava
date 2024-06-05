@@ -36,25 +36,25 @@ public class Menu extends State implements StateMethods {
     }
 
     private void loadButtons() {
-        buttons[0] = new MenuButton(Game.SCREEN_WIDTH / 2, (int) (150 * Game.SCALE), 0, GameState.PLAYING);
-        buttons[1] = new MenuButton(Game.SCREEN_WIDTH / 2, (int) (220 * Game.SCALE), 1, GameState.OPTIONS);
-        buttons[2] = new MenuButton(Game.SCREEN_WIDTH / 2, (int) (290 * Game.SCALE), 2, GameState.QUIT);
+        buttons[0] = new MenuButton(Game.SCREEN_WIDTH / 2, (int) (160 * Game.SCALE), 0, GameState.PLAYING);
+        buttons[1] = new MenuButton(Game.SCREEN_WIDTH / 2, (int) (230 * Game.SCALE), 1, GameState.OPTIONS);
+        buttons[2] = new MenuButton(Game.SCREEN_WIDTH / 2, (int) (300 * Game.SCALE), 2, GameState.QUIT);
     }
 
     @Override
     public void update() {
-        for (MenuButton mb : buttons) {
+        // update từng button
+        for (MenuButton mb : buttons)
             mb.update();
-        }
     }
 
     @Override
     public void draw(Graphics g) {
         g.drawImage(backGroundImg2, 0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT, null);
         g.drawImage(backGroundImg, menuX, menuY, menuWidth, menuHeight, null);
-        for (MenuButton mb : buttons) {
+        // draw từng button
+        for (MenuButton mb : buttons)
             mb.draw(g);
-        }
     }
 
     @Override
@@ -93,9 +93,9 @@ public class Menu extends State implements StateMethods {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        for (MenuButton mb : buttons) {
+        for (MenuButton mb : buttons)
             mb.setMouseOver(false);
-        }
+
         for (MenuButton mb : buttons) {
             if (isIn(e, mb)) {
                 mb.setMouseOver(true);
@@ -106,9 +106,8 @@ public class Menu extends State implements StateMethods {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER)
             GameState.state = GameState.PLAYING;
-        }
     }
 
     @Override

@@ -13,7 +13,6 @@ public class Player extends Entity {
 
     BufferedImage[][] frames;
     private int framesRow, framesCol;
-
     public static int imgDefaultW = 64;
     public static int imgDefaultH = 40;
     public static int imgWidth = (int) (imgDefaultW * Game.SCALE);
