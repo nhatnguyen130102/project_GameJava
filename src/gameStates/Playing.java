@@ -10,6 +10,10 @@ import ultilz.LoadSave;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.util.Random;
+
+import static ultilz.Constants.Enviroment.*;
 
 public class Playing extends State implements StateMethods {
     private LevelManager levelManager;
@@ -22,11 +26,33 @@ public class Playing extends State implements StateMethods {
     private int lvlTilesWide = LoadSave.getLevelData()[0].length;// Độ dài tối đa của map hiện tại ( toạ độ )
     private int maxTilesOffset = lvlTilesWide - Game.MAX_COL;// Độ dài tối đa màn hình chưa hiển thị ( map tối đa - màn hình tối đa = phần thừa tối đa )
     private int maxLvlOffsetX = maxTilesOffset * Game.TILE_SIZE;// Độ dài ( toạ độ x tilesize ) của phần thừa
-
+    private BufferedImage backGroundImg, bigCloudImg, smallCloudImg;
+    private int[] smallCloudPos;
+    private Random rnd = new Random();
 
     public Playing(Game game) {
         super(game);
         initClasses();
+        loadBackGroundImg();
+        loadBigCloud();
+        loadSmallCloud();
+        smallCloudPos = new int[8];
+        for (int i = 0; i < smallCloudPos.length; i++) {
+            smallCloudPos[i] = (int) (100 * Game.SCALE) // Độ thấp nhất của mây nhỏ
+                    + rnd.nextInt((int) (100 * Game.SCALE)); // Độ nhấp cộng thêm ngẫu nhiên
+        }
+    }
+
+    private void loadSmallCloud() {
+        smallCloudImg = LoadSave.GetSpriteAtlas(LoadSave.SMALL_CLOUDS);
+    }
+
+    private void loadBigCloud() {
+        bigCloudImg = LoadSave.GetSpriteAtlas(LoadSave.BIG_CLOUDS);
+    }
+
+    private void loadBackGroundImg() {
+        backGroundImg = LoadSave.GetSpriteAtlas(LoadSave.PLAYING_BG_IMG);
     }
 
     private void initClasses() {
@@ -56,24 +82,39 @@ public class Playing extends State implements StateMethods {
         else if (diff < leftBorder) // kiểm tra player đã lùi quá 20% màn hình chưa
             xLvlOffset += diff - leftBorder;// tính độ chênh lệch giữa player với màn hình khi player lùi quá 20% màn hình
 
-        if (diff > maxLvlOffsetX)// khi player đi đến hết phần thừa, thì phần chênh lệch = phần thừa
+        if (xLvlOffset > maxLvlOffsetX)// khi player đi đến hết phần thừa, thì phần chênh lệch = phần thừa
             xLvlOffset = maxLvlOffsetX;
-        else if (xLvlOffset < 0) {// khi player đi đến đầu phần rìa, thì phần chênh lệch = 0
+        else if (xLvlOffset < 0) // khi player đi đến đầu phần rìa, thì phần chênh lệch = 0
             xLvlOffset = 0;
 
-        }
 
     }
 
     @Override
     public void draw(Graphics g) {
+//        g.drawImage(backGroundImg, 0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT, null);
+//        drawClouds(g);
         levelManager.draw(g, xLvlOffset);
         player.render(g, xLvlOffset);
-        if (paused){
-            g.setColor(new Color(0,0,0,150));
-            g.fillRect(0,0,Game.SCREEN_WIDTH,Game.SCREEN_HEIGHT);
+        if (paused) {
+            g.setColor(new Color(0, 0, 0, 150));
+            g.fillRect(0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT);
             pauseOverLay.draw(g);
         }
+    }
+
+    private void drawClouds(Graphics g) {
+        int getQtyCloud = (int) ((LoadSave.getCol() * Game.TILE_SIZE) / (LoadSave.getCol() * Game.TILE_SIZE) + 2);
+        double bigCloudSpeed = xLvlOffset * 0.3;// biến số càng lớn thì tốc độ di chuyển càng cao khi player moving
+        double smallCloudSpeed = xLvlOffset * 0.7;// biến số càng lớn thì tốc độ di chuyển càng cao khi player moving
+        for (int i = 0; i < getQtyCloud; i++)
+            g.drawImage(bigCloudImg, (int) (i * BIG_CLOUD_WIDTH - bigCloudSpeed), (int) (204 * Game.SCALE), BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT, null);
+
+        int smallCloudLoop = 3;// khoảng cách giữa các đám mấy nhỏ, càng lớn thì số lượng mây hiển thị càng thưa(ít)
+        for (int i = 0; i < smallCloudPos.length; i++)
+            g.drawImage(smallCloudImg, (int) (SMALL_CLOUD_WIDTH * smallCloudLoop * i - smallCloudSpeed), smallCloudPos[i], SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);
+
+
     }
 
     @Override

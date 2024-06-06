@@ -3,7 +3,17 @@ package ultilz;
 import main.Game;
 
 public class Constants {
+    public static class Enviroment{
+        public static final int BIG_CLOUD_WIDTH_DEFAULT = 448;
+        public static final int BIG_CLOUD_HEIGHT_DEFAULT = 101;
+        public static final int SMALL_CLOUD_WIDTH_DEFAULT = 74;
+        public static final int SMALL_CLOUD_HEIGHT_DEFAULT = 24;
+        public static final int SMALL_CLOUD_WIDTH = (int) (74  * Game.SCALE);
+        public static final int SMALL_CLOUD_HEIGHT = (int) (24 * Game.SCALE);
+        public static final int BIG_CLOUD_WIDTH = (int) (448 * Game.SCALE);
+        public static final int BIG_CLOUD_HEIGHT = (int) (101 * Game.SCALE);
 
+    }
     public static class UI{
         public static  class PauseButtons{
             public static final int SOUND_SIZE_DEFAULT = 42;

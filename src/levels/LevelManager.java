@@ -32,7 +32,7 @@ public class LevelManager {
     }
     public void draw(Graphics g, int xLvlOffset){
         for(int j = 0; j < LoadSave.getRow(); j ++){
-            for (int i = 0 ; i < LoadSave.getCol(); i++){
+            for (int i = 0 ; i < LoadSave.getCol() ; i++){
                 int index = levelOne.getSpriteIndex(i,j);
                 g.drawImage(levelSprite[index],i * Game.TILE_SIZE - xLvlOffset,j * Game.TILE_SIZE,Game.TILE_SIZE,Game.TILE_SIZE,null);
             }

@@ -15,13 +15,17 @@ public class LoadSave {
     public static final String LEVEL_ATLAS = "Map/outside_sprites.png";
     public static final String MENU_BACKGROUND = "Menu/menu_background.png";
     public static final String BACKGROUND = "Menu/beautiful-anime-landscape-cartoon-scene.jpg";
-    public static final String LEVEL_ONE_DATA = "Level/level_one_data_long.png";
+    public static final String LEVEL_ONE_DATA = "Level/level_one_data_long_2.png";
 //    public static final String LEVEL_ONE_DATA = "Level/level_one_data - Copy.png";
     public static final String MENU_BUTTONS = "Menu/button_atlas.png";
     public static final String PAUSE_BACKGROUND = "Menu/pause_menu.png";
     public static final String SOUND_BUTTONS = "Menu/sound_button.png";
     public static final String URM_BUTTONS = "Menu/urm_buttons.png";
     public static final String VOLUME_BUTTONS = "Menu/volume_buttons.png";
+    public static final String PLAYING_BG_IMG = "Level/Obj&BackGround/playing_bg_img.png";
+    public static final String BIG_CLOUDS = "Level/Obj&BackGround/big_clouds.png";
+    public static final String SMALL_CLOUDS = "Level/Obj&BackGround/small_clouds.png";
+
     public static BufferedImage img;
     // đọc file img trả về img lớn
     public static BufferedImage GetSpriteAtlas(String fileName) {
@@ -38,10 +42,8 @@ public class LoadSave {
     }
     // đọc và lấy toàn bộ tile lưu vào mảng 2 chiều
     public static int[][] getLevelData() {
-//        int[][] lvlData = new int[14][54];
         img = GetSpriteAtlas(LEVEL_ONE_DATA);
         int[][] lvlData = new int[img.getHeight()][img.getWidth()];
-
         int maxTile = 48;
         for (int j = 0; j < img.getHeight(); j++) {//Row
             for (int i = 0; i < img.getWidth(); i++) {//Col
