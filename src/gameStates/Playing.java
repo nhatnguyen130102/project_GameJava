@@ -1,5 +1,7 @@
 package gameStates;
 
+import entities.Crabby;
+import entities.EnemyManager;
 import entities.Player;
 import levels.LevelManager;
 import main.Game;
@@ -18,12 +20,13 @@ import static ultilz.Constants.Enviroment.*;
 public class Playing extends State implements StateMethods {
     private LevelManager levelManager;
     private Player player;
+    private EnemyManager enemyManager;
     private boolean paused = false;
     private PauseOverLay pauseOverLay;
     private int xLvlOffset;
     private int leftBorder = (int) (0.2 * Game.SCREEN_WIDTH);// khoảng cách với tường trái 20%
     private int rightBorder = (int) (0.8 * Game.SCREEN_WIDTH);// khoảng cách với tường phải 80%
-    private int lvlTilesWide = LoadSave.getLevelData()[0].length;// Độ dài tối đa của map hiện tại ( toạ độ )
+    private int lvlTilesWide = LoadSave.GetLevelData()[0].length;// Độ dài tối đa của map hiện tại ( toạ độ )
     private int maxTilesOffset = lvlTilesWide - Game.MAX_COL;// Độ dài tối đa màn hình chưa hiển thị ( map tối đa - màn hình tối đa = phần thừa tối đa )
     private int maxLvlOffsetX = maxTilesOffset * Game.TILE_SIZE;// Độ dài ( toạ độ x tilesize ) của phần thừa
     private BufferedImage backGroundImg, bigCloudImg, smallCloudImg;
@@ -58,6 +61,7 @@ public class Playing extends State implements StateMethods {
     private void initClasses() {
 //        levelManager = new LevelManager(game);
         levelManager = new LevelManager();
+        enemyManager = new EnemyManager(this);
         player = new Player(100, 300, Player.imgWidth, Player.imgHeight);
         player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
         pauseOverLay = new PauseOverLay(this);
@@ -69,6 +73,7 @@ public class Playing extends State implements StateMethods {
         if (!paused) {
             levelManager.update();
             player.update();
+            enemyManager.update();
             CheckCloseToBorder();
         } else
             pauseOverLay.update();
@@ -92,9 +97,11 @@ public class Playing extends State implements StateMethods {
 
     @Override
     public void draw(Graphics g) {
-//        g.drawImage(backGroundImg, 0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT, null);
-//        drawClouds(g);
+        g.drawImage(backGroundImg, 0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT, null);
+        drawClouds(g);
         levelManager.draw(g, xLvlOffset);
+        enemyManager.draw(g, xLvlOffset);
+
         player.render(g, xLvlOffset);
         if (paused) {
             g.setColor(new Color(0, 0, 0, 150));

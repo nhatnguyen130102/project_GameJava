@@ -23,7 +23,7 @@ public class Player extends Entity {
     private int playerAction = IDLE;
     private int playerDir = -1;
     private boolean moving = false, attacking = false;
-    public float speed = 3f * Game.SCALE;
+    public float speed = 1f * Game.SCALE;
     private boolean up, right, left, down, jump;
     private int[][] lvlData;
     private float xDrawOfset = 21 * Game.SCALE;
@@ -31,7 +31,7 @@ public class Player extends Entity {
     // Jumping Gravity
     private float airSpeed = 0f;
     private float gravity = 0.04f * Game.SCALE;
-    private float jumpSpeed = -4f * Game.SCALE;
+    private float jumpSpeed = -2.25f * Game.SCALE;
     private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
     private boolean inAir = false;
 

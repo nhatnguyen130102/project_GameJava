@@ -15,7 +15,7 @@ public class LevelManager {
 //        this.game = game;
 //        levelSprite = LoadSave.GetSpriteAtlas(LoadSave.LEVEL_ATLAS);
         importOutsideSprites(); // lấy img nhỏ
-        levelOne = new Level(LoadSave.getLevelData()); // lấy toạ độ của tile
+        levelOne = new Level(LoadSave.GetLevelData()); // lấy toạ độ của tile
     }
     // cắt img lớn thành img nhỏ
     private void importOutsideSprites() {

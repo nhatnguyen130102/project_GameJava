@@ -1,5 +1,6 @@
 package ultilz;
 
+import entities.Crabby;
 import main.Game;
 
 import javax.imageio.ImageIO;
@@ -8,6 +9,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+
+import static ultilz.Constants.EnemyConstants.*;
 
 
 public class LoadSave {
@@ -16,7 +20,7 @@ public class LoadSave {
     public static final String MENU_BACKGROUND = "Menu/menu_background.png";
     public static final String BACKGROUND = "Menu/beautiful-anime-landscape-cartoon-scene.jpg";
     public static final String LEVEL_ONE_DATA = "Level/level_one_data_long_2.png";
-//    public static final String LEVEL_ONE_DATA = "Level/level_one_data - Copy.png";
+    //    public static final String LEVEL_ONE_DATA = "Level/level_one_data - Copy.png";
     public static final String MENU_BUTTONS = "Menu/button_atlas.png";
     public static final String PAUSE_BACKGROUND = "Menu/pause_menu.png";
     public static final String SOUND_BUTTONS = "Menu/sound_button.png";
@@ -25,8 +29,11 @@ public class LoadSave {
     public static final String PLAYING_BG_IMG = "Level/Obj&BackGround/playing_bg_img.png";
     public static final String BIG_CLOUDS = "Level/Obj&BackGround/big_clouds.png";
     public static final String SMALL_CLOUDS = "Level/Obj&BackGround/small_clouds.png";
+    public static final String CRABBY_SPRITE = "Enemy/crabby_sprite.png";
+
 
     public static BufferedImage img;
+
     // đọc file img trả về img lớn
     public static BufferedImage GetSpriteAtlas(String fileName) {
         BufferedImage image = null;// biến img lớn
@@ -40,27 +47,44 @@ public class LoadSave {
         }
         return image;// trả về img lớn
     }
+
     // đọc và lấy toàn bộ tile lưu vào mảng 2 chiều
-    public static int[][] getLevelData() {
+    public static int[][] GetLevelData() {
         img = GetSpriteAtlas(LEVEL_ONE_DATA);
         int[][] lvlData = new int[img.getHeight()][img.getWidth()];
         int maxTile = 48;
         for (int j = 0; j < img.getHeight(); j++) {//Row
             for (int i = 0; i < img.getWidth(); i++) {//Col
-                 Color color = new Color(img.getRGB(i, j));
-                int value =  color.getRed();
-                if(value >= maxTile)
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getRed();
+                if (value >= maxTile)
                     value = 0;
                 lvlData[j][i] = value;
             }
-            System.out.println();
         }
         return lvlData;
     }
-    public static int getCol(){
+
+    public static ArrayList<Crabby> GetCrabs() {
+        BufferedImage img = GetSpriteAtlas(LEVEL_ONE_DATA);
+        ArrayList<Crabby> list = new ArrayList<>();
+        int maxTile = 48;
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getGreen();
+                if (value == CRABBY)
+                    list.add(new Crabby(i * Game.TILE_SIZE, j * Game.TILE_SIZE));
+            }
+        }
+        return list;
+    }
+
+    public static int getCol() {
         return img.getWidth();
     }
-    public static int getRow(){
+
+    public static int getRow() {
         return img.getHeight();
     }
 }
