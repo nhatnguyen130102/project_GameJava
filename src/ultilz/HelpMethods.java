@@ -52,9 +52,11 @@ public class HelpMethods {
 
     // kiểm tra nhân vật có đứng ở tile đã được duyệt hay k và kiểm tra nhân vật có chạm vào tile có collision = true hay k
     public static boolean IsSolid(float x, float y, int[][] lvlData) {
+        int maxWidth = lvlData[0].length * Game.TILE_SIZE;
+//        int maxHeight = lvlData[0]
         // Cho phép nhân vật chạm vào phần rìa main screen
-        if (x < 0 || x >= Game.SCREEN_WIDTH)
-            return true;
+        if (x < 0 || x >= maxWidth)
+                return true;
         if (y < 0 || y >= Game.SCREEN_HEIGHT)
             return true;
         // lấy col(x), row(y) để đi kiểm tra với lvlData(map, kiểm tra collision)

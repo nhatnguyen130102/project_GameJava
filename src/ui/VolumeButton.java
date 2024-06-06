@@ -4,9 +4,6 @@ import ultilz.LoadSave;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-
-import static ultilz.Constants.UI.UrmButton.URM_SIZE;
-import static ultilz.Constants.UI.UrmButton.URM_SIZE_DEFAULT;
 import static ultilz.Constants.UI.VolumeButton.*;
 
 public class VolumeButton extends PauseButton {
@@ -14,11 +11,16 @@ public class VolumeButton extends PauseButton {
     BufferedImage slider;
     private int index;
     private boolean mouseOver, mousePressed;
-    private int buttonX;
+    private int buttonX, minX, maxX;
 
     public VolumeButton(int x, int y, int width, int height) {
         super(x + width / 2, y, VOLUME_WIDTH, height);
-        buttonX = x + width / 2;
+        bounds.x -= VOLUME_WIDTH / 2;// toạ độ hitbox lùi lại 1/2 width
+        buttonX = x + width / 2;// toạ độ item
+        this.x = x;
+        this.width = width;
+        minX = x + VOLUME_WIDTH / 2;
+        maxX = x + width - VOLUME_WIDTH / 2;
         loadImgs();
     }
 
@@ -39,9 +41,26 @@ public class VolumeButton extends PauseButton {
             index = 2;
     }
 
+    public void changeX(int x) {
+        if (x < minX){
+            buttonX = minX;
+
+        }
+        else if (x > maxX){
+            buttonX = maxX;
+
+        }
+        else{
+            buttonX = x;
+
+        }
+
+        bounds.x = buttonX - VOLUME_WIDTH / 2;
+    }
+
     public void draw(Graphics g) {
         g.drawImage(slider, x, y, width, height, null);
-        g.drawImage(imgs[index], buttonX, y, VOLUME_WIDTH, height, null);
+        g.drawImage(imgs[index], buttonX - VOLUME_WIDTH / 2, y, VOLUME_WIDTH, height, null);
     }
 
     public void resetBools() {

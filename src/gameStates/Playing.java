@@ -4,6 +4,7 @@ import entities.Player;
 import levels.LevelManager;
 import main.Game;
 import ui.PauseOverLay;
+import ultilz.LoadSave;
 
 
 import java.awt.*;
@@ -15,6 +16,13 @@ public class Playing extends State implements StateMethods {
     private Player player;
     private boolean paused = false;
     private PauseOverLay pauseOverLay;
+    private int xLvlOffset;
+    private int leftBorder = (int) (0.2 * Game.SCREEN_WIDTH);// khoảng cách với tường trái 20%
+    private int rightBorder = (int) (0.8 * Game.SCREEN_WIDTH);// khoảng cách với tường phải 80%
+    private int lvlTilesWide = LoadSave.getLevelData()[0].length;// Độ dài tối đa của map hiện tại ( toạ độ )
+    private int maxTilesOffset = lvlTilesWide - Game.MAX_COL;// Độ dài tối đa màn hình chưa hiển thị ( map tối đa - màn hình tối đa = phần thừa tối đa )
+    private int maxLvlOffsetX = maxTilesOffset * Game.TILE_SIZE;// Độ dài ( toạ độ x tilesize ) của phần thừa
+
 
     public Playing(Game game) {
         super(game);
@@ -35,17 +43,37 @@ public class Playing extends State implements StateMethods {
         if (!paused) {
             levelManager.update();
             player.update();
-        } else {
+            CheckCloseToBorder();
+        } else
             pauseOverLay.update();
+    }
+
+    private void CheckCloseToBorder() {
+        int playerX = (int) player.getHitBox().x;// tạo 1 biến lấy vị trí hiện tại của nhân vật
+        int diff = playerX - xLvlOffset;
+        if (diff > rightBorder)// kiểm tra player đã đi qua 80% màn hình chưa
+            xLvlOffset += diff - rightBorder; // tính độ chênh lệch giữa player với màn hình khi player vượt quá 80% màn hình
+        else if (diff < leftBorder) // kiểm tra player đã lùi quá 20% màn hình chưa
+            xLvlOffset += diff - leftBorder;// tính độ chênh lệch giữa player với màn hình khi player lùi quá 20% màn hình
+
+        if (diff > maxLvlOffsetX)// khi player đi đến hết phần thừa, thì phần chênh lệch = phần thừa
+            xLvlOffset = maxLvlOffsetX;
+        else if (xLvlOffset < 0) {// khi player đi đến đầu phần rìa, thì phần chênh lệch = 0
+            xLvlOffset = 0;
+
         }
+
     }
 
     @Override
     public void draw(Graphics g) {
-        levelManager.draw(g);
-        player.render(g);
-        if (paused)
+        levelManager.draw(g, xLvlOffset);
+        player.render(g, xLvlOffset);
+        if (paused){
+            g.setColor(new Color(0,0,0,150));
+            g.fillRect(0,0,Game.SCREEN_WIDTH,Game.SCREEN_HEIGHT);
             pauseOverLay.draw(g);
+        }
     }
 
     @Override
@@ -91,6 +119,11 @@ public class Playing extends State implements StateMethods {
             case KeyEvent.VK_D -> player.setRight(false);
             case KeyEvent.VK_SPACE -> player.setJump(false);
         }
+    }
+
+    public void mouseDragged(MouseEvent e) {
+        if (paused)
+            pauseOverLay.mouseDragged(e);
     }
 
     @Override

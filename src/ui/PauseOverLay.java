@@ -31,8 +31,8 @@ public class PauseOverLay {
 
     private void createVolumeButtons() {
         int vX = (int) (309 * Game.SCALE);
-        int vY = (int) (278 * Game.SCALE);
-        volumeButton = new VolumeButton(vX,vY,SLIDER_WIDTH)
+        int vY = (int) (280 * Game.SCALE);
+        volumeButton = new VolumeButton(vX, vY, SLIDER_WIDTH, VOLUME_HEIGHT);
     }
 
     private void createUrmButtons() {
@@ -72,7 +72,7 @@ public class PauseOverLay {
         menuB.update();
         replayB.update();
         unpauseB.update();
-
+        volumeButton.update();
     }
 
     public void draw(Graphics g) {
@@ -85,9 +85,14 @@ public class PauseOverLay {
         menuB.draw(g);
         replayB.draw(g);
         unpauseB.draw(g);
+
+        volumeButton.draw(g);
     }
 
     public void mouseDragged(MouseEvent e) {
+        if (volumeButton.isMousePressed()) {
+            volumeButton.changeX(e.getX());
+        }
     }
 
     public void mouseMoved(MouseEvent e) {
@@ -97,50 +102,38 @@ public class PauseOverLay {
         menuB.setMouseOver(false);
         unpauseB.setMouseOver(false);
         replayB.setMouseOver(false);
+        volumeButton.setMouseOver(false);
         // kiểm tra xem chuột có đang hover button không
-        if (isIn(e, musicButton))
-            musicButton.setMouseOver(true);
-        else if (isIn(e, sfxButton))
-            sfxButton.setMouseOver(true);
-        else if (isIn(e, menuB))
-            menuB.setMouseOver(true);
-        else if (isIn(e, replayB))
-            replayB.setMouseOver(true);
-        else if (isIn(e, unpauseB))
-            unpauseB.setMouseOver(true);
+        if (isIn(e, musicButton)) musicButton.setMouseOver(true);
+        else if (isIn(e, sfxButton)) sfxButton.setMouseOver(true);
+        else if (isIn(e, menuB)) menuB.setMouseOver(true);
+        else if (isIn(e, replayB)) replayB.setMouseOver(true);
+        else if (isIn(e, unpauseB)) unpauseB.setMouseOver(true);
+        else if (isIn(e, volumeButton)) volumeButton.setMouseOver(true);
     }
 
     public void mousePressed(MouseEvent e) {
         // kiểm tra buttom có được tương tác
-        if (isIn(e, musicButton))
-            musicButton.setMousePressed(true);
-        else if (isIn(e, sfxButton))
-            sfxButton.setMousePressed(true);
-        else if (isIn(e, menuB))
-            menuB.setMousePressed(true);
-        else if (isIn(e, unpauseB))
-            unpauseB.setMousePressed(true);
-        else if (isIn(e, replayB))
-            replayB.setMousePressed(true);
+        if (isIn(e, musicButton)) musicButton.setMousePressed(true);
+        else if (isIn(e, sfxButton)) sfxButton.setMousePressed(true);
+        else if (isIn(e, menuB)) menuB.setMousePressed(true);
+        else if (isIn(e, unpauseB)) unpauseB.setMousePressed(true);
+        else if (isIn(e, replayB)) replayB.setMousePressed(true);
+        else if (isIn(e, volumeButton)) volumeButton.setMousePressed(true);
     }
 
     public void mouseReleased(MouseEvent e) {
         // kiểm tra chuột có hoàn thành hành động để đặt trạng thái cho button
         if (isIn(e, musicButton)) {
-            if (musicButton.isMousePressed())
-                musicButton.setMuted(!musicButton.isMuted());
+            if (musicButton.isMousePressed()) musicButton.setMuted(!musicButton.isMuted());
         } else if (isIn(e, sfxButton)) {
-            if (sfxButton.isMousePressed())
-                sfxButton.setMuted(!sfxButton.isMuted());
+            if (sfxButton.isMousePressed()) sfxButton.setMuted(!sfxButton.isMuted());
         } else if (isIn(e, menuB)) {
-            if (menuB.isMousePressed())
-                GameState.state = GameState.MENU;
+            if (menuB.isMousePressed()) GameState.state = GameState.MENU;
         } else if (isIn(e, unpauseB)) {
-            if (unpauseB.isMousePressed())
-                playing.unpauseGame();
+            if (unpauseB.isMousePressed()) playing.unpauseGame();
         } else if (isIn(e, replayB)) {
-            if (replayB.isMousePressed())
-                System.out.println("Replay lv!!!");
+            if (replayB.isMousePressed()) System.out.println("Replay lv!!!");
         }
         // sau khi thực hiện hoàn tất 1 tương tác thì sẽ reset toàn bộ trạng thái của button
         musicButton.resetBools();
@@ -148,6 +141,7 @@ public class PauseOverLay {
         menuB.resetBools();
         unpauseB.resetBools();
         replayB.resetBools();
+        volumeButton.resetBools();
     }
 
     public boolean isIn(MouseEvent e, PauseButton b) {

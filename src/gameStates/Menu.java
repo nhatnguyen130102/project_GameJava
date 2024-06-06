@@ -20,10 +20,10 @@ public class Menu extends State implements StateMethods {
         super(game);
         loadButtons();
         loadBackGround();
-        loadBackGround2();
+        loadMenuBackGround();
     }
 
-    private void loadBackGround2() {
+    private void loadMenuBackGround() {
         backGroundImg2 = LoadSave.GetSpriteAtlas(LoadSave.BACKGROUND);
     }
 

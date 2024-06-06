@@ -15,14 +15,15 @@ public class LoadSave {
     public static final String LEVEL_ATLAS = "Map/outside_sprites.png";
     public static final String MENU_BACKGROUND = "Menu/menu_background.png";
     public static final String BACKGROUND = "Menu/beautiful-anime-landscape-cartoon-scene.jpg";
-    public static final String LEVEL_ONE_DATA = "Level/level_one_data.png";
+    public static final String LEVEL_ONE_DATA = "Level/level_one_data_long.png";
 //    public static final String LEVEL_ONE_DATA = "Level/level_one_data - Copy.png";
     public static final String MENU_BUTTONS = "Menu/button_atlas.png";
     public static final String PAUSE_BACKGROUND = "Menu/pause_menu.png";
     public static final String SOUND_BUTTONS = "Menu/sound_button.png";
     public static final String URM_BUTTONS = "Menu/urm_buttons.png";
     public static final String VOLUME_BUTTONS = "Menu/volume_buttons.png";
-
+    public static BufferedImage img;
+    // đọc file img trả về img lớn
     public static BufferedImage GetSpriteAtlas(String fileName) {
         BufferedImage image = null;// biến img lớn
         InputStream is = LoadSave.class.getResourceAsStream("/" + fileName);// đọc file img.png(...)
@@ -37,19 +38,27 @@ public class LoadSave {
     }
     // đọc và lấy toàn bộ tile lưu vào mảng 2 chiều
     public static int[][] getLevelData() {
-        int[][] lvlData = new int[Game.MAX_ROW][Game.MAX_COL];
-        BufferedImage img = GetSpriteAtlas(LEVEL_ONE_DATA);
+//        int[][] lvlData = new int[14][54];
+        img = GetSpriteAtlas(LEVEL_ONE_DATA);
+        int[][] lvlData = new int[img.getHeight()][img.getWidth()];
 
+        int maxTile = 48;
         for (int j = 0; j < img.getHeight(); j++) {//Row
             for (int i = 0; i < img.getWidth(); i++) {//Col
                  Color color = new Color(img.getRGB(i, j));
                 int value =  color.getRed();
-                if(value >= 48)
+                if(value >= maxTile)
                     value = 0;
                 lvlData[j][i] = value;
             }
             System.out.println();
         }
         return lvlData;
+    }
+    public static int getCol(){
+        return img.getWidth();
+    }
+    public static int getRow(){
+        return img.getHeight();
     }
 }

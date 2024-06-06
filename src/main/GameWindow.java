@@ -1,6 +1,7 @@
 package main;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 
@@ -20,8 +21,8 @@ public class GameWindow {
         // cho phép thay đổi kích thước màn hình : false
         jFrame.setResizable(false);
         // đặt màn hình tại ví trí trung tâm khi được khởi tạo
-//        jFrame.setLocationRelativeTo(null);
-        // cho phép hiển thị màn hình
+        jFrame.pack();
+        jFrame.setLocationRelativeTo(null);
         jFrame.addWindowFocusListener(new WindowFocusListener() {
             @Override
             public void windowGainedFocus(WindowEvent e) {
@@ -33,6 +34,8 @@ public class GameWindow {
 
             }
         });
+        // cho phép hiển thị màn hình
+
         jFrame.setVisible(true);
         jFrame.pack();
 
