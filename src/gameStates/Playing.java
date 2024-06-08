@@ -23,9 +23,9 @@ public class Playing extends State implements StateMethods {
     private EnemyManager enemyManager;
     private boolean paused = false;
     private PauseOverLay pauseOverLay;
-    private int xLvlOffset;
+    private int xLvlOffset; // phẩn thừa khi player di chuyển để mức quy định
     private int leftBorder = (int) (0.2 * Game.SCREEN_WIDTH);// khoảng cách với tường trái 20%
-    private int rightBorder = (int) (0.8 * Game.SCREEN_WIDTH);// khoảng cách với tường phải 80%
+    private int rightBorder = (int) (0.8 * Game.SCREEN_WIDTH);// khoảng cách với tường trái 80%
     private int lvlTilesWide = LoadSave.GetLevelData()[0].length;// Độ dài tối đa của map hiện tại ( toạ độ )
     private int maxTilesOffset = lvlTilesWide - Game.MAX_COL;// Độ dài tối đa màn hình chưa hiển thị ( map tối đa - màn hình tối đa = phần thừa tối đa )
     private int maxLvlOffsetX = maxTilesOffset * Game.TILE_SIZE;// Độ dài ( toạ độ x tilesize ) của phần thừa
@@ -39,13 +39,15 @@ public class Playing extends State implements StateMethods {
         loadBackGroundImg();
         loadBigCloud();
         loadSmallCloud();
+        initEnviroments();
+    }
+    private  void initEnviroments(){
         smallCloudPos = new int[8];
         for (int i = 0; i < smallCloudPos.length; i++) {
             smallCloudPos[i] = (int) (100 * Game.SCALE) // Độ thấp nhất của mây nhỏ
                     + rnd.nextInt((int) (100 * Game.SCALE)); // Độ nhấp cộng thêm ngẫu nhiên
         }
     }
-
     private void loadSmallCloud() {
         smallCloudImg = LoadSave.GetSpriteAtlas(LoadSave.SMALL_CLOUDS);
     }
@@ -59,14 +61,12 @@ public class Playing extends State implements StateMethods {
     }
 
     private void initClasses() {
-//        levelManager = new LevelManager(game);
-        levelManager = new LevelManager();
-        enemyManager = new EnemyManager(this);
-        player = new Player(100, 300, Player.imgWidth, Player.imgHeight);
-        player.loadLvlData(levelManager.getCurrentLevel().getLevelData());
-        pauseOverLay = new PauseOverLay(this);
+        levelManager = new LevelManager(); // khởi tạo map môi trường
+        enemyManager = new EnemyManager(this);// khởi tạo quái vật
+        player = new Player(100, 300, Player.imgWidth, Player.imgHeight);// khởi tạo character
+        player.loadLvlData(levelManager.getCurrentLevel().getLevelData());// khởi tạo map 1
+        pauseOverLay = new PauseOverLay(this);// khởi tạo pausescreen
     }
-
 
     @Override
     public void update() {
@@ -91,8 +91,6 @@ public class Playing extends State implements StateMethods {
             xLvlOffset = maxLvlOffsetX;
         else if (xLvlOffset < 0) // khi player đi đến đầu phần rìa, thì phần chênh lệch = 0
             xLvlOffset = 0;
-
-
     }
 
     @Override
@@ -101,7 +99,6 @@ public class Playing extends State implements StateMethods {
         drawClouds(g);
         levelManager.draw(g, xLvlOffset);
         enemyManager.draw(g, xLvlOffset);
-
         player.render(g, xLvlOffset);
         if (paused) {
             g.setColor(new Color(0, 0, 0, 150));
@@ -116,7 +113,6 @@ public class Playing extends State implements StateMethods {
         double smallCloudSpeed = xLvlOffset * 0.7;// biến số càng lớn thì tốc độ di chuyển càng cao khi player moving
         for (int i = 0; i < getQtyCloud; i++)
             g.drawImage(bigCloudImg, (int) (i * BIG_CLOUD_WIDTH - bigCloudSpeed), (int) (204 * Game.SCALE), BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT, null);
-
         int smallCloudLoop = 3;// khoảng cách giữa các đám mấy nhỏ, càng lớn thì số lượng mây hiển thị càng thưa(ít)
         for (int i = 0; i < smallCloudPos.length; i++)
             g.drawImage(smallCloudImg, (int) (SMALL_CLOUD_WIDTH * smallCloudLoop * i - smallCloudSpeed), smallCloudPos[i], SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);

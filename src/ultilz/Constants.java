@@ -91,7 +91,10 @@ public class Constants {
         public static final int ATTACK_1 = 6;
         public static final int ATTACK_JUMP_1 = 7;
         public static final int ATTACK_JUMP_2 = 8;
-
+        public static final int PLAYER_WIDTH_DEFAULT = 20;
+        public static final int PLAYER_HEIGHT_DEFAULT = 27;
+        public static final int PLAYER_WIDTH = (int) (20 * Game.SCALE);
+        public static final int PLAYER_HEIGHT= (int) (27 * Game.SCALE);
         public static int getSpriteAmout(int player_action) {
             switch (player_action) {
                 case RUNNING:

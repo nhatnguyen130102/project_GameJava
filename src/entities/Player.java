@@ -21,24 +21,24 @@ public class Player extends Entity {
     private int framesIndex;
     private final int framesSpeed = 30;
     private int playerAction = IDLE;
-    private int playerDir = -1;
+    private final int playerDir = -1;
     private boolean moving = false, attacking = false;
-    public float speed = 1f * Game.SCALE;
+    public float speed = Game.SCALE;
     private boolean up, right, left, down, jump;
     private int[][] lvlData;
-    private float xDrawOfset = 21 * Game.SCALE;
-    private float yDrawOfset = 4 * Game.SCALE;
+    private final float xDrawOfset = 21 * Game.SCALE; // phần thừa ngang của hitbox
+    private final float yDrawOfset = 4 * Game.SCALE; // phần thừa dọc của hitbox
     // Jumping Gravity
     private float airSpeed = 0f;
-    private float gravity = 0.04f * Game.SCALE;
-    private float jumpSpeed = -2.25f * Game.SCALE;
-    private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
+    private final float gravity = 0.04f * Game.SCALE;
+    private final float jumpSpeed = -2.25f * Game.SCALE;
+    private final float fallSpeedAfterCollision = 0.5f * Game.SCALE;
     private boolean inAir = false;
 
     public Player(float x, float y, int width, int height) {
         super(x, y, width, height);
         loadAnimations();
-        initHitBox(x, y, (int) (20 * Game.SCALE), (int) (27 * Game.SCALE));
+        initHitBox(x, y, PLAYER_WIDTH, PLAYER_HEIGHT);
     }
 
     public void update() {
@@ -47,13 +47,14 @@ public class Player extends Entity {
         setAnimation();
     }
 
-    public void render(Graphics g, int xLvlOffset) {
-        g.drawImage(frames[playerAction][framesIndex], (int) (hitBox.x - xDrawOfset) - xLvlOffset, (int) (hitBox.y - yDrawOfset), imgWidth, imgHeight, null);
+    public void render(Graphics g, int lvlOffset) {
+        g.drawImage(frames[playerAction][framesIndex], (int) (hitBox.x - xDrawOfset) - lvlOffset, (int) (hitBox.y - yDrawOfset), imgWidth, imgHeight, null);
+        drawHitBox(g, lvlOffset);
     }
 
     public void loadLvlData(int[][] lvlData) {
         this.lvlData = lvlData;
-        if (!IsEntityOnFloor(hitBox, lvlData))
+        if (!IsEntityOnFloor(hitBox, lvlData)) // kiểm tra nhân vật có trên mặt đất hay không
             inAir = true;
     }
 
@@ -61,10 +62,8 @@ public class Player extends Entity {
         moving = false;
         if (jump)
             jump();
-//        if (!left && !right && !inAir)
-//            return;
-        if(!inAir)
-            if((!left && !right)||(left && right))
+        if (!inAir)
+            if ((!left && !right) || (left && right))
                 return;
         float xSpeed = 0;
         if (left)
@@ -124,25 +123,19 @@ public class Player extends Entity {
     private void setAnimation() {
         int starFrame = playerAction;
 
-        if (moving) {
+        if (moving)
             playerAction = RUNNING;
-        } else {
+        else
             playerAction = IDLE;
-        }
-        if (inAir) {
-            if (airSpeed < 0) {
+        if (inAir)
+            if (airSpeed < 0)
                 playerAction = JUMP;
-            } else {
+            else
                 playerAction = FALLING;
-            }
-        }
-        if (attacking) {
+        if (attacking)
             playerAction = ATTACK_1;
-        }
-
-        if (starFrame != playerAction) {
+        if (starFrame != playerAction)
             resetFrameTick();
-        }
     }
 
     private void resetFrameTick() {
