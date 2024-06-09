@@ -38,7 +38,7 @@ public class Player extends Entity {
     public Player(float x, float y, int width, int height) {
         super(x, y, width, height);
         loadAnimations();
-        initHitBox(x, y, PLAYER_WIDTH, PLAYER_HEIGHT);
+        initHitBox(x, y, HB_PLAYER_WIDTH, HB_PLAYER_HEIGHT);
     }
 
     public void update() {
@@ -81,7 +81,7 @@ public class Player extends Entity {
                 airSpeed += gravity;
                 udateXPos(xSpeed);
             } else {
-                hitBox.y = GetEntityYPosUnderRootOrAboveFloor(hitBox, airSpeed);
+                hitBox.y = GetEntityYPosUnderRoofOrAboveFloor(hitBox, airSpeed);
                 if (airSpeed > 0)
                     resetInAir();
                 else
@@ -108,11 +108,11 @@ public class Player extends Entity {
     }
 
     private void udateXPos(float xSpeed) {
-        if (CanMoveHere(hitBox.x + xSpeed, hitBox.y, hitBox.width, hitBox.height, lvlData)) {
+        if (CanMoveHere(hitBox.x + xSpeed, hitBox.y, hitBox.width, hitBox.height, lvlData))// kiểm tra vị trí nhân vật sắp di chuyển có chạm tile collision = true ?
             hitBox.x += xSpeed;
-        } else {
+        else
             hitBox.x = GetEntityXPosNextToWall(hitBox, xSpeed);
-        }
+
     }
 
     public void setAttacking(boolean attacking) {

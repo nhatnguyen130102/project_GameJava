@@ -1,6 +1,8 @@
 package entities;
 
 import gameStates.Playing;
+import levels.Level;
+import levels.LevelManager;
 import ultilz.LoadSave;
 
 import java.awt.*;
@@ -23,7 +25,6 @@ public class EnemyManager {
 
     private void addEnemies() {
         crabbies = LoadSave.GetCrabs();
-
     }
 
     private void loadEnemyImg() {
@@ -38,20 +39,19 @@ public class EnemyManager {
         }
     }
 
-    public static void update() {
+    public static void update(int[][] lvlData) {
         for (Crabby c : crabbies) {
-            c.update();
+            c.update(lvlData);
         }
     }
 
     public static void draw(Graphics g, int xLvlOffset) {
         drawCrabs(g, xLvlOffset);
-
     }
 
     private static void drawCrabs(Graphics g, int xLvlOffset) {
         for (Crabby c : crabbies) {
-            g.drawImage(crabbyArr[c.getEnemyState()][c.getFrameIndex()], (int) c.getHitBox().x - xLvlOffset, (int) c.getHitBox().y, CRABBY_WIDTH, CRABBY_HEIGHT, null);
+            g.drawImage(crabbyArr[c.getEnemyState()][c.getFrameIndex()], (int) c.getHitBox().x - xLvlOffset - CRABBY_DRAW_OFFSET_X, (int) c.getHitBox().y - CRABBY_DRAW_OFFSET_Y, CRABBY_WIDTH, CRABBY_HEIGHT, null);
         }
     }
 }

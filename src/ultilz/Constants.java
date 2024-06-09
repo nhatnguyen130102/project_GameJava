@@ -12,8 +12,14 @@ public class Constants {
         public static final int DEAD = 4;
         public static final int CRABBY_WIDTH_DEFAULT = 72;
         public static final int CRABBY_HEIGHT_DEFAULT = 32;
-        public static final int CRABBY_WIDTH = (int) (72 * Game.SCALE);
-        public static final int CRABBY_HEIGHT = (int) (32 * Game.SCALE);
+        public static final int CRABBY_WIDTH = (int) (CRABBY_WIDTH_DEFAULT * Game.SCALE);
+        public static final int CRABBY_HEIGHT = (int) (CRABBY_HEIGHT_DEFAULT * Game.SCALE);
+        public static final int HB_CRABBY_WIDTH_DEFAULT = 22;
+        public static final int HB_CRABBY_HEIGHT_DEFAULT = 19;
+        public static final int HB_CRABBY_WIDTH = (int) (HB_CRABBY_WIDTH_DEFAULT * Game.SCALE);
+        public static final int HB_CRABBY_HEIGHT = (int) (HB_CRABBY_HEIGHT_DEFAULT * Game.SCALE);
+        public static final int CRABBY_DRAW_OFFSET_X = (int) (26 * Game.SCALE);
+        public static final int CRABBY_DRAW_OFFSET_Y = (int) (9 * Game.SCALE);
 
         public static int GetSpriteAmount(int enemy_type, int enemy_state) {
             if (enemy_type == CRABBY) {
@@ -91,10 +97,10 @@ public class Constants {
         public static final int ATTACK_1 = 6;
         public static final int ATTACK_JUMP_1 = 7;
         public static final int ATTACK_JUMP_2 = 8;
-        public static final int PLAYER_WIDTH_DEFAULT = 20;
-        public static final int PLAYER_HEIGHT_DEFAULT = 27;
-        public static final int PLAYER_WIDTH = (int) (20 * Game.SCALE);
-        public static final int PLAYER_HEIGHT= (int) (27 * Game.SCALE);
+        public static final int HB_PLAYER_WIDTH_DEFAULT = 20;
+        public static final int HB_PLAYER_HEIGHT_DEFAULT = 27;
+        public static final int HB_PLAYER_WIDTH = (int) (HB_PLAYER_WIDTH_DEFAULT * Game.SCALE);
+        public static final int HB_PLAYER_HEIGHT= (int) (HB_PLAYER_HEIGHT_DEFAULT * Game.SCALE);
         public static int getSpriteAmout(int player_action) {
             switch (player_action) {
                 case RUNNING:
