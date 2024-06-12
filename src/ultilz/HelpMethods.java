@@ -1,6 +1,7 @@
 package ultilz;
 
 import main.Game;
+
 import java.awt.geom.Rectangle2D;
 
 public class HelpMethods {
@@ -42,8 +43,11 @@ public class HelpMethods {
 
     // kiểm tra nhân vật có đang đứng trên mặt đất hay không
     public static boolean IsEntityOnFloor(Rectangle2D.Float hitBox, int[][] lvlData) {
-        if (!IsSolid(hitBox.x, hitBox.y + hitBox.height + 1, lvlData)) // kiểm tra phía dưới của nhân vật có tile collsion = true hay không
-            return IsSolid(hitBox.x + hitBox.width, hitBox.y + hitBox.height + 1, lvlData); // kiểm tra nhân vật có đang đứng trên tile collision = true hay k
+        // dau tien kiem tra phia duoi ben trai co tile hay khong, neu co thi return true,
+        // neu khong thi kiem tra phia duoi ben phai co tile hay khong, neu co thi return true neu khong thi return false
+        // (nghia la nhan vat inAir, khi nay se xu li khi state == inAir)
+        if (!IsSolid(hitBox.x, hitBox.y + hitBox.height + 1, lvlData))
+            return IsSolid(hitBox.x + hitBox.width, hitBox.y + hitBox.height + 1, lvlData);
         return true;
     }
 
@@ -58,7 +62,7 @@ public class HelpMethods {
     // kiểm tra nhân vật có đứng ở tile đã được duyệt hay k và kiểm tra nhân vật có chạm vào tile có collision = true hay k
     public static boolean IsSolid(float x, float y, int[][] lvlData) {
         // Cho phép nhân vật chạm vào phần rìa main screen
-        if (x < 0 || x >= Game.SCREEN_WIDTH)
+        if (x < 0 || x >= LoadSave.getCol() * Game.TILE_SIZE)
             return true;
         if (y < 0 || y >= Game.SCREEN_HEIGHT)
             return true;
@@ -66,10 +70,28 @@ public class HelpMethods {
         float xIndex = x / Game.TILE_SIZE;
         float yIndex = y / Game.TILE_SIZE;
 
-        int value = lvlData[(int) yIndex][(int) xIndex];
+        return IsTileSolid((int) xIndex, (int) yIndex, lvlData);
+    }
+
+    public static boolean IsTileSolid(int xTile, int yTile, int[][] lvlData) {
+        int value = lvlData[yTile][xTile];
         // cho phép nahan vật chạm vào phần tile chưa đc duyệt, kiểm soát lỗi thôi
         if (value >= 48 || value < 0 || value != 11)
             return true;
         return false;
+    }
+    public static boolean IsAllTileWalkable(int xStart, int xEnd, int y , int[][]lvlData){
+        for (int i = 0; i < xEnd - xStart; i++)
+            if (IsTileSolid(xStart + i, y, lvlData))
+                return false;
+        return true;
+    }
+    public static boolean isSightClear(int[][] lvlData, Rectangle2D.Float hbEnemy, Rectangle2D.Float hbPlayer, int tileY) {
+        int enemyXTile = (int) (hbEnemy.x / Game.TILE_SIZE);
+        int playerXTile = (int) (hbPlayer.x / Game.TILE_SIZE);
+        if (enemyXTile > playerXTile)
+               return IsAllTileWalkable(playerXTile,enemyXTile,tileY,lvlData);
+        else
+            return IsAllTileWalkable(enemyXTile,playerXTile,tileY,lvlData);
     }
 }

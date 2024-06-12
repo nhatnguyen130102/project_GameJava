@@ -29,11 +29,11 @@ public class Player extends Entity {
     private final float xDrawOfset = 21 * Game.SCALE; // phần thừa ngang của hitbox
     private final float yDrawOfset = 4 * Game.SCALE; // phần thừa dọc của hitbox
     // Jumping Gravity
-    private float airSpeed = 0f;
-    private final float gravity = 0.04f * Game.SCALE;
-    private final float jumpSpeed = -2.25f * Game.SCALE;
-    private final float fallSpeedAfterCollision = 0.5f * Game.SCALE;
-    private boolean inAir = false;
+    private float airSpeed = 0f; // van toc roi cua vat the v0 -> vN
+    private final float gravity = 0.04f * Game.SCALE; // luc hap dan______gia toc trong truong
+    private final float jumpSpeed = -4.25f * Game.SCALE; // do cao khi nhay cua vat the
+    private final float fallSpeedAfterCollision = 0.5f * Game.SCALE; // toc do roi khi cham phai tile o phia tren
+    private boolean inAir = false; // trang thai cua vat the
 
     public Player(float x, float y, int width, int height) {
         super(x, y, width, height);
@@ -59,26 +59,34 @@ public class Player extends Entity {
     }
 
     private void updatePos() {
-        moving = false;
-        if (jump)
-            jump();
+        moving = false; // neu khong co gi dien ra thi vat the se dung im
+        if (jump) // kiem tra su kien tu ban phim de xem nguoi choi co yeu cau jump hay khong
+            jump(); // han che viec vat the nhay nhieu lan tren khong trung va dat do cao khi bay cua vat the
         if (!inAir)
+            // kiem tra su kien tu ban phim xem nguoi dung co dang nhan cung luc A D hoac la khong nhan ca 2 phim A D hay khong
+            // neu true thi keu thuc func con neu false thi tiep tuc thuc hien
             if ((!left && !right) || (left && right))
                 return;
-        float xSpeed = 0;
+        float xSpeed = 0; // dat khoang cach di duoc
+        // kiem tra xem nhan vat di chuyen theo huong nao
         if (left)
             xSpeed -= speed;
         if (right)
             xSpeed += speed;
+
+        // kiem tra vat the co dang tren khong hay khong
         if (!inAir)
+            // neu vat the dang khong o tren khong trung thi kiem tra xem vat the co dang o tren mat dat hay khong
             if (!IsEntityOnFloor(hitBox, lvlData))
+                // neu vat the khong o tren mat dat thi dat trang thai inAir = true cho vat the
                 inAir = true;
 
-
+        // kiem tra vat the co dang o tren khong trung
         if (inAir) {
+            // kiem tra phia tren cua vat the co tile hay khong
             if (CanMoveHere(hitBox.x, hitBox.y + airSpeed, hitBox.width, hitBox.height, lvlData)) {
-                hitBox.y += airSpeed;
-                airSpeed += gravity;
+                hitBox.y += airSpeed; // thuc hien viec giam gia tri Y
+                airSpeed += gravity; // thuc hien viec giam gia tri airSpeed den khi nhan vat roi xuong
                 udateXPos(xSpeed);
             } else {
                 hitBox.y = GetEntityYPosUnderRoofOrAboveFloor(hitBox, airSpeed);
@@ -90,16 +98,13 @@ public class Player extends Entity {
         } else
             udateXPos(xSpeed);
         moving = true;
-
     }
 
     private void jump() {
-        if (inAir) {
+        if (inAir)  // kiem tra trang thai cua vat the, han che vat the co the nhay nhieu lan tren khong
             return;
-        }
-        inAir = true;
-        airSpeed = jumpSpeed;
-
+        inAir = true; // dat lai trang thai cho vat the
+        airSpeed = jumpSpeed; // dat lai toc do roi cua vat the
     }
 
     private void resetInAir() {
@@ -117,12 +122,10 @@ public class Player extends Entity {
 
     public void setAttacking(boolean attacking) {
         this.attacking = attacking;
-
     }
-
+    // kiểm tra xem state của vật thể la gi va dat lai state cho vat the
     private void setAnimation() {
         int starFrame = playerAction;
-
         if (moving)
             playerAction = RUNNING;
         else
@@ -142,7 +145,6 @@ public class Player extends Entity {
         framesTick = 0;
         framesIndex = 0;
     }
-
     private void updateFramesTick() {
         framesTick++;
         if (framesTick >= framesSpeed) {
@@ -154,18 +156,14 @@ public class Player extends Entity {
             }
         }
     }
-
-
     private void loadAnimations() {
         BufferedImage image = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS);
         framesRow = 9;
         framesCol = 6;
         frames = new BufferedImage[framesRow][framesCol];
-        for (int j = 0; j < framesRow; j++) {
-            for (int i = 0; i < framesCol; i++) {
+        for (int j = 0; j < framesRow; j++)
+            for (int i = 0; i < framesCol; i++)
                 frames[j][i] = image.getSubimage(i * imgDefaultW, j * imgDefaultH, imgDefaultW, imgDefaultH);
-            }
-        }
     }
 
 

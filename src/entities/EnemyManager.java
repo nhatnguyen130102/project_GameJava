@@ -1,8 +1,6 @@
 package entities;
 
 import gameStates.Playing;
-import levels.Level;
-import levels.LevelManager;
 import ultilz.LoadSave;
 
 import java.awt.*;

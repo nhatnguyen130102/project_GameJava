@@ -6,6 +6,7 @@ import main.Game;
 import javax.imageio.ImageIO;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,7 +69,6 @@ public class LoadSave {
     public static ArrayList<Crabby> GetCrabs() {
         BufferedImage img = GetSpriteAtlas(LEVEL_ONE_DATA);
         ArrayList<Crabby> list = new ArrayList<>();
-        int maxTile = 48;
         for (int j = 0; j < img.getHeight(); j++) {//Row
             for (int i = 0; i < img.getWidth(); i++) {//Col
                 Color color = new Color(img.getRGB(i, j));
@@ -79,6 +79,8 @@ public class LoadSave {
         }
         return list;
     }
+
+
 
     public static int getCol() {
         return img.getWidth();
