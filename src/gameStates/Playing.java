@@ -1,13 +1,11 @@
 package gameStates;
 
-import entities.Crabby;
 import entities.EnemyManager;
 import entities.Player;
 import levels.LevelManager;
 import main.Game;
 import ui.PauseOverLay;
 import ultilz.LoadSave;
-
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -73,7 +71,7 @@ public class Playing extends State implements StateMethods {
         if (!paused) {
             levelManager.update();
             player.update();
-            enemyManager.update(levelManager.getCurrentLevel().getLevelData());
+            enemyManager.update(levelManager.getCurrentLevel().getLevelData(),player);
             CheckCloseToBorder();
         } else
             pauseOverLay.update();

@@ -81,9 +81,12 @@ public class HelpMethods {
         return false;
     }
     public static boolean IsAllTileWalkable(int xStart, int xEnd, int y , int[][]lvlData){
-        for (int i = 0; i < xEnd - xStart; i++)
+        for (int i = 0; i < xEnd - xStart; i++) {
             if (IsTileSolid(xStart + i, y, lvlData))
                 return false;
+            if (!IsTileSolid(xStart + i, y + i, lvlData))
+                return false;
+        }
         return true;
     }
     public static boolean isSightClear(int[][] lvlData, Rectangle2D.Float hbEnemy, Rectangle2D.Float hbPlayer, int tileY) {

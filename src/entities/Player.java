@@ -49,7 +49,7 @@ public class Player extends Entity {
 
     public void render(Graphics g, int lvlOffset) {
         g.drawImage(frames[playerAction][framesIndex], (int) (hitBox.x - xDrawOfset) - lvlOffset, (int) (hitBox.y - yDrawOfset), imgWidth, imgHeight, null);
-        drawHitBox(g, lvlOffset);
+//        drawHitBox(g, lvlOffset);
     }
 
     public void loadLvlData(int[][] lvlData) {
@@ -117,7 +117,6 @@ public class Player extends Entity {
             hitBox.x += xSpeed;
         else
             hitBox.x = GetEntityXPosNextToWall(hitBox, xSpeed);
-
     }
 
     public void setAttacking(boolean attacking) {

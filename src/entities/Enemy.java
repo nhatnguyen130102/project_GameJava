@@ -3,7 +3,7 @@ package entities;
 import main.Game;
 
 import static ultilz.Constants.Directions.*;
-import static ultilz.Constants.EnemyConstants.GetSpriteAmount;
+import static ultilz.Constants.EnemyConstants.*;
 import static ultilz.HelpMethods.*;
 
 public abstract class Enemy extends Entity {
@@ -23,13 +23,16 @@ public abstract class Enemy extends Entity {
         initHitBox(x, y, width, height);
     }
 
-    protected void uploadFrameTick() {
+    protected void updateFrameTick() {
         frameTick++;
         if (frameTick >= frameSpeed) {
             frameTick = 0;
             frameIndex++;
             if (frameIndex >= GetSpriteAmount(enemyTpye, enemyState)) {
                 frameIndex = 0;
+                if(enemyState == ATTACK){
+                    enemyState = IDLE;
+                }
             }
         }
     }
@@ -63,6 +66,13 @@ public abstract class Enemy extends Entity {
         }
         changeWalkDir();
     }
+    protected void turnTowardsPlayer(Player player){
+        if(player.hitBox.x > hitBox.x)
+            walkDir = RIGHT;
+        else
+            walkDir = LEFT;
+    }
+
     protected void newState(int enemyState){
         this.enemyState = enemyState;
         frameTick = 0 ;
@@ -81,9 +91,14 @@ public abstract class Enemy extends Entity {
     private boolean isPlayerInRange(Player player) {
         // lay khoang cach giua player va enemy vi nhan vat co the dung ben trai hoac ben phai nen lay ABS(tri tuyet doi)
         int absValue = (int) Math.abs(player.hitBox.x - hitBox.x);
-        return absValue <= attackDistance  * 5; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
+        return absValue <= attackDistance * 5; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
     }
-
+    protected boolean isPlayerCloseForAttack(Player player){
+        int absValue = (int) Math.abs(player.hitBox.x - hitBox.x);
+        if(Math.abs(hitBox.y - player.hitBox.y) < Game.TILE_SIZE ) // neu player khong dung cung 1 con duong voi enemy thi enemy se khong tan cong
+            return absValue <= attackDistance ; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
+        return false;
+    }
 
     protected void changeWalkDir() {
         if (walkDir == LEFT)
