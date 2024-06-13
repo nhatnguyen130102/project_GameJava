@@ -133,7 +133,10 @@ public class PauseOverLay {
         } else if (isIn(e, unpauseB)) {
             if (unpauseB.isMousePressed()) playing.unpauseGame();
         } else if (isIn(e, replayB)) {
-            if (replayB.isMousePressed()) System.out.println("Replay lv!!!");
+            if (replayB.isMousePressed()) {
+                System.out.println("Replay lv!!!");
+                playing.resetAll();
+            }
         }
         // sau khi thực hiện hoàn tất 1 tương tác thì sẽ reset toàn bộ trạng thái của button
         musicButton.resetBools();

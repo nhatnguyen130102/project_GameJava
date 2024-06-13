@@ -4,19 +4,17 @@ import entities.Crabby;
 import main.Game;
 
 import javax.imageio.ImageIO;
-
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import static ultilz.Constants.EnemyConstants.*;
+import static ultilz.Constants.EnemyConstants.CRABBY;
 
 
 public class LoadSave {
-    public static final String PLAYER_ATLAS = "Player/player_sprites.png";
+    public static final String PLAYER_ATLAS = "Player/player_sprites_2.png";
     public static final String LEVEL_ATLAS = "Map/outside_sprites.png";
     public static final String MENU_BACKGROUND = "Menu/menu_background.png";
     public static final String BACKGROUND = "Menu/beautiful-anime-landscape-cartoon-scene.jpg";
@@ -31,6 +29,7 @@ public class LoadSave {
     public static final String BIG_CLOUDS = "Level/Obj&BackGround/big_clouds.png";
     public static final String SMALL_CLOUDS = "Level/Obj&BackGround/small_clouds.png";
     public static final String CRABBY_SPRITE = "Enemy/crabby_sprite.png";
+    public static final String STATUS_BAR = "Menu/health_power_bar.png";
 
 
     public static BufferedImage img;

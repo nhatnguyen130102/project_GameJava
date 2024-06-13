@@ -4,12 +4,14 @@ import entities.EnemyManager;
 import entities.Player;
 import levels.LevelManager;
 import main.Game;
+import ui.GameOverOverlay;
 import ui.PauseOverLay;
 import ultilz.LoadSave;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -19,8 +21,10 @@ public class Playing extends State implements StateMethods {
     private LevelManager levelManager;
     private Player player;
     private EnemyManager enemyManager;
-    private boolean paused = false;
     private PauseOverLay pauseOverLay;
+    private GameOverOverlay gameOverOverlay;
+    private boolean paused = false;
+
     private int xLvlOffset; // phẩn thừa khi player di chuyển để mức quy định
     private int leftBorder = (int) (0.2 * Game.SCREEN_WIDTH);// khoảng cách với tường trái 20%
     private int rightBorder = (int) (0.8 * Game.SCREEN_WIDTH);// khoảng cách với tường trái 80%
@@ -30,6 +34,7 @@ public class Playing extends State implements StateMethods {
     private BufferedImage backGroundImg, bigCloudImg, smallCloudImg;
     private int[] smallCloudPos;
     private Random rnd = new Random();
+    private boolean gameOver;
 
     public Playing(Game game) {
         super(game);
@@ -61,9 +66,10 @@ public class Playing extends State implements StateMethods {
     private void initClasses() {
         levelManager = new LevelManager(); // khởi tạo map môi trường
         enemyManager = new EnemyManager(this);// khởi tạo quái vật
-        player = new Player(100, 300, Player.imgWidth, Player.imgHeight);// khởi tạo character
+        player = new Player(100, 300, Player.imgWidth, Player.imgHeight, this);// khởi tạo character
         player.loadLvlData(levelManager.getCurrentLevel().getLevelData());// khởi tạo map 1
         pauseOverLay = new PauseOverLay(this);// khởi tạo pausescreen
+        gameOverOverlay = new GameOverOverlay(this);
     }
 
     @Override
@@ -102,7 +108,8 @@ public class Playing extends State implements StateMethods {
             g.setColor(new Color(0, 0, 0, 150));
             g.fillRect(0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT);
             pauseOverLay.draw(g);
-        }
+        } else if(gameOver)
+            gameOverOverlay.draw(g);
     }
 
     private void drawClouds(Graphics g) {
@@ -114,58 +121,76 @@ public class Playing extends State implements StateMethods {
         int smallCloudLoop = 3;// khoảng cách giữa các đám mấy nhỏ, càng lớn thì số lượng mây hiển thị càng thưa(ít)
         for (int i = 0; i < smallCloudPos.length; i++)
             g.drawImage(smallCloudImg, (int) (SMALL_CLOUD_WIDTH * smallCloudLoop * i - smallCloudSpeed), smallCloudPos[i], SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);
-
-
     }
-
+    public void resetAll(){
+        gameOver = false;
+        paused = false;
+        player.resetAll();
+        enemyManager.resetAllEnemies();
+    }
+    public void setGameOver(boolean gameOver){
+        this.gameOver = gameOver;
+    }
+    public void checkEnemyHit(Rectangle2D.Float attackBox){
+        enemyManager.checkEnemyHit(attackBox);
+    }
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1)
-            player.setAttacking(true);
+        if(!gameOver)
+            if (e.getButton() == MouseEvent.BUTTON1)
+                player.setAttacking(true);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (paused)
-            pauseOverLay.mousePressed(e);
+        if(!gameOver)
+            if (paused)
+                pauseOverLay.mousePressed(e);
 
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (paused)
-            pauseOverLay.mouseReleased(e);
+        if(!gameOver)
+            if (paused)
+                pauseOverLay.mouseReleased(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (paused)
-            pauseOverLay.mouseMoved(e);
+        if(!gameOver)
+            if (paused)
+                pauseOverLay.mouseMoved(e);
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_A -> player.setLeft(true);
-            case KeyEvent.VK_D -> player.setRight(true);
-            case KeyEvent.VK_SPACE -> player.setJump(true);
-            case KeyEvent.VK_BACK_SPACE -> GameState.state = GameState.MENU;
-            case KeyEvent.VK_ESCAPE -> paused = !paused;
+        if(gameOver)
+            gameOverOverlay.keyPressed(e);
+        else
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_A -> player.setLeft(true);
+                case KeyEvent.VK_D -> player.setRight(true);
+                case KeyEvent.VK_SPACE -> player.setJump(true);
+                case KeyEvent.VK_BACK_SPACE -> GameState.state = GameState.MENU;
+                case KeyEvent.VK_ESCAPE -> paused = !paused;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_A -> player.setLeft(false);
-            case KeyEvent.VK_D -> player.setRight(false);
-            case KeyEvent.VK_SPACE -> player.setJump(false);
+        if(!gameOver)
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_A -> player.setLeft(false);
+                case KeyEvent.VK_D -> player.setRight(false);
+                case KeyEvent.VK_SPACE -> player.setJump(false);
         }
     }
 
     public void mouseDragged(MouseEvent e) {
-        if (paused)
-            pauseOverLay.mouseDragged(e);
+        if(!gameOver)
+            if (paused)
+                pauseOverLay.mouseDragged(e);
     }
 
     @Override

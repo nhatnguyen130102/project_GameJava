@@ -2,7 +2,10 @@ package entities;
 
 import main.Game;
 
-import static ultilz.Constants.Directions.*;
+import java.awt.geom.Rectangle2D;
+
+import static ultilz.Constants.Directions.LEFT;
+import static ultilz.Constants.Directions.RIGHT;
 import static ultilz.Constants.EnemyConstants.*;
 import static ultilz.HelpMethods.*;
 
@@ -17,10 +20,17 @@ public abstract class Enemy extends Entity {
     protected int walkDir = RIGHT;
     protected int tileY;
     protected float attackDistance = Game.TILE_SIZE;
+    protected int maxHealth;
+    protected int currentHealth;
+    protected boolean active = true;
+    protected boolean attackChecked;
+
     public Enemy(float x, float y, int width, int height, int enemyTpye) {
         super(x, y, width, height);
         this.enemyTpye = enemyTpye;
         initHitBox(x, y, width, height);
+        maxHealth = GetMaxHealth(enemyTpye);
+        currentHealth = maxHealth;
     }
 
     protected void updateFrameTick() {
@@ -30,29 +40,38 @@ public abstract class Enemy extends Entity {
             frameIndex++;
             if (frameIndex >= GetSpriteAmount(enemyTpye, enemyState)) {
                 frameIndex = 0;
-                if(enemyState == ATTACK){
-                    enemyState = IDLE;
+                switch (enemyState) {
+                    case ATTACK, HIT -> enemyState = IDLE;
+                    case DEAD -> active = false;
                 }
             }
         }
     }
-    protected void firstUpdateChecked(int[][]lvlData){
+
+    protected void checkEnemyHit(Rectangle2D.Float attackBox, Player player) {
+        if (attackBox.intersects(player.hitBox))
+            player.changeHealth(-GetEnemyDmg(enemyTpye));
+        attackChecked = true;
+    }
+
+    protected void firstUpdateChecked(int[][] lvlData) {
         if (!IsEntityOnFloor(hitBox, lvlData))
             inAir = true;
         firstUpdate = false;
     }
 
-    protected void updateInAir(int[][]lvlData){
+    protected void updateInAir(int[][] lvlData) {
         if (CanMoveHere(hitBox.x, hitBox.y, hitBox.width, hitBox.height, lvlData)) {
             hitBox.y += fallSpeed;
             fallSpeed += gravity;
         } else {
             inAir = false;
             hitBox.y = GetEntityYPosUnderRoofOrAboveFloor(hitBox, fallSpeed);
-            tileY = (int) (hitBox.y/Game.TILE_SIZE);
+            tileY = (int) (hitBox.y / Game.TILE_SIZE);
         }
     }
-    protected void move(int[][]lvlData){
+
+    protected void move(int[][] lvlData) {
         float XSpeed = 0;
         if (walkDir == LEFT)
             XSpeed = -walkSpeed;
@@ -66,24 +85,33 @@ public abstract class Enemy extends Entity {
         }
         changeWalkDir();
     }
-    protected void turnTowardsPlayer(Player player){
-        if(player.hitBox.x > hitBox.x)
+
+    protected void turnTowardsPlayer(Player player) {
+        if (player.hitBox.x > hitBox.x)
             walkDir = RIGHT;
         else
             walkDir = LEFT;
     }
 
-    protected void newState(int enemyState){
+    protected void newState(int enemyState) {
         this.enemyState = enemyState;
-        frameTick = 0 ;
+        frameTick = 0;
         frameIndex = 0;
     }
 
-    protected boolean canSeePlayer(int[][]lvlData,Player player){
-        int playerTileY = (int) (player.getHitBox().y/Game.TILE_SIZE);
-        if(playerTileY == tileY)
-            if(isPlayerInRange(player))
-                if(isSightClear(lvlData,hitBox,player.hitBox,tileY))
+    public void hurt(int amout) {
+        currentHealth -= amout;
+        if (currentHealth <= 0)
+            newState(DEAD);
+        else
+            newState(HIT);
+    }
+
+    protected boolean canSeePlayer(int[][] lvlData, Player player) {
+        int playerTileY = (int) (player.getHitBox().y / Game.TILE_SIZE);
+        if (playerTileY == tileY)
+            if (isPlayerInRange(player))
+                if (isSightClear(lvlData, hitBox, player.hitBox, tileY))
                     return true;
         return false;
     }
@@ -93,10 +121,11 @@ public abstract class Enemy extends Entity {
         int absValue = (int) Math.abs(player.hitBox.x - hitBox.x);
         return absValue <= attackDistance * 5; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
     }
-    protected boolean isPlayerCloseForAttack(Player player){
+
+    protected boolean isPlayerCloseForAttack(Player player) {
         int absValue = (int) Math.abs(player.hitBox.x - hitBox.x);
-        if(Math.abs(hitBox.y - player.hitBox.y) < Game.TILE_SIZE ) // neu player khong dung cung 1 con duong voi enemy thi enemy se khong tan cong
-            return absValue <= attackDistance ; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
+        if (Math.abs(hitBox.y - player.hitBox.y) < Game.TILE_SIZE) // neu player khong dung cung 1 con duong voi enemy thi enemy se khong tan cong
+            return absValue <= attackDistance; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
         return false;
     }
 
@@ -113,5 +142,24 @@ public abstract class Enemy extends Entity {
 
     public int getEnemyState() {
         return enemyState;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+//    public void drawHitBox(Graphics g, int lvlOffset) {
+//        g.setColor(Color.pink);
+//        g.drawRect((int) hitBox.x - lvlOffset, (int) hitBox.y, (int) hitBox.width, (int) hitBox.height);
+//    }
+
+    public void resetEnemy() {
+        hitBox.x = x;
+        hitBox.y = y;
+        firstUpdate = true;
+        currentHealth = maxHealth;
+        newState(IDLE);
+        active = true;
+        fallSpeed = 0;
     }
 }
