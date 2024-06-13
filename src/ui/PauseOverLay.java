@@ -136,6 +136,7 @@ public class PauseOverLay {
             if (replayB.isMousePressed()) {
                 System.out.println("Replay lv!!!");
                 playing.resetAll();
+//                playing.unpauseGame();
             }
         }
         // sau khi thực hiện hoàn tất 1 tương tác thì sẽ reset toàn bộ trạng thái của button
