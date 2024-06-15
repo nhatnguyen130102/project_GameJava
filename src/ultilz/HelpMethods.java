@@ -1,11 +1,17 @@
 package ultilz;
 
+import entities.Crabby;
 import main.Game;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
+import static ultilz.Constants.EnemyConstants.CRABBY;
 
 public class HelpMethods {
-    public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvlData) {
+    public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvlData) {// kiem tra co the di chuyen
         if (!IsSolid(x, y, lvlData))
             if (!IsSolid(x + width, y + height, lvlData))
                 if (!IsSolid(x + width, y, lvlData))
@@ -62,7 +68,8 @@ public class HelpMethods {
     // kiểm tra nhân vật có đứng ở tile đã được duyệt hay k và kiểm tra nhân vật có chạm vào tile có collision = true hay k
     public static boolean IsSolid(float x, float y, int[][] lvlData) {
         // Cho phép nhân vật chạm vào phần rìa main screen
-        if (x < 0 || x >= LoadSave.getCol() * Game.TILE_SIZE)
+        int maxWidth = lvlData[0].length * Game.TILE_SIZE;
+        if (x < 0 || x >= maxWidth * Game.TILE_SIZE)
             return true;
         if (y < 0 || y >= Game.SCREEN_HEIGHT)
             return true;
@@ -76,11 +83,12 @@ public class HelpMethods {
     public static boolean IsTileSolid(int xTile, int yTile, int[][] lvlData) {
         int value = lvlData[yTile][xTile];
         // cho phép nahan vật chạm vào phần tile chưa đc duyệt, kiểm soát lỗi thôi
-        if (value >= 30 || value < 0 || value != 11)
+        if (value >= 48 || value < 0 || value != 11)
             return true;
         return false;
     }
-    public static boolean IsAllTileWalkable(int xStart, int xEnd, int y , int[][]lvlData){
+
+    public static boolean IsAllTileWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
         for (int i = 0; i < xEnd - xStart; i++) {
             if (IsTileSolid(xStart + i, y, lvlData))
                 return false;
@@ -89,12 +97,41 @@ public class HelpMethods {
         }
         return true;
     }
+
     public static boolean isSightClear(int[][] lvlData, Rectangle2D.Float hbEnemy, Rectangle2D.Float hbPlayer, int tileY) {
         int enemyXTile = (int) (hbEnemy.x / Game.TILE_SIZE);
         int playerXTile = (int) (hbPlayer.x / Game.TILE_SIZE);
         if (enemyXTile > playerXTile)
-               return IsAllTileWalkable(playerXTile,enemyXTile,tileY,lvlData);
+            return IsAllTileWalkable(playerXTile, enemyXTile, tileY, lvlData);
         else
-            return IsAllTileWalkable(enemyXTile,playerXTile,tileY,lvlData);
+            return IsAllTileWalkable(enemyXTile, playerXTile, tileY, lvlData);
+    }
+
+    public static int[][] GetLevelData(BufferedImage img) {
+        int[][] lvlData = new int[img.getHeight()][img.getWidth()];
+        int maxTile = 48;
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getRed();
+                if (value >= maxTile)
+                    value = 0;
+                lvlData[j][i] = value;
+            }
+        }
+        return lvlData;
+    }
+    // tao danh sach enemy
+    public static ArrayList<Crabby> GetCrabs(BufferedImage img) {
+        ArrayList<Crabby> list = new ArrayList<>();
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getGreen();
+                if (value == CRABBY)
+                    list.add(new Crabby(i * Game.TILE_SIZE, j * Game.TILE_SIZE));
+            }
+        }
+        return list;
     }
 }

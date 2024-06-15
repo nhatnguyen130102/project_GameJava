@@ -3,6 +3,7 @@ package main;
 import gameStates.GameState;
 import gameStates.Menu;
 import gameStates.Playing;
+import ultilz.LoadSave;
 
 import java.awt.*;
 
@@ -29,6 +30,7 @@ public class Game implements Runnable {
 
     public Game() {
         initClasses();
+        LoadSave.GetAllLevels();
         gamePanel = new GamePanel(this);
         gameWindow = new GameWindow(gamePanel);
         gamePanel.setFocusable(true);

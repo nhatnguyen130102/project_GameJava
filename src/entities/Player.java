@@ -34,9 +34,10 @@ public class Player extends Entity {
     // Jumping Gravity
     private float airSpeed = 0f; // van toc roi cua vat the v0 -> vN
     private final float gravity = 0.04f * Game.SCALE; // luc hap dan______gia toc trong truong
-    private final float jumpSpeed = -4.25f * Game.SCALE; // do cao khi nhay cua vat the
+    private final float jumpSpeed = -2.25f * Game.SCALE; // do cao khi nhay cua vat the
     private final float fallSpeedAfterCollision = 0.5f * Game.SCALE; // toc do roi khi cham phai tile o phia tren
     private boolean inAir = false; // trang thai cua vat the
+    public static float attackDmg = 10;
 
     private BufferedImage statusBarImg;
     private int statusBarWidth = (int) (192 * Game.SCALE);

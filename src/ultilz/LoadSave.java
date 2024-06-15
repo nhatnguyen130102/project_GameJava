@@ -1,16 +1,12 @@
 package ultilz;
 
-import entities.Crabby;
-import main.Game;
-
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-
-import static ultilz.Constants.EnemyConstants.CRABBY;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 
 public class LoadSave {
@@ -30,9 +26,8 @@ public class LoadSave {
     public static final String SMALL_CLOUDS = "Level/Obj&BackGround/small_clouds.png";
     public static final String CRABBY_SPRITE = "Enemy/crabby_sprite.png";
     public static final String STATUS_BAR = "Menu/health_power_bar.png";
-
-
-    public static BufferedImage img;
+    public static final String COMPLETED_IMG = "Menu/completed_sprite.png";
+    public static final String folderLevelPath = "/Level/Lvls";
 
     // đọc file img trả về img lớn
     public static BufferedImage GetSpriteAtlas(String fileName) {
@@ -48,44 +43,112 @@ public class LoadSave {
         return image;// trả về img lớn
     }
 
-    // đọc và lấy toàn bộ tile lưu vào mảng 2 chiều
-    public static int[][] GetLevelData() {
-        img = GetSpriteAtlas(LEVEL_ONE_DATA);
-        int[][] lvlData = new int[img.getHeight()][img.getWidth()];
-        int maxTile = 48;
-        for (int j = 0; j < img.getHeight(); j++) {//Row
-            for (int i = 0; i < img.getWidth(); i++) {//Col
-                Color color = new Color(img.getRGB(i, j));
-                int value = color.getRed();
-                if (value >= maxTile)
-                    value = 0;
-                lvlData[j][i] = value;
-            }
+    // doc folder
+    public static BufferedImage[] GetAllLevels() {
+        URL url = LoadSave.class.getResource("/Level/Lvls");//dan vao folder can doc
+        File file = null;
+        try {
+            file = new File(url.toURI());//lay toan bo file trong folder
+            File[] files = file.listFiles();//cat thanh cac file roi bo vao array
+            int length = files.length;//do dai cua danh sach files
+            File[] filesSorted = new File[length];//tao array chua cac file sau khi da sap xep
+            for (int i = 0; i < filesSorted.length; i++)
+                for (int j = 0; j < files.length; j++)
+                    if (files[j].getName().equals((i + 1) + ".png"))
+                        filesSorted[j] = files[i];//xep cac file vao array sau khi da sap xep theo thu tu
+            BufferedImage[] imgs = new BufferedImage[filesSorted.length];//tao danh sach cac hinh anh tu file
+            for (int i = 0; i < imgs.length; i++)
+                imgs[i] = ImageIO.read(filesSorted[i]);// doc cac file trong danh sach va chuyen tu file thanh img
+            return imgs;
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
         }
-        return lvlData;
+        return null;
     }
 
-    public static ArrayList<Crabby> GetCrabs() {
-        BufferedImage img = GetSpriteAtlas(LEVEL_ONE_DATA);
-        ArrayList<Crabby> list = new ArrayList<>();
-        for (int j = 0; j < img.getHeight(); j++) {//Row
-            for (int i = 0; i < img.getWidth(); i++) {//Col
-                Color color = new Color(img.getRGB(i, j));
-                int value = color.getGreen();
-                if (value == CRABBY)
-                    list.add(new Crabby(i * Game.TILE_SIZE, j * Game.TILE_SIZE));
-            }
-        }
-        return list;
-    }
-
-
-
-    public static int getCol() {
-        return img.getWidth();
-    }
-
-    public static int getRow() {
-        return img.getHeight();
-    }
+//    public static BufferedImage[][] GetAllEntities(String path) {
+//        File[] allFolderInPath = getAllFileOrFolderInFolder(path);// lay toan bo cac folder action cua whale
+//        File[] sortFolder = new File[allFolderInPath.length];
+//        int index = 0;
+//        // sap xep cac folder theo thu tu tu be den lon
+//        for (int i = 0; i < sortFolder.length; i++) {
+//            for (int j = 0; j < allFolderInPath.length; j++) {
+//                String[] sliptName = allFolderInPath[j].getName().split("-");// lay phan so trong ten cua folder action
+//                int formatName = Integer.parseInt(sliptName[0]) - 1;// chuyen phan so do thanh int
+//                if (formatName == i)// kiem tra neu phan so do = so thu tu hien tai thi thuc hien gan folder do vao dung vi tri trong array sortFolder
+//                    sortFolder[i] = allFolderInPath[j];
+//            }
+//        }
+//        ArrayList<Integer> array = new ArrayList<>();
+//        for (File f : sortFolder) {
+//            File[] allFileInPath = getAllFileOrFolderInFolder(path + "/" + f.getName());// lay toan bo cac file img trong tung folder action cua whale
+//            array.add(allFileInPath.length);
+//        }
+//        int Max = Collections.max(array);
+//        BufferedImage[][] imgs = new BufferedImage[allFolderInPath.length][Max];
+//
+//        for (File f : sortFolder) {
+//            File[] allFileInPath = getAllFileOrFolderInFolder(path + "/" + f.getName());// lay toan bo cac file img trong tung folder action cua whale
+//
+//            File[] sortFile = new File[allFileInPath.length];
+//            for (int i = 0; i < sortFile.length; i++) {
+//                for (int j = 0; j < allFileInPath.length; j++) {
+//                    String[] sliptName = allFileInPath[j].getName().split("\\.");
+//
+//                    int formatName = Integer.parseInt(sliptName[0]) - 1;
+//                    if (formatName == i){
+//                        sortFile[i] = allFileInPath[j];
+//                    }
+//                }
+//            }
+//            array.add(sortFile.length);
+//            for (int i = 0; i < sortFile.length; i++) {
+//                try {
+//                    imgs[index][i] = ImageIO.read(sortFile[i]);
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }
+//        return imgs;
+//    }
+//
+//    public static File[] getAllFileOrFolderInFolder(String path) {
+//        URL url = LoadSave.class.getResource(path);//dan vao folder can doc
+//        File file = null;
+//        try {
+//            file = new File(url.toURI());//lay toan bo file trong folder
+//            File[] files = file.listFiles();//cat thanh cac file roi bo vao array
+//            return files;
+//        } catch (URISyntaxException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//
+//    public static int countActionFile(String path) {
+//        URL url = LoadSave.class.getResource(path);//dan vao folder can doc
+//        File file = null;
+//        try {
+//            file = new File(url.toURI());//lay toan bo file trong folder
+//            File[] files = file.listFiles();//cat thanh cac file roi bo vao array
+//            return files.length;
+//        } catch (URISyntaxException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//
+//    public static int getMaxFileInActionFolder(String path) {
+//        File[] allFolderInPath = getAllFileOrFolderInFolder(path);// lay toan bo cac folder action cua whale
+//
+//        ArrayList<Integer> array = new ArrayList<>();
+//        for (File f : allFolderInPath) {
+//            File[] allFileInPath = getAllFileOrFolderInFolder(path + "/" + f.getName());// lay toan bo cac file img trong tung folder action cua whale
+//            array.add(allFileInPath.length);
+//        }
+//        int Max = Collections.max(array);
+//        return Max;
+//    }
 }
+
+
+

@@ -11,6 +11,7 @@ import static ultilz.Constants.EnemyConstants.*;
 public class Crabby extends Enemy {
     private Rectangle2D.Float attackBox;
     private int attackBoxOffsetX;
+
     public Crabby(float x, float y) {
         super(x, y, CRABBY_WIDTH, CRABBY_HEIGHT, CRABBY);
         initHitBox(x, y, HB_CRABBY_WIDTH, HB_CRABBY_HEIGHT);

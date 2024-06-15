@@ -20,6 +20,8 @@ public class Constants {
         public static final int HB_CRABBY_HEIGHT = (int) (HB_CRABBY_HEIGHT_DEFAULT * Game.SCALE);
         public static final int CRABBY_DRAW_OFFSET_X = (int) (26 * Game.SCALE);
         public static final int CRABBY_DRAW_OFFSET_Y = (int) (9 * Game.SCALE);
+        public static final int CRABBY_MAX_HEALTH = 50;
+        public static final int CRABBY_DMG = 10;
 
         public static int GetSpriteAmount(int enemy_type, int enemy_state) {
             if (enemy_type == CRABBY) {
@@ -38,26 +40,25 @@ public class Constants {
             }
             return 0;
         }
-
+        //lay mau toi da cua enemy
         public static int GetMaxHealth(int enemy_type) {
             switch (enemy_type) {
                 case CRABBY:
-                    return 10;
+                    return CRABBY_MAX_HEALTH;// mau toi da cua enemy
                 default:
                     return 1;
             }
         }
-
+        // lay dmg cua enemy
         public static int GetEnemyDmg(int enemy_type) {
             switch (enemy_type) {
                 case CRABBY:
-                    return 15;
+                    return CRABBY_DMG;//dmg toi da cua enemy
                 default:
                     return 0;
             }
         }
     }
-
     public static class Enviroment {
         public static final int BIG_CLOUD_WIDTH_DEFAULT = 448;
         public static final int BIG_CLOUD_HEIGHT_DEFAULT = 101;
