@@ -19,7 +19,7 @@ public class Crabby extends Enemy {
     }
 
     private void initAttackBox() {
-        attackBox = new Rectangle2D.Float(x,y,82* Game.SCALE,19*Game.SCALE);
+        attackBox = new Rectangle2D.Float(x, y, 82 * Game.SCALE, 19 * Game.SCALE);
         attackBoxOffsetX = (int) (Game.SCALE * 30);
     }
 
@@ -42,38 +42,40 @@ public class Crabby extends Enemy {
             updateInAir(lvlData);
         } else {
             switch (enemyState) {
-                case IDLE -> newState(RUNNING);
-                case RUNNING -> {
+                case CRABBY_IDLE -> newState(CRABBY_RUNNING);
+                case CRABBY_RUNNING -> {
                     if (canSeePlayer(lvlData, player))
                         turnTowardsPlayer(player);
                     if (isPlayerCloseForAttack(player))
-                        newState(ATTACK);
+                        newState(CRABBY_ATTACK);
                     move(lvlData);
                 }
-                case ATTACK -> {
-                    if(frameIndex == 0)
+                case CRABBY_ATTACK -> {
+                    if (frameIndex == 0)
                         attackChecked = false;
-                    if(frameIndex == 3 && !attackChecked)
-                        checkEnemyHit(attackBox,player);
+                    if (frameIndex == 3 && !attackChecked)
+                        checkEnemyHit(attackBox, player);
                 }
-                case HIT -> {
+                case CRABBY_HIT -> {
                 }
             }
         }
     }
 
-    public void drawAttackBox(Graphics g, int xLvlOffset){
+    public void drawAttackBox(Graphics g, int xLvlOffset) {
         g.setColor(Color.RED);
         g.drawRect((int) (attackBox.x - xLvlOffset), (int) attackBox.y, (int) attackBox.width, (int) attackBox.height);
     }
-    public int flipX(){
-        if(walkDir == RIGHT)
+
+    public int flipX() {
+        if (walkDir == RIGHT)
             return width;
         else
             return 0;
     }
-    public int flipW(){
-        if(walkDir == RIGHT)
+
+    public int flipW() {
+        if (walkDir == RIGHT)
             return -1;
         else
             return 1;

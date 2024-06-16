@@ -2,11 +2,13 @@ package entities;
 
 import main.Game;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 import static ultilz.Constants.Directions.LEFT;
 import static ultilz.Constants.Directions.RIGHT;
 import static ultilz.Constants.EnemyConstants.*;
+import static ultilz.Constants.PlayerConstants.PLAYER_DMG;
 import static ultilz.HelpMethods.*;
 
 public abstract class Enemy extends Entity {
@@ -41,8 +43,8 @@ public abstract class Enemy extends Entity {
             if (frameIndex >= GetSpriteAmount(enemyTpye, enemyState)) {
                 frameIndex = 0;
                 switch (enemyState) {
-                    case ATTACK, HIT -> enemyState = IDLE;
-                    case DEAD -> active = false;
+                    case CRABBY_ATTACK, CRABBY_HIT -> enemyState = CRABBY_IDLE;
+                    case CRABBY_DEAD -> active = false;
                 }
             }
         }
@@ -99,12 +101,12 @@ public abstract class Enemy extends Entity {
         frameIndex = 0;
     }
 
-    public void hurt(int amout) {
-        currentHealth -= amout;
+    public void hurt() {
+        currentHealth -= PLAYER_DMG;
         if (currentHealth <= 0)
-            newState(DEAD);
+            newState(CRABBY_DEAD);
         else
-            newState(HIT);
+            newState(CRABBY_HIT);
     }
 
     protected boolean canSeePlayer(int[][] lvlData, Player player) {
@@ -123,10 +125,12 @@ public abstract class Enemy extends Entity {
 
     protected boolean isPlayerCloseForAttack(Player player) {
         int absValue = (int) Math.abs(player.hitBox.x - hitBox.x);
-        if (Math.abs(hitBox.y - player.hitBox.y) < Game.TILE_SIZE) // neu player khong dung cung 1 con duong voi enemy thi enemy se khong tan cong
+        if (Math.abs(hitBox.y - player.hitBox.y) < Game.TILE_SIZE)// neu player khong dung cung 1 con duong voi enemy thi enemy se khong tan cong
             return absValue <= attackDistance; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
         return false;
     }
+
+
 
     protected void changeWalkDir() {
         if (walkDir == LEFT)
@@ -147,17 +151,18 @@ public abstract class Enemy extends Entity {
         return active;
     }
 
-//    public void drawHitBox(Graphics g, int lvlOffset) {
-//        g.setColor(Color.pink);
-//        g.drawRect((int) hitBox.x - lvlOffset, (int) hitBox.y, (int) hitBox.width, (int) hitBox.height);
-//    }
+
+    public void drawHitBox(Graphics g, int lvlOffset) {
+        g.setColor(Color.pink);
+        g.drawRect((int) hitBox.x - lvlOffset, (int) hitBox.y, (int) hitBox.width, (int) hitBox.height);
+    }
 
     public void resetEnemy() {
         hitBox.x = x;
         hitBox.y = y;
         firstUpdate = true;
         currentHealth = maxHealth;
-        newState(IDLE);
+        newState(CRABBY_IDLE);
         active = true;
         fallSpeed = 0;
     }

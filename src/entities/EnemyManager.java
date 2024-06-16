@@ -17,29 +17,38 @@ public class EnemyManager {
     private static BufferedImage[][] crabbyArr;
     private static BufferedImage[][] whaleArr;
     private static ArrayList<Crabby> crabbies = new ArrayList<>();
+    private static ArrayList<Whale> whales = new ArrayList<>();
 
     public EnemyManager(Playing playing) {
         this.playing = playing;
-        loadEnemyImg();
+        loadEnemyCrabbyImg();
+        loadEnemyWahleImg();
     }
 
     public void loadEnemies(Level level) {
         crabbies = level.getCrabs();
+        whales = level.getWhales();
     }
 
     public void checkEnemyHit(Rectangle2D.Float attackBox) {
         for (Crabby c : crabbies) {
             if (c.isActive())
                 if (attackBox.intersects(c.getHitBox())) {
-                    c.hurt(10);
+                    c.hurt();
+                    return;
+                }
+        }
+        for (Whale w : whales) {
+            if (w.isActive())
+                if (attackBox.intersects(w.getHitBox())) {
+                    w.hurt();
                     return;
                 }
         }
 
     }
 
-
-    private void loadEnemyImg() {
+    private void loadEnemyCrabbyImg() {
         BufferedImage temp = GetSpriteAtlas(CRABBY_SPRITE);// lay 1 img lon
         int row = temp.getHeight() / CRABBY_HEIGHT_DEFAULT;
         int col = temp.getWidth() / CRABBY_WIDTH_DEFAULT;
@@ -51,6 +60,18 @@ public class EnemyManager {
         }
     }
 
+    private void loadEnemyWahleImg() {
+        BufferedImage temp = GetSpriteAtlas(WHALE_SPRITE);// lay 1 img lon
+        int row = temp.getHeight() / WHALE_HEIGHT_DEFAULT;
+        int col = temp.getWidth() / WHALE_WIDTH_DEFAULT;
+        whaleArr = new BufferedImage[row][col];// tao array lay animation
+        for (int i = 0; i < whaleArr.length; i++) {// cat tam hinh lon
+            for (int j = 0; j < whaleArr[i].length; j++) {
+                whaleArr[i][j] = temp.getSubimage(j * WHALE_WIDTH_DEFAULT, i * WHALE_HEIGHT_DEFAULT, WHALE_WIDTH_DEFAULT, WHALE_HEIGHT_DEFAULT);
+            }
+        }
+    }
+
     public static void update(int[][] lvlData, Player player) {
         boolean isAnyActive = false;
         for (Crabby c : crabbies) {
@@ -58,14 +79,20 @@ public class EnemyManager {
                 c.update(lvlData, player);
                 isAnyActive = true;
             }
-
-            if (!isAnyActive)
-                playing.setLevelCompleted(true);
         }
+        for (Whale w : whales) {
+            if (w.isActive()) {
+                w.update(lvlData, player);
+                isAnyActive = true;
+            }
+        }
+        if (!isAnyActive)
+            playing.setLevelCompleted(true);
     }
 
     public static void draw(Graphics g, int xLvlOffset) {
         drawCrabs(g, xLvlOffset);
+        drawWhales(g,xLvlOffset);
     }
 
     private static void drawCrabs(Graphics g, int xLvlOffset) {
@@ -73,7 +100,7 @@ public class EnemyManager {
             if (c.isActive()) {
                 g.drawImage(crabbyArr[c.getEnemyState()][c.getFrameIndex()],
                         (int) c.getHitBox().x - xLvlOffset - CRABBY_DRAW_OFFSET_X + c.flipX(),
-                        (int) c.getHitBox().y - CRABBY_DRAW_OFFSET_Y,
+                        (int) c.getHitBox().y - CRABBY_DRAW_OFFSET_Y ,
                         CRABBY_WIDTH * c.flipW(), CRABBY_HEIGHT, null);
                 if (c.currentHealth <= 0)
                     c.currentHealth = 0;
@@ -86,10 +113,30 @@ public class EnemyManager {
         }
     }
 
+    private static void drawWhales(Graphics g, int xLvlOffset) {
+        for (Whale w : whales) {
+            if (w.isActive()) {
+                g.drawImage(whaleArr[w.getEnemyState()][w.getFrameIndex()],
+                        (int) w.getHitBox().x - xLvlOffset - WHALE_DRAW_OFFSET_X + w.flipX(),
+                        (int) w.getHitBox().y - WHALE_DRAW_OFFSET_Y,
+                        WHALE_WIDTH * w.flipW(), WHALE_HEIGHT, null);
+                if (w.currentHealth <= 0)
+                    w.currentHealth = 0;
+                float healthWidth = (int) ((w.currentHealth / (float) w.maxHealth) * w.getHitBox().width);
+                g.setColor(Color.RED);
+                g.fillRect((int) w.getHitBox().x - xLvlOffset, (int) w.getHitBox().y - 20, (int) healthWidth, 5);
+//                w.drawHitBox(g, xLvlOffset);
+//                w.drawAttackBox(g, xLvlOffset);
+            }
+        }
+    }
+
 
     public void resetAllEnemies() {
-        for (Crabby c : crabbies) {
+        for (Crabby c : crabbies)
             c.resetEnemy();
-        }
+
+        for (Whale w : whales)
+            w.resetEnemy();
     }
 }

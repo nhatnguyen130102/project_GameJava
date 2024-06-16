@@ -25,7 +25,7 @@ public class Player extends Entity {
     private int playerAction = IDLE;
     private final int playerDir = -1;
     private boolean moving = false, attacking = false;
-    public float speed = Game.SCALE;
+    public float speed = 2* Game.SCALE;
     private boolean up, left, down, jump, right;
     private boolean firstUpdate = true;
     private int[][] lvlData;
@@ -37,8 +37,6 @@ public class Player extends Entity {
     private final float jumpSpeed = -2.25f * Game.SCALE; // do cao khi nhay cua vat the
     private final float fallSpeedAfterCollision = 0.5f * Game.SCALE; // toc do roi khi cham phai tile o phia tren
     private boolean inAir = false; // trang thai cua vat the
-    public static float attackDmg = 10;
-
     private BufferedImage statusBarImg;
     private int statusBarWidth = (int) (192 * Game.SCALE);
     private int statusBarHeight = (int) (58 * Game.SCALE);

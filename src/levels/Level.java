@@ -1,6 +1,7 @@
 package levels;
 
 import entities.Crabby;
+import entities.Whale;
 import main.Game;
 
 import java.awt.image.BufferedImage;
@@ -12,6 +13,7 @@ public class Level {
     private int [][] lvlData;
     private BufferedImage img;
     private ArrayList<Crabby> crabs;
+    private ArrayList<Whale> whales;
     private int lvlTilesWide;// Độ dài tối đa của map hiện tại ( toạ độ )
     private int maxTilesOffset;// Độ dài tối đa màn hình chưa hiển thị ( map tối đa - màn hình tối đa = phần thừa tối đa )
     private int maxLvlOffsetX;// Độ dài ( toạ độ x tilesize ) của phần thừa
@@ -30,6 +32,7 @@ public class Level {
 
     private void createEnemies() {
         crabs = GetCrabs(img);
+        whales = GetWhales(img);
     }
 
     private void createLevelData() {
@@ -49,5 +52,8 @@ public class Level {
     }
     public ArrayList<Crabby> getCrabs(){
         return crabs;
+    }
+    public ArrayList<Whale> getWhales(){
+        return whales;
     }
 }

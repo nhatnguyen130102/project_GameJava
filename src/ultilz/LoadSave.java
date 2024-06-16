@@ -27,7 +27,7 @@ public class LoadSave {
     public static final String CRABBY_SPRITE = "Enemy/crabby_sprite.png";
     public static final String STATUS_BAR = "Menu/health_power_bar.png";
     public static final String COMPLETED_IMG = "Menu/completed_sprite.png";
-    public static final String folderLevelPath = "/Level/Lvls";
+    public static final String WHALE_SPRITE = "Enemy/whale_sprite.png";
 
     // đọc file img trả về img lớn
     public static BufferedImage GetSpriteAtlas(String fileName) {

@@ -1,6 +1,7 @@
 package ultilz;
 
 import entities.Crabby;
+import entities.Whale;
 import main.Game;
 
 import java.awt.*;
@@ -8,7 +9,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import static ultilz.Constants.EnemyConstants.CRABBY;
+import static ultilz.Constants.EnemyConstants.*;
 
 public class HelpMethods {
     public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvlData) {// kiem tra co the di chuyen
@@ -81,6 +82,13 @@ public class HelpMethods {
     }
 
     public static boolean IsTileSolid(int xTile, int yTile, int[][] lvlData) {
+        int maxWidth = lvlData[0].length;
+        if (xTile < 0 || xTile >= maxWidth) {
+            return true;
+        }
+        if (yTile < 0 || yTile >= Game.SCREEN_HEIGHT / Game.TILE_SIZE) {
+            return true;
+        }
         int value = lvlData[yTile][xTile];
         // cho phép nahan vật chạm vào phần tile chưa đc duyệt, kiểm soát lỗi thôi
         if (value >= 48 || value < 0 || value != 11)
@@ -121,6 +129,7 @@ public class HelpMethods {
         }
         return lvlData;
     }
+
     // tao danh sach enemy
     public static ArrayList<Crabby> GetCrabs(BufferedImage img) {
         ArrayList<Crabby> list = new ArrayList<>();
@@ -130,6 +139,19 @@ public class HelpMethods {
                 int value = color.getGreen();
                 if (value == CRABBY)
                     list.add(new Crabby(i * Game.TILE_SIZE, j * Game.TILE_SIZE));
+            }
+        }
+        return list;
+    }
+
+    public static ArrayList<Whale> GetWhales(BufferedImage img) {
+        ArrayList<Whale> list = new ArrayList<>();
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getGreen();
+                if (value == WHALE)
+                    list.add(new Whale(i * Game.TILE_SIZE, j * Game.TILE_SIZE - Game.TILE_SIZE));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
             }
         }
         return list;
