@@ -7,6 +7,7 @@ import java.awt.geom.Rectangle2D;
 
 import static ultilz.Constants.Directions.*;
 import static ultilz.Constants.EnemyConstants.*;
+import static ultilz.Constants.PlayerConstants.PLAYER_DMG;
 
 public class Crabby extends Enemy {
     private Rectangle2D.Float attackBox;
@@ -61,7 +62,13 @@ public class Crabby extends Enemy {
             }
         }
     }
-
+    public void hurt() {
+        currentHealth -= PLAYER_DMG;
+        if (currentHealth <= 0)
+            newState(CRABBY_DEAD);
+        else
+            newState(CRABBY_HIT);
+    }
     public void drawAttackBox(Graphics g, int xLvlOffset) {
         g.setColor(Color.RED);
         g.drawRect((int) (attackBox.x - xLvlOffset), (int) attackBox.y, (int) attackBox.width, (int) attackBox.height);

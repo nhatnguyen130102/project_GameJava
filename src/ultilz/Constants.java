@@ -30,7 +30,7 @@ public class Constants {
         public static final int WHALE_IDLE = 0;
         public static final int WHALE_RUNNING = 1;
         public static final int WHALE_ATTACK = 2;
-        private static final int WHALE_SWALOW = 3;
+        public static final int WHALE_SWALOW = 3;
         public static final int WHALE_HIT = 4;
         public static final int WHALE_DEAD_HIT = 5;
         public static final int WHALE_DEAD_GROUND = 6;
@@ -79,7 +79,7 @@ public class Constants {
                         case WHALE_SWALOW:
                             return 10;
                         case WHALE_HIT:
-                            return 7;
+                            return 5;
                         case WHALE_DEAD_HIT:
                             return 6;
                         case WHALE_DEAD_GROUND:

@@ -24,8 +24,9 @@ public class Player extends Entity {
     private final int framesSpeed = 30;
     private int playerAction = IDLE;
     private final int playerDir = -1;
-    private boolean moving = false, attacking = false;
-    public float speed = 2* Game.SCALE;
+    private boolean moving = false;
+    private boolean attacking = false;
+    public float speed = 2 * Game.SCALE;
     private boolean up, left, down, jump, right;
     private boolean firstUpdate = true;
     private int[][] lvlData;
@@ -36,29 +37,27 @@ public class Player extends Entity {
     private final float gravity = 0.04f * Game.SCALE; // luc hap dan______gia toc trong truong
     private final float jumpSpeed = -2.25f * Game.SCALE; // do cao khi nhay cua vat the
     private final float fallSpeedAfterCollision = 0.5f * Game.SCALE; // toc do roi khi cham phai tile o phia tren
-    private boolean inAir = false; // trang thai cua vat the
+    boolean inAir = false; // trang thai cua vat the
     private BufferedImage statusBarImg;
-    private int statusBarWidth = (int) (192 * Game.SCALE);
-    private int statusBarHeight = (int) (58 * Game.SCALE);
-    private int statusBarX = (int) (10 * Game.SCALE);
-    private int statusBarY = (int) (10 * Game.SCALE);
-    private int healthBarWidth = (int) (150 * Game.SCALE);
-    private int healthBarHeight = (int) (4 * Game.SCALE);
-    private int healthBarXStart = (int) (34 * Game.SCALE);
-    private int healthBarYStart = (int) (14 * Game.SCALE);
+    private final int statusBarWidth = (int) (192 * Game.SCALE);
+    private final int statusBarHeight = (int) (58 * Game.SCALE);
+    private final int statusBarX = (int) (10 * Game.SCALE);
+    private final int statusBarY = (int) (10 * Game.SCALE);
+    private final int healthBarWidth = (int) (150 * Game.SCALE);
+    private final int healthBarHeight = (int) (4 * Game.SCALE);
+    private final int healthBarXStart = (int) (34 * Game.SCALE);
+    private final int healthBarYStart = (int) (14 * Game.SCALE);
 
-    private int maxHealth = 100;
+    private final int maxHealth = 100;
     private int currentHealth = maxHealth;
     private int healthWidth = healthBarWidth;
 
     private Rectangle2D.Float attackBox;
-
     private int flipX = 0;
     private int flitW = 1;
-
     private boolean attackChecked;
+    private final Playing playing;
 
-    private Playing playing;
     public Player(float x, float y, int width, int height, Playing playing) {
         super(x, y, width, height);
         this.playing = playing;
@@ -73,20 +72,17 @@ public class Player extends Entity {
 
     public void update() {
         updateHealthBar();
-        if(currentHealth <= 0) {
-            playing.setGameOver(true);
-            return;
-        }
+
         updateAttackBox();
         updatePos();
-        if(attacking)
+        if (attacking)
             checkAttack();
         updateFramesTick();
         setAnimation();
     }
 
     private void checkAttack() {
-        if(attackChecked || framesIndex != 1)
+        if (attackChecked || framesIndex != 1)
             return;
         attackChecked = true;
         playing.checkEnemyHit(attackBox);
@@ -105,7 +101,7 @@ public class Player extends Entity {
     }
 
     private void updateHealthBar() {
-        healthWidth =(int)((currentHealth / (float)maxHealth )*healthBarWidth);
+        healthWidth = (int) ((currentHealth / (float) maxHealth) * healthBarWidth);
     }
 
     public void render(Graphics g, int lvlOffset) {
@@ -127,16 +123,38 @@ public class Player extends Entity {
     private void drawUI(Graphics g) {
         g.drawImage(statusBarImg, statusBarX, statusBarY, statusBarWidth, statusBarHeight, null);
         g.setColor(Color.RED);
-        g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY,healthWidth, healthBarHeight);
+        g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, healthWidth, healthBarHeight);
     }
 
     public void changeHealth(int value) {
-        currentHealth += value;
+//        currentHealth -= value;
+        hurt(value);
         if (currentHealth <= 0) {
             currentHealth = 0;
         } else if (currentHealth >= maxHealth) {
             currentHealth = maxHealth;
         }
+        if (currentHealth <= 0) {
+            playing.setGameOver(true);
+        }
+    }
+
+    public void hurt(int value) {
+        currentHealth -= value;
+        if (currentHealth <= 0) {
+            newState(DEAD);
+        } else {
+            System.out.println(playerAction);
+            newState(HIT);
+            System.out.println(playerAction);
+
+        }
+    }
+
+    protected void newState(int playerAction) {
+        this.playerAction = playerAction;
+        framesTick = 0;
+        framesIndex = 0;
     }
 
     public void loadLvlData(int[][] lvlData) {
@@ -146,6 +164,7 @@ public class Player extends Entity {
     }
 
     private void updatePos() {
+
         moving = false; // neu khong co gi dien ra thi vat the se dung im
         if (jump) // kiem tra su kien tu ban phim de xem nguoi choi co yeu cau jump hay khong
             jump(); // han che viec vat the nhay nhieu lan tren khong trung va dat do cao khi bay cua vat the
@@ -218,31 +237,36 @@ public class Player extends Entity {
     // kiểm tra xem state của vật thể la gi va dat lai state cho vat the
     private void setAnimation() {
         int startFrame = playerAction;
-        if (moving)
-            playerAction = RUNNING;
-        else
-            playerAction = IDLE;
-        if (inAir)
-            if (airSpeed < 0)
-                playerAction = JUMP;
-            else
-                playerAction = FALLING;
-        if (attacking){
+        if(playerAction != HIT){
+            if (moving) {
+                playerAction = RUNNING;
+            } else {
+                playerAction = IDLE;
+            }
+            if (inAir) {
+                if (airSpeed < 0)
+                    playerAction = JUMP;
+                else
+                    playerAction = FALLING;
+            }
+        }
+
+        if (attacking) {
             playerAction = ATTACK;
-            if(startFrame != ATTACK){
+            if (startFrame != ATTACK) {
                 framesIndex = 1;
-                framesTick  = 0;
+                framesTick = 0;
                 return;
             }
         }
         if (startFrame != playerAction)
             resetFrameTick();
     }
-
     private void resetFrameTick() {
         framesTick = 0;
         framesIndex = 0;
     }
+
 
     private void updateFramesTick() {
         framesTick++;
@@ -251,6 +275,12 @@ public class Player extends Entity {
             framesIndex++;
             if (framesIndex >= getSpriteAmout(playerAction)) {
                 framesIndex = 0;
+
+                switch (playerAction) {
+                    case ATTACK, HIT -> {
+                        playerAction = IDLE;
+                    }
+                }
                 attacking = false;
                 attackChecked = false;
             }
@@ -319,13 +349,13 @@ public class Player extends Entity {
         inAir = false;
         attacking = false;
         moving = false;
-        playerAction =IDLE;
+        playerAction = IDLE;
         currentHealth = maxHealth;
 
         hitBox.x = x;
         hitBox.y = y;
 
-        if(!IsEntityOnFloor(hitBox,lvlData))
+        if (!IsEntityOnFloor(hitBox, lvlData))
             inAir = true;
     }
 }

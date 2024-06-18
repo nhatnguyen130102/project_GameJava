@@ -8,7 +8,6 @@ import java.awt.geom.Rectangle2D;
 import static ultilz.Constants.Directions.LEFT;
 import static ultilz.Constants.Directions.RIGHT;
 import static ultilz.Constants.EnemyConstants.*;
-import static ultilz.Constants.PlayerConstants.PLAYER_DMG;
 import static ultilz.HelpMethods.*;
 
 public abstract class Enemy extends Entity {
@@ -42,17 +41,29 @@ public abstract class Enemy extends Entity {
             frameIndex++;
             if (frameIndex >= GetSpriteAmount(enemyTpye, enemyState)) {
                 frameIndex = 0;
-                switch (enemyState) {
-                    case CRABBY_ATTACK, CRABBY_HIT -> enemyState = CRABBY_IDLE;
-                    case CRABBY_DEAD -> active = false;
+                switch (enemyTpye){
+                    case CRABBY -> {
+                        switch (enemyState) {
+                            case CRABBY_ATTACK, CRABBY_HIT -> enemyState = CRABBY_IDLE;
+                            case CRABBY_DEAD -> active = false;
+                        }
+                    }
+                    case WHALE ->{
+                        switch (enemyState) {
+                            case WHALE_ATTACK, WHALE_HIT -> enemyState = WHALE_IDLE;
+                            case WHALE_DEAD_HIT -> active = false;
+                        }
+                    }
                 }
+
             }
         }
     }
 
     protected void checkEnemyHit(Rectangle2D.Float attackBox, Player player) {
-        if (attackBox.intersects(player.hitBox))
-            player.changeHealth(-GetEnemyDmg(enemyTpye));
+        if (attackBox.intersects(player.hitBox)){
+            player.changeHealth(GetEnemyDmg(enemyTpye));
+        }
         attackChecked = true;
     }
 
@@ -94,19 +105,10 @@ public abstract class Enemy extends Entity {
         else
             walkDir = LEFT;
     }
-
     protected void newState(int enemyState) {
         this.enemyState = enemyState;
         frameTick = 0;
         frameIndex = 0;
-    }
-
-    public void hurt() {
-        currentHealth -= PLAYER_DMG;
-        if (currentHealth <= 0)
-            newState(CRABBY_DEAD);
-        else
-            newState(CRABBY_HIT);
     }
 
     protected boolean canSeePlayer(int[][] lvlData, Player player) {
@@ -129,8 +131,6 @@ public abstract class Enemy extends Entity {
             return absValue <= attackDistance; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
         return false;
     }
-
-
 
     protected void changeWalkDir() {
         if (walkDir == LEFT)
