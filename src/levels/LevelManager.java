@@ -7,6 +7,7 @@ import ultilz.LoadSave;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Timer;
 
 public class LevelManager {
         private final Game game;
@@ -32,7 +33,9 @@ public class LevelManager {
         Level newLevel = levels.get(lvlIndex);
         game.getPlaying().getEnemyManager().loadEnemies(newLevel);
         game.getPlaying().getPlayer().loadLvlData(newLevel.getLevelData());
-        game.getPlaying().setMaxLvlOffset(newLevel.getLvlOffsetX());
+        game.getPlaying().setMaxLvlOffsetX(newLevel.getLvlOffsetX()); // lay phan thua theo tilesize
+        game.getPlaying().setMaxLvlOffsetY(newLevel.getLvlOffsetY());
+        game.getPlaying().getObjectManager().loadObject(newLevel);
     }
     private void buildAllLevel() {
         BufferedImage[] allLevels = LoadSave.GetAllLevels();
@@ -54,11 +57,21 @@ public class LevelManager {
         }
     }
 
-    public void draw(Graphics g, int xLvlOffset) {
-        for (int j = 0; j < Game.MAX_ROW; j++) {
+    public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
+        for (int j = 0; j < levels.get(lvlIndex).getLevelData().length; j++) {
             for (int i = 0; i < levels.get(lvlIndex).getLevelData()[0].length; i++) {
                 int index = levels.get(lvlIndex).getSpriteIndex(i, j);
-                g.drawImage(levelSprite[index], i * Game.TILE_SIZE - xLvlOffset, j * Game.TILE_SIZE, Game.TILE_SIZE, Game.TILE_SIZE, null);
+
+                g.drawImage(levelSprite[index], i * Game.TILE_SIZE - xLvlOffset, j * Game.TILE_SIZE - yLvlOffset, Game.TILE_SIZE, Game.TILE_SIZE, null);
+
+                // gridline
+//                g.drawLine(0,j * Game.TILE_SIZE - yLvlOffset , Game.SCREEN_WIDTH   , j * Game.TILE_SIZE - yLvlOffset);
+//                g.drawLine(i * Game.TILE_SIZE - xLvlOffset, 0, i *Game.TILE_SIZE - xLvlOffset,  Game.SCREEN_WIDTH);
+//                g.setColor(Color.RED);
+//                String stringX = i +"";
+//                String stringY =  j +"";
+//                String combie = stringX +"," +stringY;
+//                g.drawString(combie,i*Game.TILE_SIZE  - xLvlOffset,j* Game.TILE_SIZE - yLvlOffset);
             }
         }
     }

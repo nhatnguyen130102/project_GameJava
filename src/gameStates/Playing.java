@@ -4,9 +4,11 @@ import entities.EnemyManager;
 import entities.Player;
 import levels.LevelManager;
 import main.Game;
+import objects.ObjectManager;
 import ui.GameOverOverlay;
 import ui.LevelCompleteOverlay;
 import ui.PauseOverLay;
+import ultilz.Constants;
 import ultilz.LoadSave;
 
 import java.awt.*;
@@ -17,6 +19,7 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import static ultilz.Constants.Enviroment.*;
+import static ultilz.Constants.PlayerConstants.*;
 
 public class Playing extends State implements StateMethods {
     private LevelManager levelManager;
@@ -25,12 +28,18 @@ public class Playing extends State implements StateMethods {
     private PauseOverLay pauseOverLay;
     private GameOverOverlay gameOverOverlay;
     private LevelCompleteOverlay levelCompleteOverlay;
+    private ObjectManager objectManager;
     private boolean paused = false;
 
     private int xLvlOffset; // phẩn thừa khi player di chuyển để mức quy định
+    private int yLvlOffset;
     private int leftBorder = (int) (0.2 * Game.SCREEN_WIDTH);// khoảng cách với tường trái 20%
     private int rightBorder = (int) (0.8 * Game.SCREEN_WIDTH);// khoảng cách với tường trái 80%
-    private int maxLvlOffsetX;// Độ dài ( toạ độ x tilesize ) của phần thừa
+    private int topBorder = (int) (0.2 * Game.SCREEN_HEIGHT);
+    private int bottomBorder = (int) (0.84 * Game.SCREEN_HEIGHT);
+    private int maxLvlOffsetX;// Độ dài ( tilesize ) của phần thừa
+    private int maxLvlOffsetY;// Độ rong ( tilesize ) của phần thừa
+
     private BufferedImage backGroundImg, bigCloudImg, smallCloudImg;
     private int[] smallCloudPos;
     private Random rnd = new Random();
@@ -58,13 +67,16 @@ public class Playing extends State implements StateMethods {
     public void loadNextLevel(){
         resetAll();
         levelManager.loadNextLevel();
+        player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
     }
     private void loadStartLevel() {
         enemyManager.loadEnemies(levelManager.getCurrentLevel());
+        objectManager.loadObject(levelManager.getCurrentLevel());
     }
 
     private void calcLvlOffset() {
-        maxLvlOffsetX = levelManager.getCurrentLevel().getLvlOffsetX();
+        maxLvlOffsetX = levelManager.getCurrentLevel().getLvlOffsetX(); // lay phan thua theo tilesize
+        maxLvlOffsetY = levelManager.getCurrentLevel().getLvlOffsetY();
     }
 
     private void loadSmallCloud() {
@@ -82,7 +94,9 @@ public class Playing extends State implements StateMethods {
     private void initClasses() {
         levelManager = new LevelManager(game); // khởi tạo map môi trường
         enemyManager = new EnemyManager(this);// khởi tạo quái vật
-        player = new Player(100, 300, Player.imgWidth, Player.imgHeight, this);// khởi tạo character
+        objectManager = new ObjectManager(this);
+        player = new Player(100, 300, PLAYER_WIDTH, PLAYER_HEIGHT, this);// khởi tạo character
+        player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
         player.loadLvlData(levelManager.getCurrentLevel().getLevelData());// khởi tạo map 1
         pauseOverLay = new PauseOverLay(this);// khởi tạo pausescreen
         gameOverOverlay = new GameOverOverlay(this);
@@ -98,12 +112,14 @@ public class Playing extends State implements StateMethods {
         else if (!gameOver) {
             levelManager.update();
             player.update();
+            objectManager.update();
             enemyManager.update(levelManager.getCurrentLevel().getLevelData(), player);
-            CheckCloseToBorder();
+            CheckCloseToBorderX();
+            CheckCloseToBorderY();
         }
     }
 
-    private void CheckCloseToBorder() {
+    private void CheckCloseToBorderX() {
         int playerX = (int) player.getHitBox().x;// tạo 1 biến lấy vị trí hiện tại của nhân vật
         int diff = playerX - xLvlOffset;
         if (diff > rightBorder)// kiểm tra player đã đi qua 80% màn hình chưa
@@ -115,15 +131,32 @@ public class Playing extends State implements StateMethods {
             xLvlOffset = maxLvlOffsetX;
         else if (xLvlOffset < 0) // khi player đi đến đầu phần rìa, thì phần chênh lệch = 0
             xLvlOffset = 0;
+
+    }
+
+    private void CheckCloseToBorderY() {
+        int playerY = (int) player.getHitBox().y;// tạo 1 biến lấy vị trí hiện tại của nhân vật
+        int diff = playerY - yLvlOffset;
+        if (diff > bottomBorder)// kiểm tra player đã đi qua 80% màn hình chưa
+            yLvlOffset += diff - bottomBorder; // tính độ chênh lệch giữa player với màn hình khi player vượt quá 80% màn hình
+        else if (diff < topBorder) // kiểm tra player đã lùi quá 20% màn hình chưa
+            yLvlOffset += diff - topBorder;// tính độ chênh lệch giữa player với màn hình khi player lùi quá 20% màn hình
+
+        if (yLvlOffset > maxLvlOffsetY)// khi player đi đến hết phần thừa, thì phần chênh lệch = phần thừa
+            yLvlOffset = maxLvlOffsetY;
+        else if (yLvlOffset < 0) // khi player đi đến đầu phần rìa, thì phần chênh lệch = 0
+            yLvlOffset = 0;
+
     }
 
     @Override
     public void draw(Graphics g) {
         g.drawImage(backGroundImg, 0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT, null);
         drawClouds(g);
-        levelManager.draw(g, xLvlOffset);
-        enemyManager.draw(g, xLvlOffset);
-        player.render(g, xLvlOffset);
+        levelManager.draw(g, xLvlOffset, yLvlOffset);
+        enemyManager.draw(g, xLvlOffset, yLvlOffset);
+        player.render(g, xLvlOffset, yLvlOffset);
+        objectManager.draw(g,xLvlOffset,yLvlOffset);
         if (paused) {
             g.setColor(new Color(0, 0, 0, 150));
             g.fillRect(0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT);
@@ -137,7 +170,7 @@ public class Playing extends State implements StateMethods {
     private void drawClouds(Graphics g) {
         double bigCloudSpeed = xLvlOffset * 0.3;// biến số càng lớn thì tốc độ di chuyển càng cao khi player moving
         double smallCloudSpeed = xLvlOffset * 0.7;// biến số càng lớn thì tốc độ di chuyển càng cao khi player moving
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 5; i++)
             g.drawImage(bigCloudImg, (int) (i * BIG_CLOUD_WIDTH - bigCloudSpeed), (int) (204 * Game.SCALE), BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT, null);
         int smallCloudLoop = 3;// khoảng cách giữa các đám mấy nhỏ, càng lớn thì số lượng mây hiển thị càng thưa(ít)
         for (int i = 0; i < smallCloudPos.length; i++)
@@ -203,6 +236,7 @@ public class Playing extends State implements StateMethods {
             gameOverOverlay.keyPressed(e);
         else
             switch (e.getKeyCode()) {
+                case KeyEvent.VK_K -> player.setAttackBomb(true);
                 case KeyEvent.VK_J -> player.setAttacking(true);
                 case KeyEvent.VK_A -> player.setLeft(true);
                 case KeyEvent.VK_D -> player.setRight(true);
@@ -216,6 +250,7 @@ public class Playing extends State implements StateMethods {
     public void keyReleased(KeyEvent e) {
         if (!gameOver)
             switch (e.getKeyCode()) {
+                case KeyEvent.VK_K -> player.setAttackBomb(false);
 //                case KeyEvent.VK_J -> player.setAttacking(false);
                 case KeyEvent.VK_A -> player.setLeft(false);
                 case KeyEvent.VK_D -> player.setRight(false);
@@ -245,10 +280,19 @@ public class Playing extends State implements StateMethods {
     public void unpauseGame() {
         paused = false;
     }
-    public void setMaxLvlOffset(int lvlOffset){
+    public void setMaxLvlOffsetX(int lvlOffset){
         this.maxLvlOffsetX = lvlOffset;
     }
+
+    public void setMaxLvlOffsetY(int lvlOffset){
+        this.maxLvlOffsetY = lvlOffset;
+    }
+
+
     public EnemyManager getEnemyManager(){
         return enemyManager;
+    }
+    public ObjectManager getObjectManager(){
+        return objectManager;
     }
 }

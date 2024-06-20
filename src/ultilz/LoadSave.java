@@ -10,7 +10,7 @@ import java.net.URL;
 
 
 public class LoadSave {
-    public static final String PLAYER_ATLAS = "Player/player_sprites_2.png";
+    public static final String PLAYER_ATLAS = "Player/player_bombguy_sprites.png";
     public static final String LEVEL_ATLAS = "Map/outside_sprites.png";
     public static final String MENU_BACKGROUND = "Menu/menu_background.png";
     public static final String BACKGROUND = "Menu/beautiful-anime-landscape-cartoon-scene.jpg";
@@ -28,6 +28,10 @@ public class LoadSave {
     public static final String STATUS_BAR = "Menu/health_power_bar.png";
     public static final String COMPLETED_IMG = "Menu/completed_sprite.png";
     public static final String WHALE_SPRITE = "Enemy/whale_sprite.png";
+    public static final String BOMB_IMG = "Player/bomb.png";
+    public static final String POTION_ATLAS = "Object/potions_sprites.png";
+    public static final String CONTAINER_ATLAS = "Object/objects_sprites.png";
+
 
     // đọc file img trả về img lớn
     public static BufferedImage GetSpriteAtlas(String fileName) {

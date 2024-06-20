@@ -3,6 +3,8 @@ package ultilz;
 import entities.Crabby;
 import entities.Whale;
 import main.Game;
+import objects.GameContainer;
+import objects.Potion;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -10,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import static ultilz.Constants.EnemyConstants.*;
+import static ultilz.Constants.ObjectConstants.*;
 
 public class HelpMethods {
     public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvlData) {// kiem tra co the di chuyen
@@ -70,9 +73,10 @@ public class HelpMethods {
     public static boolean IsSolid(float x, float y, int[][] lvlData) {
         // Cho phép nhân vật chạm vào phần rìa main screen
         int maxWidth = lvlData[0].length * Game.TILE_SIZE;
+        int maxHeight = lvlData.length;
         if (x < 0 || x >= maxWidth * Game.TILE_SIZE)
             return true;
-        if (y < 0 || y >= Game.SCREEN_HEIGHT)
+        if (y < 0 || y >= maxHeight * Game.TILE_SIZE)
             return true;
         // lấy col(x), row(y) để đi kiểm tra với lvlData(map, kiểm tra collision)
         float xIndex = x / Game.TILE_SIZE;
@@ -83,10 +87,11 @@ public class HelpMethods {
 
     public static boolean IsTileSolid(int xTile, int yTile, int[][] lvlData) {
         int maxWidth = lvlData[0].length;
+        int maxHeight = lvlData.length;
         if (xTile < 0 || xTile >= maxWidth) {
             return true;
         }
-        if (yTile < 0 || yTile >= Game.SCREEN_HEIGHT / Game.TILE_SIZE) {
+        if (yTile < 0 || yTile >= maxHeight) {
             return true;
         }
         int value = lvlData[yTile][xTile];
@@ -151,9 +156,49 @@ public class HelpMethods {
                 Color color = new Color(img.getRGB(i, j));
                 int value = color.getGreen();
                 if (value == WHALE)
-                    list.add(new Whale(i * Game.TILE_SIZE, j * Game.TILE_SIZE - Game.TILE_SIZE));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
+                    list.add(new Whale(i * Game.TILE_SIZE, j * Game.TILE_SIZE ));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
             }
         }
         return list;
+    }
+
+    public static ArrayList<Potion> GetPotions(BufferedImage img) {
+        ArrayList<Potion> list = new ArrayList<>();
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getBlue();
+                if (value == RED_POTION || value == BLUE_POTION)
+                    list.add(new Potion(i * Game.TILE_SIZE, j * Game.TILE_SIZE , value));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
+                   }
+        }
+        return list;
+    }
+
+    public static ArrayList<GameContainer> GetContainers(BufferedImage img) {
+        ArrayList<GameContainer> list = new ArrayList<>();
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getBlue();
+
+                if (value == BOX || value == BARREL){
+                    list.add(new GameContainer(i * Game.TILE_SIZE, j * Game.TILE_SIZE, value));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
+                }
+            }
+        }
+        return list;
+    }
+
+    public static Point GetPlayerSpawn(BufferedImage img) {
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getGreen();
+                if (value == 100)
+                    return new Point(i * Game.TILE_SIZE, j * Game.TILE_SIZE);
+            }
+        }
+        return new Point(1 * Game.TILE_SIZE, 1 * Game.TILE_SIZE);
     }
 }

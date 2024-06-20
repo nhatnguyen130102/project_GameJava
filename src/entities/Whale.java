@@ -7,21 +7,24 @@ import java.awt.geom.Rectangle2D;
 
 import static java.awt.Color.RED;
 import static java.awt.Color.pink;
+import static ultilz.Constants.Directions.LEFT;
 import static ultilz.Constants.Directions.RIGHT;
 import static ultilz.Constants.EnemyConstants.*;
 import static ultilz.Constants.PlayerConstants.PLAYER_DMG;
 
 public class Whale extends Enemy {
     public Rectangle2D.Float attackBox;
+    public float attackOffsetY;
 
     public Whale(float x, float y) {
         super(x, y, WHALE_WIDTH, WHALE_HEIGHT, WHALE);
-        initHitBox(x, y, HB_WHALE_WIDTH, HB_WHALE_HEIGHT);
+        initHitBox(x, y, (int) (HB_WHALE_WIDTH * 1.5), HB_WHALE_HEIGHT + 23);
         initAttackBox();
     }
 
     private void initAttackBox() {
-        attackBox = new Rectangle2D.Float(x, y, 40 * Game.SCALE, 20 * Game.SCALE);
+        attackBox = new Rectangle2D.Float(x, y, (float) (30 * 2 * Game.SCALE), (float) (20 * 1.5 * Game.SCALE));
+        attackOffsetY = 20 * Game.SCALE;
     }
 
     public void update(int[][] lvlData, Player player) {
@@ -34,7 +37,7 @@ public class Whale extends Enemy {
     private void updateAttackBox() {
         attackBox.x = hitBox.x;
         if (walkDir == RIGHT)
-            attackBox.x = hitBox.x + attackBox.width;
+            attackBox.x = hitBox.x + (int) ((hitBox.width) - attackBox.width - 15);
         attackBox.y = hitBox.y;
     }
 
@@ -66,15 +69,15 @@ public class Whale extends Enemy {
         }
     }
 
-    public void drawHitBox(Graphics g, int lvlOffset) {
+    public void drawHitBox(Graphics g, int lvlOffset, int yLvlOffset) {
         g.setColor(pink);
-        g.drawRect((int) hitBox.x - lvlOffset, (int) hitBox.y, (int) hitBox.width, (int) hitBox.height);
+        g.drawRect((int) hitBox.x - WHALE_DRAW_OFFSET_X - lvlOffset + flipX(), (int) hitBox.y - WHALE_DRAW_OFFSET_Y - yLvlOffset, (int) hitBox.width * flipW(), (int) hitBox.height);
     }
 
     public void drawAttackBox(Graphics g, int xLvlOffset) {
         g.setColor(RED);
-        g.fillRect((int) (attackBox.x - xLvlOffset), (int) attackBox.y, (int) attackBox.width, (int) attackBox.height);
-        g.drawRect((int) (attackBox.x - xLvlOffset), (int) attackBox.y, (int) attackBox.width, (int) attackBox.height);
+        g.fillRect((int) (attackBox.x - xLvlOffset), (int) (attackBox.y + attackOffsetY), (int) attackBox.width, (int) attackBox.height);
+        g.drawRect((int) (attackBox.x - xLvlOffset), (int) (attackBox.y + attackOffsetY), (int) attackBox.width, (int) attackBox.height);
     }
 
     public int flipX() {
@@ -92,9 +95,19 @@ public class Whale extends Enemy {
     }
 
     protected boolean isPlayerCloseForAttackWhale(Player player) {
-        int absValue = (int) Math.abs(player.hitBox.x - attackBox.x);
-        if (Math.abs(hitBox.y - player.hitBox.y) < Game.TILE_SIZE)// neu player khong dung cung 1 con duong voi enemy thi enemy se khong tan cong
-            return absValue < player.hitBox.width; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
+        int distance = (int) (player.hitBox.x - hitBox.x);
+
+        if (distance <= 0) {// player left and enemy right
+            if (Math.abs(hitBox.y - player.hitBox.y) < Game.TILE_SIZE) {
+                int distanceBetween = (int) (attackBox.x - (player.hitBox.x + player.hitBox.width));
+                return distanceBetween < 0;
+            }
+        } else if (distance >= 0) {// player right and enemy left
+            if (Math.abs(hitBox.y - player.hitBox.y) < Game.TILE_SIZE) {
+                int distanceBetween = (int) (player.hitBox.x - (attackBox.x + attackBox.width));
+                return distanceBetween < 0;
+            }
+        }
         return false;
     }
 
