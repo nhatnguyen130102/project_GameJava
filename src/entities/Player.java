@@ -73,13 +73,18 @@ public class Player extends Entity {
 
     public void update() {
         updateHealthBar();
-
         updateAttackBox();
         updatePos();
+        if(moving)
+            checkPotionTouched();
         if (attacking)
             checkAttack();
         updateFramesTick();
         setAnimation();
+    }
+
+    private void checkPotionTouched() {
+        playing.checkPotionTouched(hitBox);
     }
 
     private void checkAttack() {
@@ -87,6 +92,7 @@ public class Player extends Entity {
             return;
         attackChecked = true;
         playing.checkEnemyHit(attackBox);
+        playing.checkObjectHit(attackBox);
     }
 
     private void updateAttackBox() {
@@ -132,8 +138,10 @@ public class Player extends Entity {
         this.attackBomb = attackBomb;
     }
     public void changeHealth(int value) {
-//        currentHealth -= value;
-        hurt(value);
+        if(value < 0)
+            hurt(value);
+        else
+            currentHealth += value;
         if (currentHealth <= 0) {
             currentHealth = 0;
         } else if (currentHealth >= maxHealth) {
@@ -145,7 +153,7 @@ public class Player extends Entity {
     }
 
     public void hurt(int value) {
-        currentHealth -= value;
+        currentHealth += value;
         if (currentHealth <= 0) {
             newState(DEAD);
         } else {
@@ -364,4 +372,10 @@ public class Player extends Entity {
         if (!IsEntityOnFloor(hitBox, lvlData))
             inAir = true;
     }
+
+    public void changePower(int value) {
+
+    }
+
+
 }

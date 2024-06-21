@@ -61,8 +61,9 @@ public class Playing extends State implements StateMethods {
             smallCloudPos[i] = (int) (100 * Game.SCALE) // Độ thấp nhất của mây nhỏ
                     + rnd.nextInt((int) (100 * Game.SCALE)); // Độ nhấp cộng thêm ngẫu nhiên
         }
-        calcLvlOffset();
         loadStartLevel();
+        calcLvlOffset();
+
     }
     public void loadNextLevel(){
         resetAll();
@@ -70,8 +71,9 @@ public class Playing extends State implements StateMethods {
         player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
     }
     private void loadStartLevel() {
-        enemyManager.loadEnemies(levelManager.getCurrentLevel());
         objectManager.loadObject(levelManager.getCurrentLevel());
+
+        enemyManager.loadEnemies(levelManager.getCurrentLevel());
     }
 
     private void calcLvlOffset() {
@@ -93,8 +95,9 @@ public class Playing extends State implements StateMethods {
 
     private void initClasses() {
         levelManager = new LevelManager(game); // khởi tạo map môi trường
-        enemyManager = new EnemyManager(this);// khởi tạo quái vật
         objectManager = new ObjectManager(this);
+
+        enemyManager = new EnemyManager(this);// khởi tạo quái vật
         player = new Player(100, 300, PLAYER_WIDTH, PLAYER_HEIGHT, this);// khởi tạo character
         player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
         player.loadLvlData(levelManager.getCurrentLevel().getLevelData());// khởi tạo map 1
@@ -111,8 +114,8 @@ public class Playing extends State implements StateMethods {
             levelCompleteOverlay.update();
         else if (!gameOver) {
             levelManager.update();
+            objectManager.update(levelManager.getCurrentLevel().getLevelData(),player);
             player.update();
-            objectManager.update();
             enemyManager.update(levelManager.getCurrentLevel().getLevelData(), player);
             CheckCloseToBorderX();
             CheckCloseToBorderY();
@@ -183,6 +186,7 @@ public class Playing extends State implements StateMethods {
         lvlCompleted = false;
         player.resetAll();
         enemyManager.resetAllEnemies();
+        objectManager.resetAllObject();
     }
 
     public void setGameOver(boolean gameOver) {
@@ -191,6 +195,12 @@ public class Playing extends State implements StateMethods {
 
     public void checkEnemyHit(Rectangle2D.Float attackBox) {
         enemyManager.checkEnemyHit(attackBox);
+    }
+    public void checkObjectHit(Rectangle2D.Float attackBox){
+        objectManager.checkObjectHit(attackBox);
+    }
+    public void checkPotionTouched(Rectangle2D.Float hitBox){
+        objectManager.checkObjectTouched(hitBox);
     }
     public void setLevelCompleted(boolean levelCompleted){
         this.lvlCompleted = levelCompleted;
@@ -294,5 +304,8 @@ public class Playing extends State implements StateMethods {
     }
     public ObjectManager getObjectManager(){
         return objectManager;
+    }
+    public LevelManager getLevelManager(){
+        return levelManager;
     }
 }

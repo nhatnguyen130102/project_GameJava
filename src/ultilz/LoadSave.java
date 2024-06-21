@@ -31,6 +31,8 @@ public class LoadSave {
     public static final String BOMB_IMG = "Player/bomb.png";
     public static final String POTION_ATLAS = "Object/potions_sprites.png";
     public static final String CONTAINER_ATLAS = "Object/objects_sprites.png";
+    public static final String CANNON_ATLAS = "Object/cannon_atlas.png";
+    public static final String BALL_ATLAS = "Object/ball.png";
 
 
     // đọc file img trả về img lớn

@@ -3,6 +3,7 @@ package levels;
 import entities.Crabby;
 import entities.Whale;
 import main.Game;
+import objects.Cannon;
 import objects.GameContainer;
 import objects.Potion;
 import ultilz.HelpMethods;
@@ -20,6 +21,7 @@ public class Level {
     private ArrayList<Whale> whales;
     private ArrayList<Potion> potions;
     private ArrayList<GameContainer> containers;
+    private ArrayList<Cannon> cannons;
 
     private int lvlTilesWideX;// Độ dài tối đa của map hiện tại ( toạ độ )
     private int lvlTilesWideY;// Độ cao tối đa của map hiện tại ( toạ độ )
@@ -35,12 +37,16 @@ public class Level {
         createLevelData();
         createEnemies();
         createPotions();
+        createCannons();
         createContainers();
         calcLvlOffsets();
         calcPlayerSpawn();
 
     }
 
+    private void createCannons() {
+        cannons = HelpMethods.GetCannons(img);
+    }
     private void createContainers() {
         containers = HelpMethods.GetContainers(img);
     }
@@ -101,5 +107,8 @@ public class Level {
     }
     public ArrayList<GameContainer> getContainer(){
         return containers;
+    }
+    public ArrayList<Cannon> getCannons(){
+        return cannons;
     }
 }

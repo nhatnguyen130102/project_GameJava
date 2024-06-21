@@ -3,11 +3,22 @@ package ultilz;
 import main.Game;
 
 public class Constants {
+    public static class Projectiles {
+        public static final int CANNON_BALL_DEFAULT_WIDTH = 15;
+        public static final int CANNON_BALL_DEFAULT_HEIGHT = 15;
+
+        public static final int CANNON_BALL_WIDTH = (int) (Game.SCALE * CANNON_BALL_DEFAULT_WIDTH) * 2;
+        public static final int CANNON_BALL_HEIGHT = (int) (Game.SCALE * CANNON_BALL_DEFAULT_HEIGHT) * 2;
+        public static final float SPEED = 0.75f * Game.SCALE;
+    }
+
     public static class ObjectConstants {
-        public static final int RED_POTION = 0;
-        public static final int BLUE_POTION = 1;
+        public static final int BLUE_POTION = 0;
+        public static final int RED_POTION = 1;
         public static final int BARREL = 2;
         public static final int BOX = 3;
+        public static final int CANNON_LEFT = 5;
+        public static final int CANNON_RIGHT = 6;
 
         public static final int RED_POTION_VALUE = 15;
         public static final int BLUE_POTION_VALUE = 10;
@@ -15,12 +26,18 @@ public class Constants {
         public static final int CONTAINER_WIDTH_DEFAULT = 40;
         public static final int CONTAINER_HEIGHT_DEFAULT = 30;
         public static final int CONTAINER_WIDTH = (int) (Game.SCALE * CONTAINER_WIDTH_DEFAULT) * 2;
-        public static final int CONTAINER_HEIGHT = (int) (Game.SCALE * CONTAINER_HEIGHT_DEFAULT ) * 2;
+        public static final int CONTAINER_HEIGHT = (int) (Game.SCALE * CONTAINER_HEIGHT_DEFAULT) * 2;
 
         public static final int POTION_WIDTH_DEFAULT = 12;
         public static final int POTION_HEIGHT_DEFAULT = 16;
         public static final int POTION_WIDTH = (int) (Game.SCALE * POTION_WIDTH_DEFAULT) * 2;
         public static final int POTION_HEIGHT = (int) (Game.SCALE * POTION_HEIGHT_DEFAULT) * 2;
+
+        public static final int CANNON_WIDTH_DEFAULT = 40;
+        public static final int CANNON_HEIGHT_DEFAULT = 26;
+        public static final int CANNON_WIDTH = (int) (CANNON_WIDTH_DEFAULT * Game.SCALE) * 2;
+        public static final int CANNON_HEIGHT = (int) (CANNON_HEIGHT_DEFAULT * Game.SCALE) * 2;
+        public static final int CANNON_DRAW_OFFSET_Y = (int) (3 * 2 * Game.SCALE);//lech trai
 
         public static int GetSpriteAmount(int object_type) {
             switch (object_type) {
@@ -28,10 +45,13 @@ public class Constants {
                     return 7;
                 case BARREL, BOX:
                     return 8;
+                case CANNON_LEFT, CANNON_RIGHT:
+                    return 7;
             }
             return 1;
         }
     }
+
     public static class EnemyConstants {
         //state enemy
 
@@ -69,8 +89,8 @@ public class Constants {
         public static final int WHALE_JUMP_ANTICIPATION = 10;
         public static final int WHALE_WIDTH_DEFAULT = 68;//size co ban cua 1 frames
         public static final int WHALE_HEIGHT_DEFAULT = 46;
-        public static final int WHALE_WIDTH = (int) (WHALE_WIDTH_DEFAULT * Game.SCALE) ;
-        public static final int WHALE_HEIGHT = (int) (WHALE_HEIGHT_DEFAULT * Game.SCALE) ;
+        public static final int WHALE_WIDTH = (int) (WHALE_WIDTH_DEFAULT * Game.SCALE);
+        public static final int WHALE_HEIGHT = (int) (WHALE_HEIGHT_DEFAULT * Game.SCALE);
         public static final int HB_WHALE_WIDTH_DEFAULT = 50;//size co ban cua hitbox
         public static final int HB_WHALE_HEIGHT_DEFAULT = 40;
         public static final int HB_WHALE_WIDTH = (int) (HB_WHALE_WIDTH_DEFAULT * Game.SCALE);

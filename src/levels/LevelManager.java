@@ -65,13 +65,13 @@ public class LevelManager {
                 g.drawImage(levelSprite[index], i * Game.TILE_SIZE - xLvlOffset, j * Game.TILE_SIZE - yLvlOffset, Game.TILE_SIZE, Game.TILE_SIZE, null);
 
                 // gridline
-//                g.drawLine(0,j * Game.TILE_SIZE - yLvlOffset , Game.SCREEN_WIDTH   , j * Game.TILE_SIZE - yLvlOffset);
-//                g.drawLine(i * Game.TILE_SIZE - xLvlOffset, 0, i *Game.TILE_SIZE - xLvlOffset,  Game.SCREEN_WIDTH);
-//                g.setColor(Color.RED);
-//                String stringX = i +"";
-//                String stringY =  j +"";
-//                String combie = stringX +"," +stringY;
-//                g.drawString(combie,i*Game.TILE_SIZE  - xLvlOffset,j* Game.TILE_SIZE - yLvlOffset);
+                g.drawLine(0,j * Game.TILE_SIZE - yLvlOffset , Game.SCREEN_WIDTH   , j * Game.TILE_SIZE - yLvlOffset);
+                g.drawLine(i * Game.TILE_SIZE - xLvlOffset, 0, i *Game.TILE_SIZE - xLvlOffset,  Game.SCREEN_WIDTH);
+                g.setColor(Color.RED);
+                String stringX = i * Game.TILE_SIZE +"";
+                String stringY =  j * Game.TILE_SIZE +"";
+                String combie = stringX +"," +stringY;
+                g.drawString(combie,i*Game.TILE_SIZE  - xLvlOffset,j* Game.TILE_SIZE - yLvlOffset);
             }
         }
     }
