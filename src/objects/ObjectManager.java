@@ -10,16 +10,16 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Properties;
+import java.util.PrimitiveIterator;
 
+import static ultilz.Constants.BombTiles.*;
 import static ultilz.Constants.ObjectConstants.*;
 import static ultilz.Constants.Projectiles.*;
-import static ultilz.HelpMethods.CanCannonSeePlayer;
-import static ultilz.HelpMethods.IsProjectileHittingLevel;
+import static ultilz.HelpMethods.*;
 
 public class ObjectManager {
     private Playing playing;
-    private BufferedImage[][] potionImgs, containerImgs;
+    private BufferedImage[][] potionImgs, containerImgs, bombImgs;
     private BufferedImage[] cannonImgs;
     private BufferedImage cannonBallImg;
 
@@ -27,7 +27,6 @@ public class ObjectManager {
     private ArrayList<GameContainer> containers;
     private ArrayList<Cannon> cannons;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
-
 
     public ObjectManager(Playing playing) {
         this.playing = playing;
@@ -69,8 +68,15 @@ public class ObjectManager {
             cannonImgs[i] = cannonSprite.getSubimage(i * CANNON_WIDTH_DEFAULT, 0, CANNON_WIDTH_DEFAULT, CANNON_HEIGHT_DEFAULT);
         }
 
-        cannonBallImg = LoadSave.GetSpriteAtlas(LoadSave.BALL_ATLAS);
-        System.out.println(cannonBallImg.getWidth());
+        cannonBallImg = LoadSave.GetSpriteAtlas(LoadSave.BALL_IMG);
+
+        BufferedImage bombSprite = LoadSave.GetSpriteAtlas(LoadSave.BOMB_SPRITE);
+        int colBomb = bombSprite.getWidth() / BOMB_WIDTH_DEFAULT;
+        int rowBomb = bombSprite.getHeight() / BOMB_HEIGHT_DEFAULT;
+        bombImgs = new BufferedImage[rowBomb][colBomb];
+        for (int i = 0; i < bombImgs.length; i++)//row
+            for (int j = 0; j < bombImgs[i].length; j++)//col
+                bombImgs[i][j] = bombSprite.getSubimage(j * BOMB_WIDTH_DEFAULT, i * BOMB_HEIGHT_DEFAULT, BOMB_WIDTH_DEFAULT, BOMB_HEIGHT_DEFAULT);
     }
 
     public void update(int[][] lvlData, Player player) {
@@ -87,17 +93,17 @@ public class ObjectManager {
 //        updateProjectiles(lvlData, player);
     }
 
-    private void updateProjectiles(int[][] lvlData, Player player) {
-        for (Projectile p : projectiles)
-            if (p.isActive()) {
-//                p.updatePos();
-                if (p.getHitbox().intersects(player.getHitBox())) {
-                    player.changeHealth(-25);
-                    p.setActive(false);
-                } else if (IsProjectileHittingLevel(p, lvlData))
-                    p.setActive(false);
-            }
-    }
+    //    private void updateProjectiles(int[][] lvlData, Player player) {
+//        for (Projectile p : projectiles)
+//            if (p.isActive()) {
+////                p.updatePos();
+//                if (p.getHitbox().intersects(player.getHitBox())) {
+//                    player.changeHealth(-25);
+//                    p.setActive(false);
+//                } else if (IsProjectileHittingLevel(p, lvlData))
+//                    p.setActive(false);
+//            }
+//    }
 
 
     private void updateCannon(int[][] lvlData, Player player) {
@@ -158,14 +164,17 @@ public class ObjectManager {
         drawContainer(g, xLvlOffset, yLvlOffset);
         drawCannon(g, xLvlOffset, yLvlOffset);
         drawProjectile(g, xLvlOffset, yLvlOffset);
+
     }
+
 
     private void drawProjectile(Graphics g, int xLvlOffset, int yLvlOffset) {
         for (Projectile pr : projectiles)
             if (pr.isActive()) {
-                g.drawImage(cannonBallImg, (int) (pr.getHitbox().x - xLvlOffset), (int) (pr.getHitbox().y - yLvlOffset), CANNON_BALL_WIDTH , CANNON_BALL_HEIGHT, null);
+                g.drawImage(cannonBallImg, (int) (pr.getHitbox().x - xLvlOffset), (int) (pr.getHitbox().y - yLvlOffset), CANNON_BALL_WIDTH, CANNON_BALL_HEIGHT, null);
             }
     }
+
 
     private void drawCannon(Graphics g, int xLvlOffset, int yLvlOffset) {
         for (Cannon c : cannons) {
@@ -178,6 +187,7 @@ public class ObjectManager {
             }
 
             g.drawImage(cannonImgs[c.getFrameIndex()], x, (int) (c.getHitBox().y - yLvlOffset + CANNON_DRAW_OFFSET_Y), width, CANNON_HEIGHT, null);
+
         }
     }
 

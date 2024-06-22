@@ -25,7 +25,10 @@ public class GameObject {
     protected void initHitBox(int width, int height) {
         hitBox = new Rectangle2D.Float(x, y, width * Game.SCALE, height * Game.SCALE);
     }
+    protected void initHitBoxBomb(int x, int y,int width, int height){
+        hitBox = new Rectangle2D.Float(x, y, width * Game.SCALE, height * Game.SCALE);
 
+    }
     protected void drawHitBox(Graphics g, int xLvlOffset, int yLvlOffset) {
         g.setColor(Color.PINK);
         g.drawRect((int) (hitBox.x - xLvlOffset), (int) (hitBox.y - yLvlOffset), (int) hitBox.width, (int) hitBox.height);
@@ -88,4 +91,5 @@ public class GameObject {
     public void setActive(boolean active){
         this.active = active;
     }
+
 }

@@ -70,6 +70,8 @@ public class LevelManager {
                 g.setColor(Color.RED);
                 String stringX = i * Game.TILE_SIZE +"";
                 String stringY =  j * Game.TILE_SIZE +"";
+//                String stringX = i +"";
+//                String stringY =  j +"";
                 String combie = stringX +"," +stringY;
                 g.drawString(combie,i*Game.TILE_SIZE  - xLvlOffset,j* Game.TILE_SIZE - yLvlOffset);
             }

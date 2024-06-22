@@ -86,6 +86,7 @@ public class Game implements Runnable {
         double deltaF = 0;
         while (true) {
             long currentTime = System.nanoTime();
+//            System.out.println(previousTime+","+currentTime+","+ (currentTime - previousTime));
             deltaU += (currentTime - previousTime) / timePerUpdate;
             deltaF += (currentTime - previousTime) / timePerFrame;
             previousTime = currentTime;

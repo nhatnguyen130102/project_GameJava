@@ -11,6 +11,35 @@ public class Constants {
         public static final int CANNON_BALL_HEIGHT = (int) (Game.SCALE * CANNON_BALL_DEFAULT_HEIGHT) * 2;
         public static final float SPEED = 0.75f * Game.SCALE;
     }
+    public static class BombTiles{
+        public static final int BOMB = 7;
+        public static final int BOMB_OFF = 0;
+        public static final int BOMB_ON = 1;
+        public static final int BOMB_EXPLOTION = 2;
+        public static final int BOMB_WIDTH_DEFAULT = 108;
+        public static final int BOMB_HEIGHT_DEFAULT = 96;
+        public static final int BOMB_WIDTH = (int) (BOMB_WIDTH_DEFAULT * Game.SCALE);
+        public static final int BOMB_HEIGHT = (int) (BOMB_HEIGHT_DEFAULT * Game.SCALE);
+        public static final int HB_BOMB_WIDTH_DEFAULT =30;
+        public static final int HB_BOMB_HEIGHT_DEFAULT = 31;
+        public static final int HB_BOMB_WIDTH = (int) (HB_BOMB_WIDTH_DEFAULT * Game.SCALE);
+        public static final int HB_BOMB_HEIGHT = (int) (HB_BOMB_HEIGHT_DEFAULT * Game.SCALE);
+        public static final int BOMB_DRAW_OFFSET_X = (int) (34 * Game.SCALE);
+        public static final int BOMB_DRAW_OFFSET_Y = (int) (57 * Game.SCALE);
+        public static final int BOMB_DMG = 30;
+        public static int GetSpriteAmount(int object_type) {
+            switch (object_type) {
+                case BOMB_OFF:
+                    return 1;
+                case BOMB_ON:
+                    return 10;
+                case BOMB_EXPLOTION:
+                    return 9;
+            }
+            return 1;
+        }
+
+    }
 
     public static class ObjectConstants {
         public static final int BLUE_POTION = 0;

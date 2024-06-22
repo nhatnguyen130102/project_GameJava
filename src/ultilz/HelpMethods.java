@@ -3,10 +3,7 @@ package ultilz;
 import entities.Crabby;
 import entities.Whale;
 import main.Game;
-import objects.Cannon;
-import objects.GameContainer;
-import objects.Potion;
-import objects.Projectile;
+import objects.*;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -147,8 +144,8 @@ public class HelpMethods {
     }
     public static boolean IsProjectileHittingLevel(Projectile p, int[][] lvlData) {
         return IsSolid(p.getHitbox().x + p.getHitbox().width - 5 * Game.SCALE, p.getHitbox().y + p.getHitbox().height - 5 * Game.SCALE, lvlData);
-
     }
+
     public static boolean IsAllTilesClear(int xStart, int xEnd, int y, int[][] lvlData) {
         for (int i = 0; i < xEnd - xStart; i++)
             if (IsTileSolid(xStart + i, y, lvlData))

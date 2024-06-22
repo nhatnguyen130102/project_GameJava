@@ -28,11 +28,11 @@ public class LoadSave {
     public static final String STATUS_BAR = "Menu/health_power_bar.png";
     public static final String COMPLETED_IMG = "Menu/completed_sprite.png";
     public static final String WHALE_SPRITE = "Enemy/whale_sprite.png";
-    public static final String BOMB_IMG = "Player/bomb.png";
+    public static final String BOMB_SPRITE = "Object/bomb(96x108).png";
     public static final String POTION_ATLAS = "Object/potions_sprites.png";
     public static final String CONTAINER_ATLAS = "Object/objects_sprites.png";
     public static final String CANNON_ATLAS = "Object/cannon_atlas.png";
-    public static final String BALL_ATLAS = "Object/ball.png";
+    public static final String BALL_IMG = "Object/ball.png";
 
 
     // đọc file img trả về img lớn
