@@ -1,5 +1,7 @@
 package gameStates;
 
+
+import entities.Bomb;
 import entities.EnemyManager;
 import entities.Player;
 import levels.LevelManager;
@@ -24,6 +26,7 @@ import static ultilz.Constants.PlayerConstants.*;
 public class Playing extends State implements StateMethods {
     private LevelManager levelManager;
     private Player player;
+    private Bomb bomb;
     private EnemyManager enemyManager;
     private PauseOverLay pauseOverLay;
     private GameOverOverlay gameOverOverlay;
@@ -158,7 +161,7 @@ public class Playing extends State implements StateMethods {
         drawClouds(g);
         levelManager.draw(g, xLvlOffset, yLvlOffset);
         enemyManager.draw(g, xLvlOffset, yLvlOffset);
-        player.render(g, xLvlOffset, yLvlOffset);
+        player.draw(g, xLvlOffset, yLvlOffset);
         objectManager.draw(g,xLvlOffset,yLvlOffset);
         if (paused) {
             g.setColor(new Color(0, 0, 0, 150));
@@ -246,7 +249,7 @@ public class Playing extends State implements StateMethods {
             gameOverOverlay.keyPressed(e);
         else
             switch (e.getKeyCode()) {
-                case KeyEvent.VK_K -> player.setAttackBomb(true);
+
                 case KeyEvent.VK_J -> player.setAttacking(true);
                 case KeyEvent.VK_A -> player.setLeft(true);
                 case KeyEvent.VK_D -> player.setRight(true);
@@ -260,7 +263,6 @@ public class Playing extends State implements StateMethods {
     public void keyReleased(KeyEvent e) {
         if (!gameOver)
             switch (e.getKeyCode()) {
-                case KeyEvent.VK_K -> player.setAttackBomb(false);
 //                case KeyEvent.VK_J -> player.setAttacking(false);
                 case KeyEvent.VK_A -> player.setLeft(false);
                 case KeyEvent.VK_D -> player.setRight(false);
@@ -281,6 +283,9 @@ public class Playing extends State implements StateMethods {
 
     public Player getPlayer() {
         return player;
+    }
+    public Bomb getBomb(){
+        return bomb;
     }
 
     public void windowFocusLost() {

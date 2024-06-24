@@ -18,7 +18,7 @@ public class Whale extends Enemy {
 
     public Whale(float x, float y) {
         super(x, y, WHALE_WIDTH, WHALE_HEIGHT, WHALE);
-        initHitBox(x, y, (int) (HB_WHALE_WIDTH * 1.5), HB_WHALE_HEIGHT + 23);
+        initHitBox(x, y, (int) (HB_WHALE_WIDTH ), HB_WHALE_HEIGHT );
         initAttackBox();
     }
 
@@ -31,7 +31,6 @@ public class Whale extends Enemy {
         updateAttackBox();
         updateFrameTick();
         updateBehavior(lvlData, player);
-
     }
 
     private void updateAttackBox() {

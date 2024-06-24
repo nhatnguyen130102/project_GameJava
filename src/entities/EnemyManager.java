@@ -19,10 +19,11 @@ public class EnemyManager {
     private static ArrayList<Crabby> crabbies = new ArrayList<>();
     private static ArrayList<Whale> whales = new ArrayList<>();
 
+
     public EnemyManager(Playing playing) {
         this.playing = playing;
         loadEnemyCrabbyImg();
-        loadEnemyWahleImg();
+        loadEnemyWhaleImg();
 //        updateHitBox();
     }
 
@@ -33,20 +34,23 @@ public class EnemyManager {
 
     public void checkEnemyHit(Rectangle2D.Float attackBox) {
         for (Crabby c : crabbies) {
-            if (c.isActive())
+            if (c.isActive()) {
                 if (attackBox.intersects(c.getHitBox())) {
                     c.hurt();
                     return;
                 }
+
+            }
         }
         for (Whale w : whales) {
-            if (w.isActive())
+            if (w.isActive()) {
                 if (attackBox.intersects(w.getHitBox())) {
                     w.hurt();
                     return;
                 }
-        }
 
+            }
+        }
     }
 
     private void loadEnemyCrabbyImg() {
@@ -61,7 +65,7 @@ public class EnemyManager {
         }
     }
 
-    private void loadEnemyWahleImg() {
+    private void loadEnemyWhaleImg() {
         BufferedImage temp = GetSpriteAtlas(WHALE_SPRITE);// lay 1 img lon
         int row = temp.getHeight() / WHALE_HEIGHT_DEFAULT;
         int col = temp.getWidth() / WHALE_WIDTH_DEFAULT;

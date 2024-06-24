@@ -4,7 +4,7 @@ import main.Game;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-import static ultilz.Constants.EnemyConstants.*;
+import static ultilz.Constants.BombTiles.BOMB;
 import static ultilz.Constants.ObjectConstants.*;
 
 
@@ -44,8 +44,9 @@ public class GameObject {
                 if(objType == BARREL || objType == BOX){
                     doAnimation =false;
                     active = false;
-                }else if(objType == CANNON_LEFT || objType == CANNON_RIGHT)
+                }else if(objType == CANNON_LEFT || objType == CANNON_RIGHT){
                     doAnimation = false;
+                }
             }
         }
     }

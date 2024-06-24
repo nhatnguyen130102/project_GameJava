@@ -22,11 +22,11 @@ public class ObjectManager {
     private BufferedImage[][] potionImgs, containerImgs, bombImgs;
     private BufferedImage[] cannonImgs;
     private BufferedImage cannonBallImg;
-
     private ArrayList<Potion> potions;
     private ArrayList<GameContainer> containers;
     private ArrayList<Cannon> cannons;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
+
 
     public ObjectManager(Playing playing) {
         this.playing = playing;
@@ -52,8 +52,9 @@ public class ObjectManager {
         }
 
         BufferedImage containerSprite = LoadSave.GetSpriteAtlas(LoadSave.CONTAINER_ATLAS);
-        int rowOBJ = potionSprite.getHeight() / POTION_HEIGHT_DEFAULT;
-        int colOBJ = potionSprite.getWidth() / POTION_WIDTH_DEFAULT;
+        int rowOBJ = containerSprite.getHeight() / CONTAINER_HEIGHT_DEFAULT;
+        int colOBJ = containerSprite.getWidth() / CONTAINER_WIDTH_DEFAULT;
+
         containerImgs = new BufferedImage[rowOBJ][colOBJ];
         for (int j = 0; j < containerImgs.length; j++) {
             for (int i = 0; i < containerImgs[j].length; i++) {
@@ -88,10 +89,11 @@ public class ObjectManager {
             if (gc.isActive())
                 gc.update();
         }
-
         updateCannon(lvlData, player);
 //        updateProjectiles(lvlData, player);
     }
+
+
 
     //    private void updateProjectiles(int[][] lvlData, Player player) {
 //        for (Projectile p : projectiles)
@@ -164,7 +166,6 @@ public class ObjectManager {
         drawContainer(g, xLvlOffset, yLvlOffset);
         drawCannon(g, xLvlOffset, yLvlOffset);
         drawProjectile(g, xLvlOffset, yLvlOffset);
-
     }
 
 
@@ -174,7 +175,6 @@ public class ObjectManager {
                 g.drawImage(cannonBallImg, (int) (pr.getHitbox().x - xLvlOffset), (int) (pr.getHitbox().y - yLvlOffset), CANNON_BALL_WIDTH, CANNON_BALL_HEIGHT, null);
             }
     }
-
 
     private void drawCannon(Graphics g, int xLvlOffset, int yLvlOffset) {
         for (Cannon c : cannons) {

@@ -3,30 +3,24 @@ package ultilz;
 import main.Game;
 
 public class Constants {
-    public static class Projectiles {
-        public static final int CANNON_BALL_DEFAULT_WIDTH = 15;
-        public static final int CANNON_BALL_DEFAULT_HEIGHT = 15;
-
-        public static final int CANNON_BALL_WIDTH = (int) (Game.SCALE * CANNON_BALL_DEFAULT_WIDTH) * 2;
-        public static final int CANNON_BALL_HEIGHT = (int) (Game.SCALE * CANNON_BALL_DEFAULT_HEIGHT) * 2;
-        public static final float SPEED = 0.75f * Game.SCALE;
-    }
-    public static class BombTiles{
-        public static final int BOMB = 7;
+    public static class BombTiles {
+        // Bomb info
+        public static final int BOMB = 2;
         public static final int BOMB_OFF = 0;
         public static final int BOMB_ON = 1;
         public static final int BOMB_EXPLOTION = 2;
-        public static final int BOMB_WIDTH_DEFAULT = 108;
-        public static final int BOMB_HEIGHT_DEFAULT = 96;
+        public static final int BOMB_WIDTH_DEFAULT = 96;
+        public static final int BOMB_HEIGHT_DEFAULT = 108;
         public static final int BOMB_WIDTH = (int) (BOMB_WIDTH_DEFAULT * Game.SCALE);
         public static final int BOMB_HEIGHT = (int) (BOMB_HEIGHT_DEFAULT * Game.SCALE);
-        public static final int HB_BOMB_WIDTH_DEFAULT =30;
+        public static final int HB_BOMB_WIDTH_DEFAULT = 30;
         public static final int HB_BOMB_HEIGHT_DEFAULT = 31;
         public static final int HB_BOMB_WIDTH = (int) (HB_BOMB_WIDTH_DEFAULT * Game.SCALE);
         public static final int HB_BOMB_HEIGHT = (int) (HB_BOMB_HEIGHT_DEFAULT * Game.SCALE);
         public static final int BOMB_DRAW_OFFSET_X = (int) (34 * Game.SCALE);
         public static final int BOMB_DRAW_OFFSET_Y = (int) (57 * Game.SCALE);
         public static final int BOMB_DMG = 30;
+
         public static int GetSpriteAmount(int object_type) {
             switch (object_type) {
                 case BOMB_OFF:
@@ -38,7 +32,15 @@ public class Constants {
             }
             return 1;
         }
+    }
 
+    public static class Projectiles {
+        public static final int CANNON_BALL_DEFAULT_WIDTH = 15;
+        public static final int CANNON_BALL_DEFAULT_HEIGHT = 15;
+
+        public static final int CANNON_BALL_WIDTH = (int) (Game.SCALE * CANNON_BALL_DEFAULT_WIDTH) * 2;
+        public static final int CANNON_BALL_HEIGHT = (int) (Game.SCALE * CANNON_BALL_DEFAULT_HEIGHT) * 2;
+        public static final float SPEED = 0.75f * Game.SCALE;
     }
 
     public static class ObjectConstants {
@@ -103,6 +105,7 @@ public class Constants {
         public static final int CRABBY_DRAW_OFFSET_Y = (int) (9 * 2 * Game.SCALE);//lech tren
         public static final int CRABBY_MAX_HEALTH = 50;
         public static final int CRABBY_DMG = 10;
+
         //Whale enemy info
         public static final int WHALE = 1;
         public static final int WHALE_IDLE = 0;
@@ -122,12 +125,13 @@ public class Constants {
         public static final int WHALE_HEIGHT = (int) (WHALE_HEIGHT_DEFAULT * Game.SCALE);
         public static final int HB_WHALE_WIDTH_DEFAULT = 50;//size co ban cua hitbox
         public static final int HB_WHALE_HEIGHT_DEFAULT = 40;
-        public static final int HB_WHALE_WIDTH = (int) (HB_WHALE_WIDTH_DEFAULT * Game.SCALE);
-        public static final int HB_WHALE_HEIGHT = (int) (HB_WHALE_HEIGHT_DEFAULT * Game.SCALE);
+        public static final int HB_WHALE_WIDTH = (int) (HB_WHALE_WIDTH_DEFAULT * Game.SCALE * 1.5);
+        public static final int HB_WHALE_HEIGHT = (int) (HB_WHALE_HEIGHT_DEFAULT * Game.SCALE) + 23;
         public static final int WHALE_DRAW_OFFSET_X = (int) (3 * Game.SCALE);//lech trai
         public static final int WHALE_DRAW_OFFSET_Y = (int) (4 * Game.SCALE);//lech tren
         public static final int WHALE_MAX_HEALTH = 100;
         public static final int WHALE_DMG = 10;
+
 
         //
         public static int GetSpriteAmount(int enemy_type, int enemy_state) {
@@ -248,7 +252,7 @@ public class Constants {
         public static final int DOWN = 3;
     }
 
-    public static class PlayerConstants {
+        public static class PlayerConstants {
         public static final int IDLE = 0;
         public static final int DOOR_IN = 1;
         public static final int DOOR_OUT = 2;
@@ -259,7 +263,8 @@ public class Constants {
         public static final int DEAD_GROUND = 7;
         public static final int GROUND = 8;
         public static final int FALLING = 9;
-        public static final int JUMP_ANTICIPATION = 10;
+//        public static final int JUMP_ANTICIPATION = 10;
+        public static final int ATTACK = 10;
         public static int PLAYER_WIDTH_DEFAULT = 58;
         public static int PLAYER_HEIGHT_DEFAULT = 58;
         public static int PLAYER_WIDTH = (int) (PLAYER_WIDTH_DEFAULT * Game.SCALE);
@@ -286,10 +291,50 @@ public class Constants {
                     return 8;
                 case JUMP:
                 case FALLING:
+                case ATTACK:
                 default:
                     return 1;
             }
         }
     }
-
+//    public static class PlayerConstants {
+//        public static final int RUNNING = 1;
+//        public static final int IDLE = 0;
+//        public static final int JUMP = 2;
+//        public static final int FALLING = 3;
+//        //        public static final int GROUND = 4;
+//        public static final int HIT = 5;
+//        public static final int ATTACK = 4;
+//        public static final int DEAD = 6;
+//        //        public static final int ATTACK_JUMP_1 = 7;
+////        public static final int ATTACK_JUMP_2 = 8;
+//        public static int PLAYER_WIDTH_DEFAULT = 64;
+//        public static int PLAYER_HEIGHT_DEFAULT = 40;
+//        public static int PLAYER_WIDTH = (int) (PLAYER_WIDTH_DEFAULT * Game.SCALE*2);
+//        public static int PLAYER_HEIGHT = (int) (PLAYER_HEIGHT_DEFAULT * Game.SCALE*2);
+//        public static final int HB_PLAYER_WIDTH_DEFAULT = 20;
+//        public static final int HB_PLAYER_HEIGHT_DEFAULT = 27;
+//        public static final int HB_PLAYER_WIDTH = (int) (HB_PLAYER_WIDTH_DEFAULT * Game.SCALE)*2;
+//        public static final int HB_PLAYER_HEIGHT = (int) (HB_PLAYER_HEIGHT_DEFAULT * Game.SCALE)*2;
+//        public static final int PLAYER_DMG = 10;
+//
+//        public static int getSpriteAmout(int player_action) {
+//            switch (player_action) {
+//                case DEAD:
+//                    return 9;
+//                case RUNNING:
+//                    return 6;
+//                case IDLE:
+//                    return 5;
+//                case HIT:
+//                    return 4;
+//                case JUMP:
+//                case ATTACK:
+//                    return 3;
+//                case FALLING:
+//                default:
+//                    return 1;
+//            }
+//        }
+//    }
 }

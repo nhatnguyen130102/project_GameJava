@@ -4,23 +4,27 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 public abstract class Entity {
-    protected float x,y;
-    protected  int width, height;
+    protected float x, y;
+    protected int width, height;
     protected Rectangle2D.Float hitBox;
-    public Entity(float x, float y, int width, int height){
+
+    public Entity(float x, float y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
     }
+
     public void initHitBox(float x, float y, int width, int height) {
-        hitBox = new Rectangle2D.Float((int) x, (int) y,width,height);
+        hitBox = new Rectangle2D.Float((int) x, (int) y, width, height);
     }
-    public Rectangle2D.Float getHitBox(){
+
+    public Rectangle2D.Float getHitBox() {
         return hitBox;
     }
-    public void drawHitBox(Graphics g, int lvlOffset){
+
+    public void drawHitBox(Graphics g, int lvlOffset, int ylvlOffset) {
         g.setColor(Color.pink);
-        g.drawRect((int) hitBox.x - lvlOffset, (int) hitBox.y, (int) hitBox.width, (int) hitBox.height);
+        g.drawRect((int) hitBox.x - lvlOffset, (int) hitBox.y - ylvlOffset, (int) hitBox.width, (int) hitBox.height);
     }
 }
