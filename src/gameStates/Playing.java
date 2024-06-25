@@ -199,8 +199,14 @@ public class Playing extends State implements StateMethods {
     public void checkEnemyHit(Rectangle2D.Float attackBox) {
         enemyManager.checkEnemyHit(attackBox);
     }
+    public void checkEmenyExplode(Rectangle2D.Float explodeBox){
+        enemyManager.checkEnemyExplode(explodeBox);
+    }
     public void checkObjectHit(Rectangle2D.Float attackBox){
         objectManager.checkObjectHit(attackBox);
+    }
+    public void checkObjectExplode(Rectangle2D.Float explodeBox){
+        objectManager.checkObjectExplode(explodeBox);
     }
     public void checkPotionTouched(Rectangle2D.Float hitBox){
         objectManager.checkObjectTouched(hitBox);

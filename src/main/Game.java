@@ -6,6 +6,8 @@ import gameStates.Playing;
 import ultilz.LoadSave;
 
 import java.awt.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 // chứa các class cần đc khởi tạo từ ban đầu
 public class Game implements Runnable {
@@ -23,6 +25,7 @@ public class Game implements Runnable {
     public final static int MAX_ROW = 14;
     public static int SCREEN_WIDTH = MAX_COL * TILE_SIZE; // 832
     public static int SCREEN_HEIGHT = MAX_ROW * TILE_SIZE; // 448
+    private Timer explodeTimer;
 
     public Game() {
         initClasses();
@@ -108,7 +111,6 @@ public class Game implements Runnable {
             }
         }
     }
-
     public void windowFocusLost() {
         if (GameState.state == GameState.PLAYING) {
             playing.getPlayer().resetDirBooleans();

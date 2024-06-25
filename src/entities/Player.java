@@ -115,6 +115,15 @@ public class Player extends Entity {
         attackChecked = true;
         playing.checkEnemyHit(attackBox);
         playing.checkObjectHit(attackBox);
+        //        if(bombs != null){
+//            for(Bomb b : bombs){
+//                System.out.println(b.isExplode());
+//                if(b.isExplode()){
+//                    playing.checkEmenyExplode(b.getExplodeHitbox());
+//                    playing.checkObjectExplode(b.getExplodeHitbox());
+//                }
+//            }
+//        }
     }
 
     private void updateAttackBox() {
@@ -274,7 +283,7 @@ public class Player extends Entity {
 
     public void setAttacking(boolean attacking) {
         if(bombs.size() <= 5)
-            bombs.add(new Bomb(playing.getPlayer(),lvlData));
+            bombs.add(new Bomb(playing.getPlayer(),lvlData,playing));
         this.attacking = attacking;
     }
     // kiểm tra xem state của vật thể la gi va dat lai state cho vat the
