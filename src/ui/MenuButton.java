@@ -72,8 +72,12 @@ public class MenuButton {
         this.mousePressed = mousePressed;
     }
 
-    public void applyGamesLate() {
+    public void applyGameState() {
         GameState.state = state;
+    }
+
+    public GameState getState() {
+        return state;
     }
     // sau khi hành động với button thì button ở trạng thái thứ 2 và thứ 3, trạng thái phải cần được reset lại khi không được tương tác hoặc đã hoàn thành chức năng sau khi tương tác
     public void resetBoots() {

@@ -19,7 +19,6 @@ public class EnemyManager {
     private static ArrayList<Crabby> crabbies = new ArrayList<>();
     private static ArrayList<Whale> whales = new ArrayList<>();
 
-
     public EnemyManager(Playing playing) {
         this.playing = playing;
         loadEnemyCrabbyImg();
@@ -34,23 +33,22 @@ public class EnemyManager {
 
     public void checkEnemyHit(Rectangle2D.Float attackBox) {
         for (Crabby c : crabbies) {
-            if (c.isActive()) {
-                if (attackBox.intersects(c.getHitBox())) {
-                    c.hurt();
-                    return;
-                }
-
-            }
+            if (c.isActive())
+                if (c.getCurrentHealth() > 0)
+                    if (attackBox.intersects(c.getHitBox())) {
+                        c.hurt();
+                        return;
+                    }
         }
         for (Whale w : whales) {
-            if (w.isActive()) {
-                if (attackBox.intersects(w.getHitBox())) {
-                    w.hurt();
-                    return;
-                }
-
-            }
+            if (w.isActive())
+                if (w.getCurrentHealth() > 0)
+                    if (attackBox.intersects(w.getHitBox())) {
+                        w.hurt();
+                        return;
+                    }
         }
+
     }
 
     private void loadEnemyCrabbyImg() {
