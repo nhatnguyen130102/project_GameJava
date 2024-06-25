@@ -142,10 +142,13 @@ public abstract class Enemy extends Entity {
         return enemyState;
     }
 
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
     public boolean isActive() {
         return active;
     }
-
 
     public void drawHitBox(Graphics g, int lvlOffset) {
         g.setColor(Color.pink);

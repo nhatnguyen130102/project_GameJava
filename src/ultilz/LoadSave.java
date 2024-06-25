@@ -26,6 +26,7 @@ public class LoadSave {
     public static final String PLAYING_BG_IMG = "Level/Obj&BackGround/playing_bg_img.png";
     public static final String BIG_CLOUDS = "Level/Obj&BackGround/big_clouds.png";
     public static final String SMALL_CLOUDS = "Level/Obj&BackGround/small_clouds.png";
+    public static final String RAIN_PARTICLE = "Level/Obj&BackGround/rain_particle.png";
     public static final String CRABBY_SPRITE = "Enemy/crabby_sprite.png";
     public static final String STATUS_BAR = "Menu/health_power_bar.png";
     public static final String COMPLETED_IMG = "Menu/completed_sprite.png";
@@ -35,7 +36,8 @@ public class LoadSave {
     public static final String CONTAINER_ATLAS = "Object/objects_sprites.png";
     public static final String CANNON_ATLAS = "Object/cannon_atlas.png";
     public static final String BALL_IMG = "Object/ball.png";
-
+    public static final String DEATH_SCREEN = "Menu/death_screen.png";
+    public static final String OPTIONS_MENU = "Menu/options_background.png";
 
     // đọc file img trả về img lớn
     public static BufferedImage GetSpriteAtlas(String fileName) {

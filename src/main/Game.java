@@ -1,8 +1,11 @@
 package main;
 
+import audio.AudioPlayer;
+import gameStates.GameOptions;
 import gameStates.GameState;
 import gameStates.Menu;
 import gameStates.Playing;
+import ui.AudioOptions;
 import ultilz.LoadSave;
 
 import java.awt.*;
@@ -13,8 +16,13 @@ import java.util.TimerTask;
 public class Game implements Runnable {
     private final GameWindow gameWindow;
     private final GamePanel gamePanel;
+
     private Playing playing;
     private Menu menu;
+    private GameOptions gameOptions;
+    private AudioOptions audioOptions;
+    private AudioPlayer audioPlayer;
+
     private Thread gameThread;
     private final int FPS_SET = 120;
     private final int UPS_SET = 200;
@@ -30,16 +38,21 @@ public class Game implements Runnable {
     public Game() {
         initClasses();
         LoadSave.GetAllLevels();
+
         gamePanel = new GamePanel(this);
         gameWindow = new GameWindow(gamePanel);
         gamePanel.setFocusable(true);
         gamePanel.requestFocus();
+
         startGameLoop();
     }
 
     private void initClasses() {
+        audioOptions = new AudioOptions(this);
+        audioPlayer = new AudioPlayer();
         menu = new Menu(this);
         playing = new Playing(this);
+        gameOptions = new GameOptions(this);
     }
 
     private void startGameLoop() {
@@ -52,10 +65,11 @@ public class Game implements Runnable {
             case MENU:
                 menu.update();
                 break;
-            case OPTIONS:
-
             case PLAYING:
                 playing.update();
+                break;
+            case OPTIONS:
+                gameOptions.update();
                 break;
             case QUIT:
             default:
@@ -71,6 +85,9 @@ public class Game implements Runnable {
                 break;
             case PLAYING:
                 playing.draw(g);
+                break;
+            case OPTIONS:
+                gameOptions.draw(g);
                 break;
             default:
                 break;
@@ -123,5 +140,17 @@ public class Game implements Runnable {
 
     public Playing getPlaying() {
         return playing;
+    }
+
+    public GameOptions getGameOptions() {
+        return gameOptions;
+    }
+
+    public AudioOptions getAudioOptions() {
+        return audioOptions;
+    }
+
+    public AudioPlayer getAudioPlayer() {
+        return audioPlayer;
     }
 }

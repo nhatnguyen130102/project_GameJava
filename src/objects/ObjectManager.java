@@ -1,5 +1,6 @@
 package objects;
 
+import audio.AudioPlayer;
 import entities.Player;
 import gameStates.Playing;
 import levels.Level;
@@ -22,11 +23,11 @@ public class ObjectManager {
     private BufferedImage[][] potionImgs, containerImgs, bombImgs;
     private BufferedImage[] cannonImgs;
     private BufferedImage cannonBallImg;
+
     private ArrayList<Potion> potions;
     private ArrayList<GameContainer> containers;
     private ArrayList<Cannon> cannons;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
-
 
     public ObjectManager(Playing playing) {
         this.playing = playing;
@@ -89,11 +90,10 @@ public class ObjectManager {
             if (gc.isActive())
                 gc.update();
         }
+
         updateCannon(lvlData, player);
 //        updateProjectiles(lvlData, player);
     }
-
-
 
     //    private void updateProjectiles(int[][] lvlData, Player player) {
 //        for (Projectile p : projectiles)
@@ -129,6 +129,7 @@ public class ObjectManager {
                 if (p.isActive()) {
                     p.updatePos();
                     if (p.getHitbox().intersects(player.getHitBox())) {
+                        playing.getGame().getAudioPlayer().playEffect(AudioPlayer.EXPLODE);
                         player.changeHealth(-25);
                         p.setActive(false);
                     } else if (IsProjectileHittingLevel(p, lvlData))
@@ -166,6 +167,7 @@ public class ObjectManager {
         drawContainer(g, xLvlOffset, yLvlOffset);
         drawCannon(g, xLvlOffset, yLvlOffset);
         drawProjectile(g, xLvlOffset, yLvlOffset);
+
     }
 
 
@@ -175,6 +177,7 @@ public class ObjectManager {
                 g.drawImage(cannonBallImg, (int) (pr.getHitbox().x - xLvlOffset), (int) (pr.getHitbox().y - yLvlOffset), CANNON_BALL_WIDTH, CANNON_BALL_HEIGHT, null);
             }
     }
+
 
     private void drawCannon(Graphics g, int xLvlOffset, int yLvlOffset) {
         for (Cannon c : cannons) {
@@ -230,6 +233,7 @@ public class ObjectManager {
         for (Potion p : potions)
             if (p.isActive())
                 if (hitbox.intersects(p.getHitBox())) {
+                    playing.getGame().getAudioPlayer().playEffect(AudioPlayer.COLLECT_POTION);
                     p.setActive(false);
                     applyEffectToPlayer(p);
                 }
