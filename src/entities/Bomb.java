@@ -17,7 +17,7 @@ import static ultilz.HelpMethods.*;
 
 public class Bomb {
     private final boolean jump = true;
-    private float bounceValue;
+    private float bounce;
     private boolean isActive = true;
     private boolean isExplode = false;
     BufferedImage[][] temp;
@@ -32,7 +32,7 @@ public class Bomb {
     private final int[][] lvlData;
     private float airSpeed = 0f; // van toc roi cua vat the v0 -> vN
     private final float gravity = 0.04f * Game.SCALE; // luc hap dan______gia toc trong truong
-    private float jumpSpeed = -5.25f * Game.SCALE; // do cao khi nhay cua vat the
+    private float jumpSpeed; // do cao khi nhay cua vat the -5.25f * Game.SCALE
     private final float fallSpeedAfterCollision = Game.SCALE; // toc do roi khi cham phai tile o phia tren
     boolean inAir = false; // trang thai cua vat the
     private boolean moving;
@@ -42,10 +42,13 @@ public class Bomb {
     private Timer explodeTimer;
     private float BombSpeed;
     private final Playing playing;
-    public Bomb(Player player, int[][] lvlData, Playing playing) {
+
+    public Bomb(Player player, int[][] lvlData, Playing playing, float jumpSpeed) {
         this.player = player;
         this.lvlData = lvlData;
         this.playing = playing;
+        this.jumpSpeed = jumpSpeed;
+
         dir = player.getDir();
         hitbox = new Rectangle2D.Float(player.getHitBox().x, player.getHitBox().y, HB_BOMB_WIDTH, HB_BOMB_HEIGHT);
 
@@ -65,7 +68,7 @@ public class Bomb {
 //                BombSpeed=0;
 //                airSpeed=0;
 //                jumpSpeed=0;
-                explodeHitbox = new Rectangle2D.Float(hitbox.x - BOMB_DRAW_OFFSET_X, hitbox.y - BOMB_DRAW_OFFSET_Y/2,hitbox.width * 3,hitbox.height *2);
+                explodeHitbox = new Rectangle2D.Float(hitbox.x - BOMB_DRAW_OFFSET_X, hitbox.y - BOMB_DRAW_OFFSET_Y / 2, hitbox.width * 3, hitbox.height * 2);
                 checkExplode();
             }
         }, timeToExplode);  // 2000 milliseconds = 2 seconds
@@ -77,10 +80,12 @@ public class Bomb {
         updatePos();
         updateFramesTick();
     }
-    private void checkExplode(){
+
+    private void checkExplode() {
         playing.checkEmenyExplode(explodeHitbox);
         playing.checkObjectExplode(explodeHitbox);
     }
+
     private void loadImg() {
         BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.BOMB_SPRITE);
         int framesRow = img.getHeight() / BOMB_HEIGHT_DEFAULT;
@@ -114,6 +119,7 @@ public class Bomb {
     public void drawhitBox(Graphics g, int xLvlOffset, int yLvlOffset) {
         g.drawRect((int) (hitbox.x - xLvlOffset), (int) (hitbox.y - yLvlOffset), HB_BOMB_WIDTH, HB_BOMB_HEIGHT);
     }
+
     public void drawExplodeBox(Graphics g, int xLvlOffset, int yLvlOffset) {
         g.drawRect((int) (explodeHitbox.x - xLvlOffset), (int) (explodeHitbox.y - yLvlOffset), (int) explodeHitbox.width, (int) explodeHitbox.height);
     }
@@ -131,7 +137,7 @@ public class Bomb {
     }
 
     private void updatePos() {
-        if(!isExplode){
+        if (!isExplode) {
             if (jump)
                 jump();
 
@@ -146,7 +152,6 @@ public class Bomb {
             if (!inAir)
                 if (!IsEntityOnFloor(hitbox, lvlData))
                     inAir = true;
-
             if (inAir) {
                 if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
                     hitbox.y += airSpeed;
@@ -154,8 +159,9 @@ public class Bomb {
                     udateXPos(xSpeed);
                 } else {
                     hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
-                    if (airSpeed > 0)
+                    if (airSpeed >= 0){
                         resetInAir();
+                    }
                     else
                         airSpeed = fallSpeedAfterCollision;
                 }
@@ -176,8 +182,8 @@ public class Bomb {
             return;
         }  // kiem tra trang thai cua vat the, han che vat the co the nhay nhieu lan tren khong
         inAir = true; // dat lai trang thai cho vat the
-        bounceValue += 0.5;
-        airSpeed = jumpSpeed + bounceValue; // dat lai toc do roi cua vat the
+        bounce += 0.2;
+        airSpeed = jumpSpeed + bounce ; // dat lai toc do roi cua vat the
     }
 
     private void resetInAir() {

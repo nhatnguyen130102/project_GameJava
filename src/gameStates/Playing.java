@@ -48,6 +48,8 @@ public class Playing extends State implements StateMethods {
     private Random rnd = new Random();
     private boolean gameOver;
     private boolean lvlCompleted = false;
+    private long startTime;
+    private float jumpSpeed;
 
     public Playing(Game game) {
         super(game);
@@ -68,11 +70,13 @@ public class Playing extends State implements StateMethods {
         calcLvlOffset();
 
     }
-    public void loadNextLevel(){
+
+    public void loadNextLevel() {
         resetAll();
         levelManager.loadNextLevel();
         player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
     }
+
     private void loadStartLevel() {
         objectManager.loadObject(levelManager.getCurrentLevel());
 
@@ -117,7 +121,7 @@ public class Playing extends State implements StateMethods {
             levelCompleteOverlay.update();
         else if (!gameOver) {
             levelManager.update();
-            objectManager.update(levelManager.getCurrentLevel().getLevelData(),player);
+            objectManager.update(levelManager.getCurrentLevel().getLevelData(), player);
             player.update();
             enemyManager.update(levelManager.getCurrentLevel().getLevelData(), player);
             CheckCloseToBorderX();
@@ -162,7 +166,7 @@ public class Playing extends State implements StateMethods {
         levelManager.draw(g, xLvlOffset, yLvlOffset);
         enemyManager.draw(g, xLvlOffset, yLvlOffset);
         player.draw(g, xLvlOffset, yLvlOffset);
-        objectManager.draw(g,xLvlOffset,yLvlOffset);
+        objectManager.draw(g, xLvlOffset, yLvlOffset);
         if (paused) {
             g.setColor(new Color(0, 0, 0, 150));
             g.fillRect(0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT);
@@ -199,35 +203,51 @@ public class Playing extends State implements StateMethods {
     public void checkEnemyHit(Rectangle2D.Float attackBox) {
         enemyManager.checkEnemyHit(attackBox);
     }
-    public void checkEmenyExplode(Rectangle2D.Float explodeBox){
+
+    public void checkEmenyExplode(Rectangle2D.Float explodeBox) {
         enemyManager.checkEnemyExplode(explodeBox);
     }
-    public void checkObjectHit(Rectangle2D.Float attackBox){
+
+    public void checkObjectHit(Rectangle2D.Float attackBox) {
         objectManager.checkObjectHit(attackBox);
     }
-    public void checkObjectExplode(Rectangle2D.Float explodeBox){
+
+    public void checkObjectExplode(Rectangle2D.Float explodeBox) {
         objectManager.checkObjectExplode(explodeBox);
     }
-    public void checkPotionTouched(Rectangle2D.Float hitBox){
+
+    public void checkPotionTouched(Rectangle2D.Float hitBox) {
         objectManager.checkObjectTouched(hitBox);
     }
-    public void setLevelCompleted(boolean levelCompleted){
+
+    public void setLevelCompleted(boolean levelCompleted) {
         this.lvlCompleted = levelCompleted;
     }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         if (!gameOver)
-            if (e.getButton() == MouseEvent.BUTTON1)
-                player.setAttacking(true);
+            if (!paused) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+
+                }
+            }
+
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (!gameOver)
-            if (paused)
+        if (!gameOver) {
+            if (paused) {
                 pauseOverLay.mousePressed(e);
-            else if (lvlCompleted)
+            } else if (lvlCompleted) {
                 levelCompleteOverlay.mousePressed(e);
+            } else if (!paused && !lvlCompleted) {
+                startTime = System.currentTimeMillis();
+                jumpSpeed = 0;
+            }
+        }
+
 
     }
 
@@ -238,6 +258,15 @@ public class Playing extends State implements StateMethods {
                 pauseOverLay.mouseReleased(e);
             else if (lvlCompleted)
                 levelCompleteOverlay.mouseReleased(e);
+            else if (!paused && !lvlCompleted) {
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                jumpSpeed -= elapsedTime / 100f;
+                if (jumpSpeed <= -3) {
+                    jumpSpeed = -3;
+                }
+                player.setAttacking(true);
+                player.createBomb(jumpSpeed);
+            }
     }
 
     @Override
@@ -290,7 +319,8 @@ public class Playing extends State implements StateMethods {
     public Player getPlayer() {
         return player;
     }
-    public Bomb getBomb(){
+
+    public Bomb getBomb() {
         return bomb;
     }
 
@@ -301,22 +331,25 @@ public class Playing extends State implements StateMethods {
     public void unpauseGame() {
         paused = false;
     }
-    public void setMaxLvlOffsetX(int lvlOffset){
+
+    public void setMaxLvlOffsetX(int lvlOffset) {
         this.maxLvlOffsetX = lvlOffset;
     }
 
-    public void setMaxLvlOffsetY(int lvlOffset){
+    public void setMaxLvlOffsetY(int lvlOffset) {
         this.maxLvlOffsetY = lvlOffset;
     }
 
 
-    public EnemyManager getEnemyManager(){
+    public EnemyManager getEnemyManager() {
         return enemyManager;
     }
-    public ObjectManager getObjectManager(){
+
+    public ObjectManager getObjectManager() {
         return objectManager;
     }
-    public LevelManager getLevelManager(){
+
+    public LevelManager getLevelManager() {
         return levelManager;
     }
 }

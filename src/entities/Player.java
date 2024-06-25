@@ -282,9 +282,14 @@ public class Player extends Entity {
     }
 
     public void setAttacking(boolean attacking) {
-        if(bombs.size() <= 5)
-            bombs.add(new Bomb(playing.getPlayer(),lvlData,playing));
+//        if(bombs.size() <= 5){
+//            System.out.println("BOMB CREATE");
+//            bombs.add(new Bomb(playing.getPlayer(),lvlData,playing));
+//        }
         this.attacking = attacking;
+    }
+    public void createBomb(float boxJumpSpeed){
+        bombs.add(new Bomb(playing.getPlayer(),lvlData,playing,boxJumpSpeed));
     }
     // kiểm tra xem state của vật thể la gi va dat lai state cho vat the
     private void setAnimation() {
