@@ -83,6 +83,9 @@ public class LevelManager {
     }
 
     // lấy level hiện tại
+    public int getLevelIndex() {
+        return lvlIndex;
+    }
     public Level getCurrentLevel() {
         return levels.get(lvlIndex);
     }

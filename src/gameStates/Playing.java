@@ -1,6 +1,6 @@
 package gameStates;
 
-
+import audio.AudioPlayer;
 import entities.Bomb;
 import entities.EnemyManager;
 import entities.Player;
@@ -12,6 +12,7 @@ import ui.LevelCompleteOverlay;
 import ui.PauseOverLay;
 import ultilz.Constants;
 import ultilz.LoadSave;
+import effects.Rain;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -31,6 +32,7 @@ public class Playing extends State implements StateMethods {
     private PauseOverLay pauseOverLay;
     private GameOverOverlay gameOverOverlay;
     private LevelCompleteOverlay levelCompleteOverlay;
+    private Rain rain;
     private ObjectManager objectManager;
     private boolean paused = false;
 
@@ -48,6 +50,8 @@ public class Playing extends State implements StateMethods {
     private Random rnd = new Random();
     private boolean gameOver;
     private boolean lvlCompleted = false;
+    private boolean playerDying = false;
+    private boolean drawRain;
 
     public Playing(Game game) {
         super(game);
@@ -56,6 +60,7 @@ public class Playing extends State implements StateMethods {
         loadBigCloud();
         loadSmallCloud();
         initEnviroments();
+        setDrawRainBoolean();
     }
 
     private void initEnviroments() {
@@ -69,9 +74,9 @@ public class Playing extends State implements StateMethods {
 
     }
     public void loadNextLevel(){
-        resetAll();
         levelManager.loadNextLevel();
         player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
+        resetAll();
     }
     private void loadStartLevel() {
         objectManager.loadObject(levelManager.getCurrentLevel());
@@ -107,15 +112,24 @@ public class Playing extends State implements StateMethods {
         pauseOverLay = new PauseOverLay(this);// khởi tạo pausescreen
         gameOverOverlay = new GameOverOverlay(this);
         levelCompleteOverlay = new LevelCompleteOverlay(this);
+
+        // Disable it if the game lags.
+        rain = new Rain();
     }
 
     @Override
     public void update() {
-        if (paused)
+        if (paused) {
             pauseOverLay.update();
-        else if (lvlCompleted)
+        } else if (lvlCompleted) {
             levelCompleteOverlay.update();
-        else if (!gameOver) {
+        } else if (gameOver) {
+            gameOverOverlay.update();
+        } else if (playerDying) {
+            player.update();
+        } else {
+            if (drawRain)
+                rain.update(xLvlOffset);
             levelManager.update();
             objectManager.update(levelManager.getCurrentLevel().getLevelData(),player);
             player.update();
@@ -159,9 +173,12 @@ public class Playing extends State implements StateMethods {
     public void draw(Graphics g) {
         g.drawImage(backGroundImg, 0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT, null);
         drawClouds(g);
+        if (drawRain)
+            rain.draw(g, xLvlOffset);
+
         levelManager.draw(g, xLvlOffset, yLvlOffset);
         enemyManager.draw(g, xLvlOffset, yLvlOffset);
-        player.draw(g, xLvlOffset, yLvlOffset);
+        player.render(g, xLvlOffset, yLvlOffset);
         objectManager.draw(g,xLvlOffset,yLvlOffset);
         if (paused) {
             g.setColor(new Color(0, 0, 0, 150));
@@ -187,13 +204,25 @@ public class Playing extends State implements StateMethods {
         gameOver = false;
         paused = false;
         lvlCompleted = false;
+        playerDying = false;
+        drawRain = false;
+
+        setDrawRainBoolean();
+
         player.resetAll();
         enemyManager.resetAllEnemies();
         objectManager.resetAllObject();
     }
 
+    private void setDrawRainBoolean() {
+        // This method makes it rain 20% of the time you load a level.
+        if (rnd.nextFloat() >= 0.8f)
+            drawRain = true;
+    }
+
     public void setGameOver(boolean gameOver) {
         this.gameOver = gameOver;
+        if (gameOver) getGame().getAudioPlayer().gameOver();
     }
 
     public void checkEnemyHit(Rectangle2D.Float attackBox) {
@@ -207,6 +236,8 @@ public class Playing extends State implements StateMethods {
     }
     public void setLevelCompleted(boolean levelCompleted){
         this.lvlCompleted = levelCompleted;
+        if (lvlCompleted)
+            game.getAudioPlayer().lvlCompleted();
     }
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -217,30 +248,32 @@ public class Playing extends State implements StateMethods {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (!gameOver)
+        if (!gameOver) {
             if (paused)
                 pauseOverLay.mousePressed(e);
             else if (lvlCompleted)
                 levelCompleteOverlay.mousePressed(e);
-
+        } else gameOverOverlay.mousePressed(e);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (!gameOver)
+        if (!gameOver) {
             if (paused)
                 pauseOverLay.mouseReleased(e);
             else if (lvlCompleted)
                 levelCompleteOverlay.mouseReleased(e);
+        } else gameOverOverlay.mouseReleased(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (!gameOver)
+        if (!gameOver) {
             if (paused)
                 pauseOverLay.mouseMoved(e);
             else if (lvlCompleted)
                 levelCompleteOverlay.mouseMoved(e);
+        } else gameOverOverlay.mouseMoved(e);
     }
 
     @Override
@@ -249,7 +282,7 @@ public class Playing extends State implements StateMethods {
             gameOverOverlay.keyPressed(e);
         else
             switch (e.getKeyCode()) {
-
+//                case KeyEvent.VK_K -> player.setAttackBomb(true);
                 case KeyEvent.VK_J -> player.setAttacking(true);
                 case KeyEvent.VK_A -> player.setLeft(true);
                 case KeyEvent.VK_D -> player.setRight(true);
@@ -284,6 +317,7 @@ public class Playing extends State implements StateMethods {
     public Player getPlayer() {
         return player;
     }
+
     public Bomb getBomb(){
         return bomb;
     }
@@ -312,5 +346,10 @@ public class Playing extends State implements StateMethods {
     }
     public LevelManager getLevelManager(){
         return levelManager;
+    }
+
+    public void setPlayerDying(boolean playerDying) {
+        this.playerDying = playerDying;
+        if (playerDying) getGame().getAudioPlayer().playEffect(AudioPlayer.DIE);
     }
 }
