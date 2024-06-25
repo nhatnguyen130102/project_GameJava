@@ -255,6 +255,19 @@ public class ObjectManager {
                 }
             }
     }
+    public void checkObjectExplode(Rectangle2D.Float attackbox) {
+        for (GameContainer gc : containers)
+            if (gc.isActive()) {
+                if (gc.getHitBox().intersects(attackbox)) {
+                    gc.setDoAnimation(true);
+                    int type = 0;
+                    if (gc.getObjType() == BARREL)
+                        type = 1;
+                    potions.add(new Potion((int) (gc.getHitBox().x + gc.getHitBox().width / 2), (int) (gc.getHitBox().y + gc.getHitBox().height / 4), type));
+                    return;
+                }
+            }
+    }
 
     public void resetAllObject() {
         loadObject(playing.getLevelManager().getCurrentLevel());

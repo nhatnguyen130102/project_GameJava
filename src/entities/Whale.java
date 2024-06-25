@@ -48,7 +48,7 @@ public class Whale extends Enemy {
             updateInAir(lvlData);
         } else {
             switch (enemyState) {
-                case WHALE_IDLE -> newState(WHALE_RUNNING);
+//                case WHALE_IDLE -> newState(WHALE_RUNNING);
                 case WHALE_RUNNING -> {
                     if (canSeePlayer(lvlData, player))
                         turnTowardsPlayer(player);

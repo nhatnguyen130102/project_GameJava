@@ -31,7 +31,26 @@ public class EnemyManager {
         crabbies = level.getCrabs();
         whales = level.getWhales();
     }
+    public void checkEnemyExplode(Rectangle2D.Float explodeBox) {
+        for (Crabby c : crabbies) {
+            if (c.isActive()) {
+                if (explodeBox.intersects(c.getHitBox())) {
+                    c.hurt();
+                    return;
+                }
 
+            }
+        }
+        for (Whale w : whales) {
+            if (w.isActive()) {
+                if (explodeBox.intersects(w.getHitBox())) {
+                    w.hurt();
+                    return;
+                }
+
+            }
+        }
+    }
     public void checkEnemyHit(Rectangle2D.Float attackBox) {
         for (Crabby c : crabbies) {
             if (c.isActive()) {
@@ -144,4 +163,6 @@ public class EnemyManager {
         for (Whale w : whales)
             w.resetEnemy();
     }
+
+
 }
