@@ -20,8 +20,8 @@ public class Crabby extends Enemy {
     }
 
     private void initAttackBox() {
-        attackBox = new Rectangle2D.Float(x, y, 82 * Game.SCALE, 19 * Game.SCALE);
-        attackBoxOffsetX = (int) (Game.SCALE * 30);
+        attackBox = new Rectangle2D.Float(x, y, 82 * 2 * Game.SCALE, 19 * 2 * Game.SCALE);
+        attackBoxOffsetX = (int) (Game.SCALE * 30 * 2);
     }
 
     public void update(int[][] lvlData, Player player) {
@@ -62,6 +62,25 @@ public class Crabby extends Enemy {
             }
         }
     }
+
+    protected boolean isPlayerCloseForAttack(Player player) {
+        int distance = (int) (player.hitBox.x - hitBox.x);
+
+        if (distance <= 0) {// player left and enemy right
+            if (Math.abs(hitBox.y - player.hitBox.y) < Game.TILE_SIZE){
+                int distanceBetween = (int) (attackBox.x - (player.hitBox.x + player.hitBox.width));
+                return distanceBetween  < 0;
+            }
+        }
+        else {// player right and enemy left
+            if (Math.abs(hitBox.y - player.hitBox.y) < Game.TILE_SIZE){
+                int distanceBetween = (int) (player.hitBox.x  - (attackBox.x + attackBox.width));
+                return distanceBetween < 0;
+            }
+        }
+        return false;
+    }
+
     public void hurt() {
         currentHealth -= PLAYER_DMG;
         if (currentHealth <= 0)
@@ -69,6 +88,7 @@ public class Crabby extends Enemy {
         else
             newState(CRABBY_HIT);
     }
+
     public void drawAttackBox(Graphics g, int xLvlOffset) {
         g.setColor(Color.RED);
         g.drawRect((int) (attackBox.x - xLvlOffset), (int) attackBox.y, (int) attackBox.width, (int) attackBox.height);

@@ -6,6 +6,8 @@ import gameStates.Playing;
 import ultilz.LoadSave;
 
 import java.awt.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 // chứa các class cần đc khởi tạo từ ban đầu
 public class Game implements Runnable {
@@ -16,17 +18,14 @@ public class Game implements Runnable {
     private Thread gameThread;
     private final int FPS_SET = 120;
     private final int UPS_SET = 200;
-    private static final int DEFAULT_TILE_SIZE = 32;
-    public static final float SCALE = 2f;
+    private static final int DEFAULT_TILE_SIZE = 64;
+    public static final float SCALE = 1f;
     public static int TILE_SIZE = (int) (SCALE * DEFAULT_TILE_SIZE);
     public final static int MAX_COL = 26;
     public final static int MAX_ROW = 14;
-//    public final static int WORLD_COL = 29;
-//    public final static int WORLD_ROW = 14;
-//    public static int WORLD_WIDTH = WORLD_COL * TILE_SIZE;
-//    public static int WORLD_HEIGHT = WORLD_ROW * TILE_SIZE;
     public static int SCREEN_WIDTH = MAX_COL * TILE_SIZE; // 832
     public static int SCREEN_HEIGHT = MAX_ROW * TILE_SIZE; // 448
+    private Timer explodeTimer;
 
     public Game() {
         initClasses();
@@ -90,6 +89,7 @@ public class Game implements Runnable {
         double deltaF = 0;
         while (true) {
             long currentTime = System.nanoTime();
+//            System.out.println(previousTime+","+currentTime+","+ (currentTime - previousTime));
             deltaU += (currentTime - previousTime) / timePerUpdate;
             deltaF += (currentTime - previousTime) / timePerFrame;
             previousTime = currentTime;
@@ -111,7 +111,6 @@ public class Game implements Runnable {
             }
         }
     }
-
     public void windowFocusLost() {
         if (GameState.state == GameState.PLAYING) {
             playing.getPlayer().resetDirBooleans();

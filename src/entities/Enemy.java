@@ -62,7 +62,7 @@ public abstract class Enemy extends Entity {
 
     protected void checkEnemyHit(Rectangle2D.Float attackBox, Player player) {
         if (attackBox.intersects(player.hitBox)){
-            player.changeHealth(GetEnemyDmg(enemyTpye));
+            player.changeHealth(-GetEnemyDmg(enemyTpye));
         }
         attackChecked = true;
     }
@@ -125,12 +125,7 @@ public abstract class Enemy extends Entity {
         return absValue <= attackDistance * 5; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
     }
 
-    protected boolean isPlayerCloseForAttack(Player player) {
-        int absValue = (int) Math.abs(player.hitBox.x - hitBox.x);
-        if (Math.abs(hitBox.y - player.hitBox.y) < Game.TILE_SIZE)// neu player khong dung cung 1 con duong voi enemy thi enemy se khong tan cong
-            return absValue <= attackDistance; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
-        return false;
-    }
+
 
     protected void changeWalkDir() {
         if (walkDir == LEFT)

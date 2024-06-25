@@ -9,6 +9,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
+import static ultilz.Constants.UI.Buttons.B_HEIGHT;
+import static ultilz.Constants.UI.Buttons.B_WIDTH;
+
 public class Menu extends State implements StateMethods {
     private MenuButton[] buttons = new MenuButton[3];
     private BufferedImage backGroundImg;
@@ -32,13 +35,14 @@ public class Menu extends State implements StateMethods {
         menuWidth = (int) (backGroundImg.getWidth() * Game.SCALE);
         menuHeight = (int) (backGroundImg.getHeight() * Game.SCALE);
         menuX = Game.SCREEN_WIDTH / 2 - menuWidth / 2;
-        menuY = Game.SCREEN_HEIGHT / 2 - menuHeight / 2;
+        menuY = Game.SCREEN_HEIGHT / 2 - menuHeight / 2  - 5;
     }
 
     private void loadButtons() {
-        buttons[0] = new MenuButton(Game.SCREEN_WIDTH / 2, (int) (160 * Game.SCALE), 0, GameState.PLAYING);
-        buttons[1] = new MenuButton(Game.SCREEN_WIDTH / 2, (int) (230 * Game.SCALE), 1, GameState.OPTIONS);
-        buttons[2] = new MenuButton(Game.SCREEN_WIDTH / 2, (int) (300 * Game.SCALE), 2, GameState.QUIT);
+        int margin = 15;
+        buttons[0] = new MenuButton(Game.SCREEN_WIDTH / 2, Game.SCREEN_HEIGHT / 2 - B_HEIGHT - margin, 0, GameState.PLAYING);
+        buttons[1] = new MenuButton(Game.SCREEN_WIDTH / 2, Game.SCREEN_HEIGHT / 2, 1, GameState.OPTIONS);
+        buttons[2] = new MenuButton(Game.SCREEN_WIDTH / 2, Game.SCREEN_HEIGHT / 2 + B_HEIGHT + margin, 2, GameState.QUIT);
     }
 
     @Override
