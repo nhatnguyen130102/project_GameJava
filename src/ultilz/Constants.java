@@ -19,7 +19,7 @@ public class Constants {
         public static final int HB_BOMB_HEIGHT = (int) (HB_BOMB_HEIGHT_DEFAULT * Game.SCALE);
         public static final int BOMB_DRAW_OFFSET_X = (int) (34 * Game.SCALE);
         public static final int BOMB_DRAW_OFFSET_Y = (int) (57 * Game.SCALE);
-        public static final int BOMB_DMG = 30;
+        public static final int BOMB_DMG = 50;
 
         public static int GetSpriteAmount(int object_type) {
             switch (object_type) {

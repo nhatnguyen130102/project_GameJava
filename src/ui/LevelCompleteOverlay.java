@@ -24,9 +24,10 @@ public class LevelCompleteOverlay {
     }
 
     private void initButtons() {
-        int menuX = (int) (330 * Game.SCALE);
-        int nextX = (int) (445 * Game.SCALE);
-        int y = (int) (195 * Game.SCALE);
+        int margin = Game.TILE_SIZE;
+        int menuX = Game.SCREEN_WIDTH / 2 - margin - URM_SIZE / 2;
+        int nextX = Game.SCREEN_WIDTH / 2 + margin - URM_SIZE / 2;
+        int y = Game.SCREEN_HEIGHT / 2 + URM_SIZE/2 - 10;
         next = new UrmButton(nextX, y, URM_SIZE, URM_SIZE, 0);
         menu = new UrmButton(menuX, y, URM_SIZE, URM_SIZE, 2);
     }
@@ -35,7 +36,7 @@ public class LevelCompleteOverlay {
         img = LoadSave.GetSpriteAtlas(LoadSave.COMPLETED_IMG);
         bgW = (int) (img.getWidth() * Game.SCALE);
         bgH = (int) (img.getHeight() * Game.SCALE);
-        bgY = (int) (75 * Game.SCALE);
+        bgY = Game.SCREEN_HEIGHT / 2 - bgH / 2;
         bgX = Game.SCREEN_WIDTH / 2 - bgW / 2;
     }
 

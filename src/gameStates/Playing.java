@@ -58,14 +58,6 @@ public class Playing extends State implements StateMethods {
 
     public Playing(Game game) {
         super(game);
-//        initClasses();
-//        setDrawRainBoolean();
-//        loadBackGroundImg();
-//        loadBigCloud();
-//        loadSmallCloud();
-//        initEnviroments();
-
-
         initClasses();
         loadBackGroundImg();
         loadBigCloud();
@@ -76,8 +68,8 @@ public class Playing extends State implements StateMethods {
     }
 
     private void setDrawRainBoolean() {
-        // This method makes it rain 20% of the time you load a level.
-//        if (rnd.nextFloat() >= 0.1f)
+//         This method makes it rain 20% of the time you load a level.
+        if (rnd.nextFloat() >= 0.8f)
             drawRain = true;
     }
 
@@ -205,7 +197,8 @@ public class Playing extends State implements StateMethods {
             gameOverOverlay.draw(g);
         else if (lvlCompleted)
             levelCompleteOverlay.draw(g);
-        rain.draw(g, xLvlOffset,yLvlOffset);
+        if (drawRain)
+            rain.draw(g, xLvlOffset, yLvlOffset);
 
     }
 
@@ -323,8 +316,9 @@ public class Playing extends State implements StateMethods {
             gameOverOverlay.keyPressed(e);
         else
             switch (e.getKeyCode()) {
+                case KeyEvent.VK_J -> {
 
-                case KeyEvent.VK_J -> player.setAttacking(true);
+                }
                 case KeyEvent.VK_A -> player.setLeft(true);
                 case KeyEvent.VK_D -> player.setRight(true);
                 case KeyEvent.VK_SPACE -> player.setJump(true);
@@ -337,7 +331,9 @@ public class Playing extends State implements StateMethods {
     public void keyReleased(KeyEvent e) {
         if (!gameOver)
             switch (e.getKeyCode()) {
-//                case KeyEvent.VK_J -> player.setAttacking(false);
+                case KeyEvent.VK_J -> {
+
+                }
                 case KeyEvent.VK_A -> player.setLeft(false);
                 case KeyEvent.VK_D -> player.setRight(false);
                 case KeyEvent.VK_SPACE -> player.setJump(false);

@@ -9,6 +9,11 @@ import ui.AudioOptions;
 import ultilz.LoadSave;
 
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -32,6 +37,9 @@ public class Game implements Runnable {
     public static int SCREEN_WIDTH = MAX_COL * TILE_SIZE; // 832
     public static int SCREEN_HEIGHT = MAX_ROW * TILE_SIZE; // 448
     private Timer explodeTimer;
+    private Socket clientSocket;
+    private PrintWriter out;
+    private BufferedReader in;
 
     public Game() {
         initClasses();
@@ -41,6 +49,41 @@ public class Game implements Runnable {
         gamePanel.setFocusable(true);
         gamePanel.requestFocus();
         startGameLoop();
+//        startClient("localhost"); // Khởi tạo kết nối máy khách
+    }
+    private void startClient(String serverAddress) {
+        try {
+            clientSocket = new Socket(serverAddress, 12345);
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
+
+            new Thread(new IncomingReader()).start();
+            sendMessage("Hello, Server!");
+
+            // Ví dụ gửi dữ liệu từ game
+            // sendGameData(gameData);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private class IncomingReader implements Runnable {
+        @Override
+        public void run() {
+            try {
+                String message;
+                while ((message = in.readLine()) != null) {
+                    System.out.println("Server: " + message);
+                    // Xử lý dữ liệu nhận được từ server
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void sendMessage(String message) {
+        out.println(message);
     }
 
     private void initClasses() {

@@ -74,8 +74,6 @@ public class GameOverOverlay {
         else if (isIn(play, e)){
             play.setMouseOver(true);
         }
-
-
     }
 
     public void mouseReleased(MouseEvent e) {
