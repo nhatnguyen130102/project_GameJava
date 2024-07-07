@@ -1,5 +1,6 @@
 package gameStates;
 
+import audio.AudioPlayer;
 import main.Game;
 import ui.MenuButton;
 import ultilz.LoadSave;
@@ -10,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import static ultilz.Constants.UI.Buttons.B_HEIGHT;
-import static ultilz.Constants.UI.Buttons.B_WIDTH;
 
 public class Menu extends State implements StateMethods {
     private MenuButton[] buttons = new MenuButton[3];
@@ -80,10 +80,10 @@ public class Menu extends State implements StateMethods {
     public void mouseReleased(MouseEvent e) {
         for (MenuButton mb : buttons) {
             if (isIn(e, mb)) {
-                if (mb.isMousePressed()) {
-                    mb.applyGamesLate();
-                    break;
-                }
+                if (mb.isMousePressed())
+                    setGameState(mb.getState());
+//                    mb.applyGameState();
+                break;
             }
         }
         resetButtons();

@@ -1,5 +1,6 @@
 package entities;
 
+import audio.AudioPlayer;
 import gameStates.Playing;
 import main.Game;
 import ultilz.LoadSave;
@@ -85,15 +86,16 @@ public class Player extends Entity {
         updateBomb();
     }
 
-
+    // bomb guy
     public void updateBomb() {
-        updateBombPos();
         updateBombState();
+        updateBombPos();
     }
-    public void updateBombState(){
+    //bomb guy
+    public void updateBombState() {
         bombs.removeIf(b -> !b.isActive());
     }
-
+    // bomb guy
     public void updateBombPos() {
         for (Bomb b : bombs) {
             if (b.isActive()) {
@@ -108,24 +110,15 @@ public class Player extends Entity {
     private void checkPotionTouched() {
         playing.checkPotionTouched(hitBox);
     }
-
+    // pirate
     private void checkAttack() {
         if (attackChecked || framesIndex != 1)
             return;
         attackChecked = true;
         playing.checkEnemyHit(attackBox);
         playing.checkObjectHit(attackBox);
-        //        if(bombs != null){
-//            for(Bomb b : bombs){
-//                System.out.println(b.isExplode());
-//                if(b.isExplode()){
-//                    playing.checkEmenyExplode(b.getExplodeHitbox());
-//                    playing.checkObjectExplode(b.getExplodeHitbox());
-//                }
-//            }
-//        }
     }
-
+    // pirate
     private void updateAttackBox() {
         if (firstUpdate) {
             attackBox.x = hitBox.x + hitBox.width + Game.SCALE * 10;
@@ -158,11 +151,12 @@ public class Player extends Entity {
 //        drawAttackBox(g, xLvlOffset, yLvlOffset);
         drawUI(g);
     }
-
+    // bomb guy
     public void drawBombs(Graphics g, int xLvlOffset, int yLvlOffset) {
-        for (Bomb b : bombs)
-            if (b.isActive())
-                b.draw(g, xLvlOffset, yLvlOffset);
+        for (int i = 0; i < bombs.size(); i++) {
+            if (bombs.get(i).isActive())
+                bombs.get(i).draw(g, xLvlOffset, yLvlOffset); // Access and modify elements by index
+        }
     }
 
     private void drawAttackBox(Graphics g, int lvlOffsetX, int lvlOffsetY) {
@@ -196,6 +190,7 @@ public class Player extends Entity {
         currentHealth += value;
         if (currentHealth <= 0) {
             newState(DEAD);
+            playing.setPlayerDying(true);
         } else {
             newState(HIT);
         }
@@ -265,11 +260,13 @@ public class Player extends Entity {
     private void jump() {
         if (inAir)  // kiem tra trang thai cua vat the, han che vat the co the nhay nhieu lan tren khong
             return;
+        playing.getGame().getAudioPlayer().playEffect(AudioPlayer.JUMP);
         inAir = true; // dat lai trang thai cho vat the
         airSpeed = jumpSpeed; // dat lai toc do roi cua vat the
     }
 
     private void resetInAir() {
+        playing.getGame().getAudioPlayer().playEffect(AudioPlayer.JUMP_LAND);
         inAir = false;
         airSpeed = 0;
     }
@@ -282,15 +279,15 @@ public class Player extends Entity {
     }
 
     public void setAttacking(boolean attacking) {
-//        if(bombs.size() <= 5){
-//            System.out.println("BOMB CREATE");
-//            bombs.add(new Bomb(playing.getPlayer(),lvlData,playing));
-//        }
         this.attacking = attacking;
     }
-    public void createBomb(float boxJumpSpeed){
-        bombs.add(new Bomb(playing.getPlayer(),lvlData,playing,boxJumpSpeed));
+
+    public void createBomb(float boxJumpSpeed) {
+        if (bombs.size() < 5) {
+            bombs.add(new Bomb(playing.getPlayer(), lvlData, playing, boxJumpSpeed));
+        }
     }
+
     // kiểm tra xem state của vật thể la gi va dat lai state cho vat the
     private void setAnimation() {
         int startFrame = playerAction;
@@ -339,12 +336,6 @@ public class Player extends Entity {
                         playerAction = IDLE;
                     }
                 }
-
-//                switch (playerAction) {
-//                    case HIT -> {
-//                        playerAction = IDLE;
-//                    }
-//                }
                 attacking = false;
                 attackChecked = false;
             }

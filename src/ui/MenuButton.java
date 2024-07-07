@@ -30,7 +30,9 @@ public class MenuButton {
         loadImg();//cắt từng img để vào array
         initBounds();// khởi tạo hitbox để tương tác
     }
-
+    public GameState getState() {
+        return state;
+    }
     // tạo hitbox cho button
     private void initBounds() {
         bounds = new Rectangle(xPos - xOffsetCenter, yPos, B_WIDTH, B_HEIGHT);

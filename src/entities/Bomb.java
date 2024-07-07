@@ -65,9 +65,6 @@ public class Bomb {
             @Override
             public void run() {
                 setExplode(true);
-//                BombSpeed=0;
-//                airSpeed=0;
-//                jumpSpeed=0;
                 explodeHitbox = new Rectangle2D.Float(hitbox.x - BOMB_DRAW_OFFSET_X, hitbox.y - BOMB_DRAW_OFFSET_Y / 2, hitbox.width * 3, hitbox.height * 2);
                 checkExplode();
             }

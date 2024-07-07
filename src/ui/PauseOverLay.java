@@ -1,6 +1,7 @@
 package ui;
 
 import gameStates.GameState;
+import gameStates.Menu;
 import gameStates.Playing;
 import main.Game;
 import ultilz.LoadSave;
@@ -16,23 +17,16 @@ import static ultilz.Constants.UI.VolumeButton.*;
 public class PauseOverLay {
     private BufferedImage backGroundImg;
     private int bgX, bgY, bgW, bgH;
-    private SoundButton musicButton, sfxButton;
+
     private UrmButton menuB, replayB, unpauseB;
-    private VolumeButton volumeButton;
     private final Playing playing;
+    private AudioOptions audioOptions;
 
     public PauseOverLay(Playing playing) {
         this.playing = playing;
         loadBackGround();
-        createSoundButtons();
+        audioOptions = playing.getGame().getAudioOptions();
         createUrmButtons();
-        createVolumeButtons();
-    }
-
-    private void createVolumeButtons() {
-        int vX = (int) (Game.SCREEN_WIDTH / 2 - SLIDER_WIDTH / 2 - 2);
-        int vY = (int) (Game.SCREEN_HEIGHT / 2 + 60);
-        volumeButton = new VolumeButton(vX, vY, SLIDER_WIDTH, VOLUME_HEIGHT);
     }
 
     private void createUrmButtons() {
@@ -45,16 +39,8 @@ public class PauseOverLay {
         menuB = new UrmButton(menuX, bY, URM_SIZE, URM_SIZE, 2);
         replayB = new UrmButton(replayX, bY, URM_SIZE, URM_SIZE, 1);
         unpauseB = new UrmButton(unpauseX, bY, URM_SIZE, URM_SIZE, 0);
-
     }
 
-    private void createSoundButtons() {
-        int soundX = Game.SCREEN_WIDTH / 2 + SOUND_SIZE;
-        int soundY = Game.SCREEN_HEIGHT / 2 - 80;
-        int sfxY = Game.SCREEN_HEIGHT / 2 - 30;
-        musicButton = new SoundButton(soundX, soundY, SOUND_SIZE, SOUND_SIZE);
-        sfxButton = new SoundButton(soundX, sfxY, SOUND_SIZE, SOUND_SIZE);
-    }
 
     private void loadBackGround() {
         // lấy img lớn cho pausebg
@@ -68,85 +54,69 @@ public class PauseOverLay {
 
     public void update() {
         // thực hiện update khi có sự thay đổi
-        musicButton.update();
-        sfxButton.update();
         menuB.update();
         replayB.update();
         unpauseB.update();
-        volumeButton.update();
+        audioOptions.update();
     }
 
     public void draw(Graphics g) {
         // thực hiện vẽ bg chính
         g.drawImage(backGroundImg, bgX, bgY, bgW, bgH, null);
         // thực hiện vẽ các buttons thành phần
-        musicButton.draw(g);
-        sfxButton.draw(g);
-
         menuB.draw(g);
         replayB.draw(g);
         unpauseB.draw(g);
-
-        volumeButton.draw(g);
+        audioOptions.draw(g);
     }
 
     public void mouseDragged(MouseEvent e) {
-        if (volumeButton.isMousePressed()) {
-            volumeButton.changeX(e.getX());
-        }
-    }
-
-    public void mouseMoved(MouseEvent e) {
-        // đặt trạng thái trước khi được hover
-        musicButton.setMouseOver(false);
-        sfxButton.setMouseOver(false);
-        menuB.setMouseOver(false);
-        unpauseB.setMouseOver(false);
-        replayB.setMouseOver(false);
-        volumeButton.setMouseOver(false);
-        // kiểm tra xem chuột có đang hover button không
-        if (isIn(e, musicButton)) musicButton.setMouseOver(true);
-        else if (isIn(e, sfxButton)) sfxButton.setMouseOver(true);
-        else if (isIn(e, menuB)) menuB.setMouseOver(true);
-        else if (isIn(e, replayB)) replayB.setMouseOver(true);
-        else if (isIn(e, unpauseB)) unpauseB.setMouseOver(true);
-        else if (isIn(e, volumeButton)) volumeButton.setMouseOver(true);
+        audioOptions.mouseDragged(e);
     }
 
     public void mousePressed(MouseEvent e) {
         // kiểm tra buttom có được tương tác
-        if (isIn(e, musicButton)) musicButton.setMousePressed(true);
-        else if (isIn(e, sfxButton)) sfxButton.setMousePressed(true);
-        else if (isIn(e, menuB)) menuB.setMousePressed(true);
+        if (isIn(e, menuB)) menuB.setMousePressed(true);
         else if (isIn(e, unpauseB)) unpauseB.setMousePressed(true);
         else if (isIn(e, replayB)) replayB.setMousePressed(true);
-        else if (isIn(e, volumeButton)) volumeButton.setMousePressed(true);
+        else audioOptions.mousePressed(e);
     }
 
     public void mouseReleased(MouseEvent e) {
         // kiểm tra chuột có hoàn thành hành động để đặt trạng thái cho button
-        if (isIn(e, musicButton)) {
-            if (musicButton.isMousePressed()) musicButton.setMuted(!musicButton.isMuted());
-        } else if (isIn(e, sfxButton)) {
-            if (sfxButton.isMousePressed()) sfxButton.setMuted(!sfxButton.isMuted());
-        } else if (isIn(e, menuB)) {
-            if (menuB.isMousePressed()) GameState.state = GameState.MENU;
-        } else if (isIn(e, unpauseB)) {
-            if (unpauseB.isMousePressed()) playing.unpauseGame();
+        if (isIn(e, menuB)) {
+            if (menuB.isMousePressed()) {
+                playing.setGameState(GameState.MENU);
+//                playing.unpauseGame();
+            }
         } else if (isIn(e, replayB)) {
             if (replayB.isMousePressed()) {
-                System.out.println("Replay lv!!!");
+//                System.out.println("Replay lvl!!!");
                 playing.resetAll();
 //                playing.unpauseGame();
             }
-        }
+        } else if (isIn(e, unpauseB)) {
+            if (unpauseB.isMousePressed()) playing.unpauseGame();
+        } else
+            audioOptions.mouseReleased(e);
+
         // sau khi thực hiện hoàn tất 1 tương tác thì sẽ reset toàn bộ trạng thái của button
-        musicButton.resetBools();
-        sfxButton.resetBools();
         menuB.resetBools();
         unpauseB.resetBools();
         replayB.resetBools();
-        volumeButton.resetBools();
+    }
+
+    public void mouseMoved(MouseEvent e) {
+        // đặt trạng thái trước khi được hover
+        menuB.setMouseOver(false);
+        unpauseB.setMouseOver(false);
+        replayB.setMouseOver(false);
+
+        // kiểm tra xem chuột có đang hover button không
+        if (isIn(e, menuB)) menuB.setMouseOver(true);
+        else if (isIn(e, replayB)) replayB.setMouseOver(true);
+        else if (isIn(e, unpauseB)) unpauseB.setMouseOver(true);
+        else audioOptions.mouseMoved(e);
     }
 
     public boolean isIn(MouseEvent e, PauseButton b) {

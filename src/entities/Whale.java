@@ -110,10 +110,11 @@ public class Whale extends Enemy {
         return false;
     }
 
-    public void hurt() {
-        currentHealth -= PLAYER_DMG;
-        if (currentHealth <= 0)
+    public void hurt(int value) {
+        currentHealth -= value;
+        if (currentHealth <= 0){
             newState(WHALE_DEAD_HIT);
+        }
         else
             newState(WHALE_HIT);
     }

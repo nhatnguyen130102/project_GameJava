@@ -81,10 +81,11 @@ public class Crabby extends Enemy {
         return false;
     }
 
-    public void hurt() {
-        currentHealth -= PLAYER_DMG;
-        if (currentHealth <= 0)
+    public void hurt(int value) {
+        currentHealth -= value;
+        if (currentHealth <= 0){
             newState(CRABBY_DEAD);
+        }
         else
             newState(CRABBY_HIT);
     }

@@ -1,5 +1,6 @@
 package objects;
 
+import audio.AudioPlayer;
 import entities.Player;
 import gameStates.Playing;
 import levels.Level;
@@ -94,7 +95,6 @@ public class ObjectManager {
     }
 
 
-
     //    private void updateProjectiles(int[][] lvlData, Player player) {
 //        for (Projectile p : projectiles)
 //            if (p.isActive()) {
@@ -129,6 +129,7 @@ public class ObjectManager {
                 if (p.isActive()) {
                     p.updatePos();
                     if (p.getHitbox().intersects(player.getHitBox())) {
+                        playing.getGame().getAudioPlayer().playEffect(AudioPlayer.EXPLODE);
                         player.changeHealth(-25);
                         p.setActive(false);
                     } else if (IsProjectileHittingLevel(p, lvlData))
@@ -230,6 +231,7 @@ public class ObjectManager {
         for (Potion p : potions)
             if (p.isActive())
                 if (hitbox.intersects(p.getHitBox())) {
+                    playing.getGame().getAudioPlayer().playEffect(AudioPlayer.COLLECT_POTION);
                     p.setActive(false);
                     applyEffectToPlayer(p);
                 }
@@ -255,6 +257,7 @@ public class ObjectManager {
                 }
             }
     }
+
     public void checkObjectExplode(Rectangle2D.Float attackbox) {
         for (GameContainer gc : containers)
             if (gc.isActive()) {
