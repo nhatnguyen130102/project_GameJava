@@ -10,13 +10,13 @@ import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static main.Game.SCREEN_WIDTH;
 import static ultilz.Constants.BombTiles.*;
-import static ultilz.Constants.Projectiles.SPEED;
 import static ultilz.HelpMethods.*;
 
 
 public class Bomb {
-    private final boolean jump = true;
+    private boolean jump = true;
     private float bounce;
     private boolean isActive = true;
     private boolean isExplode = false;
@@ -30,33 +30,27 @@ public class Bomb {
     private final int framesSpeed = 25;
     private int framesIndex;
     private final int[][] lvlData;
-    private float airSpeed = 0f; // van toc roi cua vat the v0 -> vN
-    private final float gravity = 0.04f * Game.SCALE; // luc hap dan______gia toc trong truong
-    private float jumpSpeed; // do cao khi nhay cua vat the -5.25f * Game.SCALE
-    private final float fallSpeedAfterCollision = Game.SCALE; // toc do roi khi cham phai tile o phia tren
-    boolean inAir = false; // trang thai cua vat the
-    private boolean moving;
-    private final int timeToExplode = 2000;// 2s
-    private float previousX;
-    private float previousY;
+    protected float airSpeed = 0f;
+    private final float gravity = 0.04f * Game.SCALE;
+    public float jumpSpeed;
+    private final float fallSpeedAfterCollision = Game.SCALE;
+    boolean inAir = false;
+    private final int timeToExplode = 3000;
     private Timer explodeTimer;
     private float BombSpeed;
     private final Playing playing;
 
-    public Bomb(Player player, int[][] lvlData, Playing playing, float jumpSpeed) {
+    public Bomb(Player player, int[][] lvlData, Playing playing, float jumpSpeed, float bombSpeed) {
         this.player = player;
         this.lvlData = lvlData;
         this.playing = playing;
         this.jumpSpeed = jumpSpeed;
-
         dir = player.getDir();
         hitbox = new Rectangle2D.Float(player.getHitBox().x, player.getHitBox().y, HB_BOMB_WIDTH, HB_BOMB_HEIGHT);
-
         loadImg();
-        previousY = (int) hitbox.y + 1;
-        previousX = (int) hitbox.x + 1;
         startExplodeTimer();
-        BombSpeed = 0.75f;
+        BombSpeed = bombSpeed;
+
     }
 
     private void startExplodeTimer() {
@@ -71,17 +65,27 @@ public class Bomb {
         }, timeToExplode);  // 2000 milliseconds = 2 seconds
     }
 
+
     public void update() {
-        moving = checkIfMoving();
         setAnimation();
         updatePos();
         updateFramesTick();
     }
 
+
+    public void newBombState() {
+        inAir = false;
+        bounce = 0;
+        jumpSpeed = -1.5f;
+        BombSpeed = 1f;
+    }
+
     private void checkExplode() {
         playing.checkEmenyExplode(explodeHitbox);
         playing.checkObjectExplode(explodeHitbox);
+        playing.checkPlayerExplode(explodeHitbox);
     }
+
 
     private void loadImg() {
         BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.BOMB_SPRITE);
@@ -135,17 +139,14 @@ public class Bomb {
 
     private void updatePos() {
         if (!isExplode) {
-            if (jump)
+            if (jump) {
                 jump();
-
+            }
             float xSpeed = 0;
-
-            if (dir == -1)
+            if (dir == -1)//left
                 xSpeed -= BombSpeed;
-
-            if (dir == 1)
+            if (dir == 1)//right
                 xSpeed += BombSpeed;
-
             if (!inAir)
                 if (!IsEntityOnFloor(hitbox, lvlData))
                     inAir = true;
@@ -156,31 +157,33 @@ public class Bomb {
                     udateXPos(xSpeed);
                 } else {
                     hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
-                    if (airSpeed >= 0){
+                    if (airSpeed >= 0)
                         resetInAir();
-                    }
                     else
                         airSpeed = fallSpeedAfterCollision;
                 }
-            } else
+            } else {
                 udateXPos(xSpeed);
+            }
         }
     }
 
-    private boolean checkIfMoving() {
-        boolean moving = hitbox.x != previousX && hitbox.y != previousY;
-        previousX = hitbox.x;
-        previousY = hitbox.y;
-        return moving;
-    }
 
     private void jump() {
         if (inAir) {
             return;
         }  // kiem tra trang thai cua vat the, han che vat the co the nhay nhieu lan tren khong
         inAir = true; // dat lai trang thai cho vat the
-        bounce += 0.2;
-        airSpeed = jumpSpeed + bounce ; // dat lai toc do roi cua vat the
+
+        airSpeed = jumpSpeed; // dat lai toc do roi cua vat the
+        if(airSpeed < 0){
+            bounce += 0.3f;
+            if(bounce >= 2){
+                bounce = 4;
+            }
+            airSpeed += bounce;
+        }
+
     }
 
     private void resetInAir() {
@@ -189,9 +192,9 @@ public class Bomb {
     }
 
     private void udateXPos(float xSpeed) {
-        if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData))// kiểm tra vị trí nhân vật sắp di chuyển có chạm tile collision = true ?
+        if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {// kiểm tra vị trí nhân vật sắp di chuyển có chạm tile collision = true ?
             hitbox.x += xSpeed;
-        else {
+        } else {
             changDir();
         }
     }
@@ -199,11 +202,12 @@ public class Bomb {
 
     private void setAnimation() {
         int startFrame = bombAction;
-        if (moving) {
-            bombAction = BOMB_OFF;
-        } else {
-            bombAction = BOMB_ON;
-        }
+//        if (moving) {
+//            bombAction = BOMB_OFF;
+//        } else {
+//            bombAction = BOMB_ON;
+//        }
+        bombAction = BOMB_ON;
         if (isExplode) {
             bombAction = BOMB_EXPLOTION;
             if (startFrame != BOMB_EXPLOTION) {
@@ -235,5 +239,19 @@ public class Bomb {
             }
         }
     }
+    protected Rectangle2D.Float getExplodeHitbox(){
+        return explodeHitbox;
+    }
+    protected boolean canKickBomb() {
+        return player.getAttackBox().intersects(hitbox);
+    }
 
+    protected void checkBombDir() {
+        if (player.getDir() == -1) {
+            dir = -1;
+        }
+        if (player.getDir() == 1) {
+            dir = 1;
+        }
+    }
 }

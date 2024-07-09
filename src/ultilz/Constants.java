@@ -289,6 +289,8 @@ public class Constants {
                     return 26;
                 case HIT:
                     return 8;
+                case DEAD_GROUND:
+                    return 4;
                 case JUMP:
                 case FALLING:
                 case ATTACK:

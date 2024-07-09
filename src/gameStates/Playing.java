@@ -55,6 +55,8 @@ public class Playing extends State implements StateMethods {
     private boolean lvlCompleted = false;
     private long startTime;
     private float jumpSpeed;
+    private float bombSpeed;
+
 
     public Playing(Game game) {
         super(game);
@@ -64,6 +66,7 @@ public class Playing extends State implements StateMethods {
         loadSmallCloud();
         initEnviroments();
         setDrawRainBoolean();
+        setGameState(GameState.MENU);
 
     }
 
@@ -247,6 +250,10 @@ public class Playing extends State implements StateMethods {
         objectManager.checkObjectExplode(explodeBox);
     }
 
+    public void checkPlayerExplode(Rectangle2D.Float explodeBox) {
+        player.checkPlayerExplode(explodeBox);
+    }
+
     public void checkPotionTouched(Rectangle2D.Float hitBox) {
         objectManager.checkObjectTouched(hitBox);
     }
@@ -259,12 +266,11 @@ public class Playing extends State implements StateMethods {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (!gameOver)
-            if (!paused) {
-                if (e.getButton() == MouseEvent.BUTTON1) {
-
+            if (!paused && !lvlCompleted) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    player.setKicking(true);
                 }
             }
-
     }
 
     @Override
@@ -275,8 +281,11 @@ public class Playing extends State implements StateMethods {
             } else if (lvlCompleted) {
                 levelCompleteOverlay.mousePressed(e);
             } else if (!paused && !lvlCompleted) {
-                startTime = System.currentTimeMillis();
-                jumpSpeed = 0;
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    startTime = System.currentTimeMillis();
+                    jumpSpeed = 0;
+                    bombSpeed = 0;
+                }
             }
         } else gameOverOverlay.mousePressed(e);
     }
@@ -289,13 +298,20 @@ public class Playing extends State implements StateMethods {
             else if (lvlCompleted)
                 levelCompleteOverlay.mouseReleased(e);
             else if (!paused && !lvlCompleted) {
-                long elapsedTime = System.currentTimeMillis() - startTime;
-                jumpSpeed -= elapsedTime / 100f;
-                if (jumpSpeed <= -3) {
-                    jumpSpeed = -3;
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    long elapsedTime = System.currentTimeMillis() - startTime;
+                    jumpSpeed -= elapsedTime / 100f;
+                    bombSpeed += elapsedTime / 1000f;
+                    if (jumpSpeed <= -2) {
+                        jumpSpeed = -2;
+                    }
+                    if (bombSpeed >= 1.5) {
+                        bombSpeed = 1.5f;
+                    }
+                    player.setAttacking(true);
+                    player.createBomb(jumpSpeed, bombSpeed);
+
                 }
-                player.setAttacking(true);
-                player.createBomb(jumpSpeed);
             }
         } else gameOverOverlay.mouseReleased(e);
     }
@@ -314,7 +330,7 @@ public class Playing extends State implements StateMethods {
     public void keyPressed(KeyEvent e) {
         if (gameOver)
             gameOverOverlay.keyPressed(e);
-        else
+        else if(!player.getIsExplode())
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_J -> {
 
@@ -322,14 +338,18 @@ public class Playing extends State implements StateMethods {
                 case KeyEvent.VK_A -> player.setLeft(true);
                 case KeyEvent.VK_D -> player.setRight(true);
                 case KeyEvent.VK_SPACE -> player.setJump(true);
+            }
+        if(!gameOver) {
+            switch (e.getKeyCode()){
                 case KeyEvent.VK_BACK_SPACE -> GameState.state = GameState.MENU;
                 case KeyEvent.VK_ESCAPE -> paused = !paused;
             }
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (!gameOver)
+        if (!gameOver && !player.getIsExplode())
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_J -> {
 

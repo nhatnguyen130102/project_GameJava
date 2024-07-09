@@ -18,7 +18,7 @@ public class Whale extends Enemy {
 
     public Whale(float x, float y) {
         super(x, y, WHALE_WIDTH, WHALE_HEIGHT, WHALE);
-        initHitBox(x, y, (int) (HB_WHALE_WIDTH ), HB_WHALE_HEIGHT );
+        initHitBox(x, y, (int) (HB_WHALE_WIDTH), HB_WHALE_HEIGHT);
         initAttackBox();
     }
 
@@ -112,11 +112,12 @@ public class Whale extends Enemy {
 
     public void hurt(int value) {
         currentHealth -= value;
-        if (currentHealth <= 0){
+        if (currentHealth <= 0)
             newState(WHALE_DEAD_HIT);
-        }
         else
             newState(WHALE_HIT);
     }
+    public void swalow(){
 
+    }
 }

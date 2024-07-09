@@ -17,8 +17,8 @@ import static ultilz.Constants.ObjectConstants.*;
 public class HelpMethods {
     public static boolean CanMoveHere(float x, float y, float width, float height, int[][] lvlData) {// kiem tra co the di chuyen
         if (!IsSolid(x, y, lvlData))
-            if (!IsSolid(x + width, y + height, lvlData))
-                if (!IsSolid(x + width, y, lvlData))
+            if (!IsSolid(x + width , y + height, lvlData))
+                if (!IsSolid(x + width , y, lvlData))
                     return !IsSolid(x, y + height, lvlData);
         return false;
     }
@@ -36,7 +36,11 @@ public class HelpMethods {
             return currentTile * Game.TILE_SIZE;
         }
     }
-
+    public static void BombInWall(Bomb b, int[][]lvlData){
+        if(IsSolid(b.getHitbox().x +b.getHitbox().width,b.getHitbox().y,lvlData)){
+            b.getHitbox().x -= 5*Game.SCALE;
+        }
+    }
     // nếu nhân vật chạm vào tile collsion = true => trả về vị trí duy nhất mà nhân vật có thể đứng (bên trên bên dưới)
     public static float GetEntityYPosUnderRoofOrAboveFloor(Rectangle2D.Float hitBox, float airSpeed) {
         int currentTile = (int) (hitBox.y / Game.TILE_SIZE);
@@ -44,7 +48,7 @@ public class HelpMethods {
             //Falling
             int tileYPos = currentTile * Game.TILE_SIZE;
             int yOffset = (int) (Game.TILE_SIZE - hitBox.height);
-            return tileYPos + yOffset - 1;
+            return tileYPos + yOffset -1;
         } else {
             //Jumping
             return currentTile * Game.TILE_SIZE;
@@ -53,20 +57,16 @@ public class HelpMethods {
 
     // kiểm tra nhân vật có đang đứng trên mặt đất hay không
     public static boolean IsEntityOnFloor(Rectangle2D.Float hitBox, int[][] lvlData) {
-        // dau tien kiem tra phia duoi ben trai co tile hay khong, neu co thi return true,
-        // neu khong thi kiem tra phia duoi ben phai co tile hay khong, neu co thi return true neu khong thi return false
-        // (nghia la nhan vat inAir, khi nay se xu li khi state == inAir)
-        if (!IsSolid(hitBox.x, hitBox.y + hitBox.height + 1, lvlData))
+        if (!IsSolid(hitBox.x , hitBox.y + hitBox.height + 1, lvlData))
             return IsSolid(hitBox.x + hitBox.width, hitBox.y + hitBox.height + 1, lvlData);
-
         return true;
     }
 
-    public static boolean IsBombChangDir(Rectangle2D.Float hitBox, int[][] lvlData) {
-        if (IsSolid(hitBox.x, hitBox.y, lvlData)) {
+    public static boolean IsChangDir(Rectangle2D.Float hitBox, int[][] lvlData) {
+        if (IsSolid(hitBox.x - 1 , hitBox.y, lvlData)) {
             return true;
         }
-        if (IsSolid(hitBox.x + hitBox.width, hitBox.y, lvlData)) {
+        if (IsSolid(hitBox.x + hitBox.width + 1, hitBox.y, lvlData)) {
             return true;
         }
         return false;

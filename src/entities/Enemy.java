@@ -105,6 +105,12 @@ public abstract class Enemy extends Entity {
         else
             walkDir = LEFT;
     }
+    protected void turnTowardsBomb(Bomb bomb) {
+        if (bomb.getHitbox().x > hitBox.x)
+            walkDir = RIGHT;
+        else
+            walkDir = LEFT;
+    }
     protected void newState(int enemyState) {
         this.enemyState = enemyState;
         frameTick = 0;
@@ -124,7 +130,6 @@ public abstract class Enemy extends Entity {
         int absValue = (int) Math.abs(player.hitBox.x - hitBox.x);
         return absValue <= attackDistance * 5; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
     }
-
 
 
     protected void changeWalkDir() {
