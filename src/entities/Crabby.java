@@ -45,8 +45,13 @@ public class Crabby extends Enemy {
             switch (enemyState) {
                 case CRABBY_IDLE -> newState(CRABBY_RUNNING);
                 case CRABBY_RUNNING -> {
-                    if (canSeePlayer(lvlData, player))
+                    if (canSeePlayer(lvlData, player)){
                         turnTowardsPlayer(player);
+                        setStartBehaviorState(true);
+                    }
+                    else{
+                        setStartBehaviorState(false);
+                    }
                     if (isPlayerCloseForAttack(player))
                         newState(CRABBY_ATTACK);
                     move(lvlData);

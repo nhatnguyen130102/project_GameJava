@@ -58,9 +58,11 @@ public class Bomb {
         explodeTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                setExplode(true);
-                explodeHitbox = new Rectangle2D.Float(hitbox.x - BOMB_DRAW_OFFSET_X, hitbox.y - BOMB_DRAW_OFFSET_Y / 2, hitbox.width * 3, hitbox.height * 2);
-                checkExplode();
+                if(isActive){
+                    setExplode(true);
+                    explodeHitbox = new Rectangle2D.Float(hitbox.x - BOMB_DRAW_OFFSET_X, hitbox.y - BOMB_DRAW_OFFSET_Y / 2, hitbox.width * 3, hitbox.height * 2);
+                    checkExplode();
+                }
             }
         }, timeToExplode);  // 2000 milliseconds = 2 seconds
     }
@@ -85,7 +87,6 @@ public class Bomb {
         playing.checkObjectExplode(explodeHitbox);
         playing.checkPlayerExplode(explodeHitbox);
     }
-
 
     private void loadImg() {
         BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.BOMB_SPRITE);

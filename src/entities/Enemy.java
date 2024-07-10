@@ -25,6 +25,9 @@ public abstract class Enemy extends Entity {
     protected int currentHealth;
     protected boolean active = true;
     protected boolean attackChecked;
+    protected boolean swallowed;
+    protected int behaviorState;
+    protected boolean startBehaviorState;
 
     public Enemy(float x, float y, int width, int height, int enemyTpye) {
         super(x, y, width, height);
@@ -41,16 +44,16 @@ public abstract class Enemy extends Entity {
             frameIndex++;
             if (frameIndex >= GetSpriteAmount(enemyTpye, enemyState)) {
                 frameIndex = 0;
-                switch (enemyTpye){
+                switch (enemyTpye) {
                     case CRABBY -> {
                         switch (enemyState) {
                             case CRABBY_ATTACK, CRABBY_HIT -> enemyState = CRABBY_IDLE;
                             case CRABBY_DEAD -> active = false;
                         }
                     }
-                    case WHALE ->{
+                    case WHALE -> {
                         switch (enemyState) {
-                            case WHALE_ATTACK, WHALE_HIT -> enemyState = WHALE_IDLE;
+                            case WHALE_ATTACK, WHALE_HIT, WHALE_SWALOW -> enemyState = WHALE_IDLE;
                             case WHALE_DEAD_HIT -> active = false;
                         }
                     }
@@ -61,10 +64,16 @@ public abstract class Enemy extends Entity {
     }
 
     protected void checkEnemyHit(Rectangle2D.Float attackBox, Player player) {
-        if (attackBox.intersects(player.hitBox)){
+        if (attackBox.intersects(player.hitBox)) {
             player.changeHealth(-GetEnemyDmg(enemyTpye));
         }
         attackChecked = true;
+    }
+
+    protected void checkEnemyHitBomb(Rectangle2D.Float attackBox, Bomb bomb) {
+        if (attackBox.intersects(bomb.getHitbox()))
+            bomb.setActive(false);
+        swallowed = true;
     }
 
     protected void firstUpdateChecked(int[][] lvlData) {
@@ -99,18 +108,25 @@ public abstract class Enemy extends Entity {
         changeWalkDir();
     }
 
+    protected void changWalkSpeed(float value) {
+        walkSpeed = value * Game.SCALE;
+    }
+
+    //temp
+    protected void turnTowardBomb(Bomb bomb) {
+        if (bomb.getHitbox().x > hitBox.x)
+            walkDir = RIGHT;
+        else
+            walkDir = LEFT;
+    }
+
     protected void turnTowardsPlayer(Player player) {
         if (player.hitBox.x > hitBox.x)
             walkDir = RIGHT;
         else
             walkDir = LEFT;
     }
-    protected void turnTowardsBomb(Bomb bomb) {
-        if (bomb.getHitbox().x > hitBox.x)
-            walkDir = RIGHT;
-        else
-            walkDir = LEFT;
-    }
+
     protected void newState(int enemyState) {
         this.enemyState = enemyState;
         frameTick = 0;
@@ -120,9 +136,28 @@ public abstract class Enemy extends Entity {
     protected boolean canSeePlayer(int[][] lvlData, Player player) {
         int playerTileY = (int) (player.getHitBox().y / Game.TILE_SIZE);
         if (playerTileY == tileY)
-            if (isPlayerInRange(player))
-                return isSightClear(lvlData, hitBox, player.hitBox, tileY);
+            if (isPlayerInRange(player)) {
+                if (isSightClear(lvlData, hitBox, player.hitBox, tileY)) {
+                    startBehaviorState = true;
+                    return true;
+                }
+            }
         return false;
+    }
+
+    //temp
+    protected boolean canSeeBomb(int[][] lvlData, Bomb bomb) {
+        int playerTileY = (int) (bomb.getHitbox().y / Game.TILE_SIZE);
+        if (playerTileY == tileY)
+            if (isBombInRange(bomb))
+                return isSightClear(lvlData, hitBox, bomb.getHitbox(), tileY);
+        return false;
+    }
+
+    //temp
+    protected boolean isBombInRange(Bomb bomb) {
+        int absValue = (int) Math.abs(bomb.getHitbox().x - hitBox.x);
+        return absValue <= attackDistance * 1; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
     }
 
     private boolean isPlayerInRange(Player player) {
@@ -147,10 +182,29 @@ public abstract class Enemy extends Entity {
         return enemyState;
     }
 
+    public void setEnemyState(int enemyState) {
+        this.enemyState = enemyState;
+    }
+
     public boolean isActive() {
         return active;
     }
 
+    public int getBehaviorState() {
+        return behaviorState;
+    }
+
+    public void setBehaviorState(int behaviorState) {
+        this.behaviorState = behaviorState;
+    }
+
+    public boolean getStartBehaviorState() {
+        return startBehaviorState;
+    }
+
+    public void setStartBehaviorState(boolean startBehaviorState) {
+        this.startBehaviorState = startBehaviorState;
+    }
 
     public void drawHitBox(Graphics g, int lvlOffset) {
         g.setColor(Color.pink);

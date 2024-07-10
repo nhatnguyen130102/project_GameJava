@@ -6,6 +6,7 @@ import effects.Rain;
 import entities.Bomb;
 import entities.EnemyManager;
 import entities.Player;
+import entities.Whale;
 import levels.LevelManager;
 import main.Game;
 import objects.ObjectManager;
@@ -20,6 +21,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Random;
 
 import static ultilz.Constants.Enviroment.*;
@@ -29,6 +31,7 @@ public class Playing extends State implements StateMethods {
     private LevelManager levelManager;
     private Player player;
     private Bomb bomb;
+    private ArrayList<Bomb> bombs;
     private EnemyManager enemyManager;
     private PauseOverLay pauseOverLay;
     private GameOverOverlay gameOverOverlay;
@@ -95,7 +98,6 @@ public class Playing extends State implements StateMethods {
 
     private void loadStartLevel() {
         objectManager.loadObject(levelManager.getCurrentLevel());
-
         enemyManager.loadEnemies(levelManager.getCurrentLevel());
     }
 
@@ -119,7 +121,6 @@ public class Playing extends State implements StateMethods {
     private void initClasses() {
         levelManager = new LevelManager(game); // khởi tạo map môi trường
         objectManager = new ObjectManager(this);
-
         enemyManager = new EnemyManager(this);// khởi tạo quái vật
         player = new Player(100, 300, PLAYER_WIDTH, PLAYER_HEIGHT, this);// khởi tạo character
         player.setSpawn(levelManager.getCurrentLevel().getPlayerSpawn());
@@ -147,7 +148,8 @@ public class Playing extends State implements StateMethods {
             levelManager.update();
             objectManager.update(levelManager.getCurrentLevel().getLevelData(), player);
             player.update();
-            enemyManager.update(levelManager.getCurrentLevel().getLevelData(), player);
+            bombs = player.getBombs();
+            enemyManager.update(levelManager.getCurrentLevel().getLevelData(), player,bombs);
             CheckCloseToBorderX();
             CheckCloseToBorderY();
         }
@@ -330,7 +332,7 @@ public class Playing extends State implements StateMethods {
     public void keyPressed(KeyEvent e) {
         if (gameOver)
             gameOverOverlay.keyPressed(e);
-        else if(!player.getIsExplode())
+        else if (!player.getIsExplode())
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_J -> {
 
@@ -339,8 +341,8 @@ public class Playing extends State implements StateMethods {
                 case KeyEvent.VK_D -> player.setRight(true);
                 case KeyEvent.VK_SPACE -> player.setJump(true);
             }
-        if(!gameOver) {
-            switch (e.getKeyCode()){
+        if (!gameOver) {
+            switch (e.getKeyCode()) {
                 case KeyEvent.VK_BACK_SPACE -> GameState.state = GameState.MENU;
                 case KeyEvent.VK_ESCAPE -> paused = !paused;
             }

@@ -111,23 +111,24 @@ public class HelpMethods {
         return value >= 48 || value < 0 || value != 11;
     }
 
-    public static boolean IsAllTileWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
-        for (int i = 0; i < xEnd - xStart; i++) {
-            if (IsTileSolid(xStart + i, y, lvlData))
-                return false;
-            if (!IsTileSolid(xStart + i, y + i, lvlData))
-                return false;
-        }
+    public static boolean IsAllTilesWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
+        if (IsAllTilesClear(xStart, xEnd, y, lvlData))
+            for (int i = 0; i < xEnd - xStart; i++) {
+                if (!IsTileSolid(xStart + i, y + 1, lvlData))
+                    return false;
+            }
         return true;
     }
 
     public static boolean isSightClear(int[][] lvlData, Rectangle2D.Float hbEnemy, Rectangle2D.Float hbPlayer, int tileY) {
         int enemyXTile = (int) (hbEnemy.x / Game.TILE_SIZE);
         int playerXTile = (int) (hbPlayer.x / Game.TILE_SIZE);
-        if (enemyXTile > playerXTile)
-            return IsAllTileWalkable(playerXTile, enemyXTile, tileY, lvlData);
-        else
-            return IsAllTileWalkable(enemyXTile, playerXTile, tileY, lvlData);
+        if (enemyXTile > playerXTile){
+            return IsAllTilesWalkable(playerXTile, enemyXTile, tileY, lvlData);
+        }
+        else {
+            return IsAllTilesWalkable(enemyXTile, playerXTile, tileY, lvlData);
+        }
     }
 
     public static int[][] GetLevelData(BufferedImage img) {
@@ -158,12 +159,6 @@ public class HelpMethods {
     public static boolean IsProjectileHittingLevel(Projectile p, int[][] lvlData) {
         return IsSolid(p.getHitbox().x + p.getHitbox().width - 5 * Game.SCALE, p.getHitbox().y + p.getHitbox().height - 5 * Game.SCALE, lvlData);
     }
-
-    public static boolean IsBombHittingLevel(Bomb bomb, int[][] lvlData) {
-        return IsSolid(bomb.getHitbox().x + bomb.getHitbox().width - 5 * Game.SCALE, bomb.getHitbox().y + bomb.getHitbox().height - 5 * Game.SCALE, lvlData);
-
-    }
-
     public static boolean IsAllTilesClear(int xStart, int xEnd, int y, int[][] lvlData) {
         for (int i = 0; i < xEnd - xStart; i++)
             if (IsTileSolid(xStart + i, y, lvlData))

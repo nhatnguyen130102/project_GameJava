@@ -3,6 +3,23 @@ package ultilz;
 import main.Game;
 
 public class Constants {
+    public static class BehaviorOpening{
+        public static final int BEHAVIOR_OPENING = 1;
+        public static final int BEHAVIOR_OPENING_WIDTH_DEFAULT = 20;
+        public static final int BEHAVIOR_OPENING_HEIGHT_DEFAULT = 22;
+        public static final int BEHAVIOR_OPENING_WIDTH = (int) (BEHAVIOR_OPENING_WIDTH_DEFAULT * Game.SCALE);
+        public static final int BEHAVIOR_OPENING_HEIGHT = (int) (BEHAVIOR_OPENING_HEIGHT_DEFAULT * Game.SCALE);
+
+
+    }
+    public static class BehaviorClosing{
+        public static final int BEHAVIOR_CLOSING = 1;
+        public static final int BEHAVIOR_CLOSING_WIDTH_DEFAULT = 20;
+        public static final int BEHAVIOR_CLOSING_HEIGHT_DEFAULT = 22;
+        public static final int BEHAVIOR_CLOSING_WIDTH = (int) (BEHAVIOR_CLOSING_WIDTH_DEFAULT * Game.SCALE);
+        public static final int BEHAVIOR_CLOSING_HEIGHT = (int) (BEHAVIOR_CLOSING_HEIGHT_DEFAULT * Game.SCALE);
+
+    }
     public static class BombTiles {
         // Bomb info
         public static final int BOMB = 2;
@@ -125,8 +142,8 @@ public class Constants {
         public static final int WHALE_HEIGHT = (int) (WHALE_HEIGHT_DEFAULT * Game.SCALE);
         public static final int HB_WHALE_WIDTH_DEFAULT = 50;//size co ban cua hitbox
         public static final int HB_WHALE_HEIGHT_DEFAULT = 40;
-        public static final int HB_WHALE_WIDTH = (int) (HB_WHALE_WIDTH_DEFAULT * Game.SCALE * 1.5);
-        public static final int HB_WHALE_HEIGHT = (int) (HB_WHALE_HEIGHT_DEFAULT * Game.SCALE) + 23;
+        public static final int HB_WHALE_WIDTH = (int) (HB_WHALE_WIDTH_DEFAULT * Game.SCALE );
+        public static final int HB_WHALE_HEIGHT = (int) (HB_WHALE_HEIGHT_DEFAULT * Game.SCALE);
         public static final int WHALE_DRAW_OFFSET_X = (int) (3 * Game.SCALE);//lech trai
         public static final int WHALE_DRAW_OFFSET_Y = (int) (4 * Game.SCALE);//lech tren
         public static final int WHALE_MAX_HEALTH = 100;

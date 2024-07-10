@@ -570,4 +570,7 @@ public class Player extends Entity {
             updateXPos(xSpeed);
         moving = true;
     }
+    public ArrayList<Bomb> getBombs(){
+        return bombs;
+    }
 }
