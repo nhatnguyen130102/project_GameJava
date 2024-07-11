@@ -23,9 +23,11 @@ public class ObjectManager {
     private BufferedImage[][] potionImgs, containerImgs, bombImgs;
     private BufferedImage[] cannonImgs;
     private BufferedImage cannonBallImg;
+    private BufferedImage spikeImg;
     private ArrayList<Potion> potions;
     private ArrayList<GameContainer> containers;
     private ArrayList<Cannon> cannons;
+    private ArrayList<Spike> spikes;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
 
 
@@ -38,6 +40,7 @@ public class ObjectManager {
         potions = new ArrayList<>(newLevel.getPotions());
         containers = new ArrayList<>(newLevel.getContainer());
         cannons = newLevel.getCannons();
+        spikes = new ArrayList<>(newLevel.getSpikes());
         projectiles.clear();
     }
 
@@ -71,6 +74,8 @@ public class ObjectManager {
         }
 
         cannonBallImg = LoadSave.GetSpriteAtlas(LoadSave.BALL_IMG);
+
+        spikeImg = LoadSave.GetSpriteAtlas(LoadSave.SPIKE_IMG);
 
         BufferedImage bombSprite = LoadSave.GetSpriteAtlas(LoadSave.BOMB_SPRITE);
         int colBomb = bombSprite.getWidth() / BOMB_WIDTH_DEFAULT;
@@ -162,10 +167,13 @@ public class ObjectManager {
         return absValue <= Game.TILE_SIZE * 5;
     }
 
+
+
     public void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
         drawPotions(g, xLvlOffset, yLvlOffset);
         drawContainer(g, xLvlOffset, yLvlOffset);
         drawCannon(g, xLvlOffset, yLvlOffset);
+        drawSpikes(g, xLvlOffset, yLvlOffset);
         drawProjectile(g, xLvlOffset, yLvlOffset);
     }
 
@@ -189,6 +197,15 @@ public class ObjectManager {
 
             g.drawImage(cannonImgs[c.getFrameIndex()], x, (int) (c.getHitBox().y - yLvlOffset + CANNON_DRAW_OFFSET_Y), width, CANNON_HEIGHT, null);
 
+        }
+    }
+
+    private void drawSpikes(Graphics g, int xLvlOffset, int yLvlOffset) {
+        for (Spike s : spikes) {
+            int x = (int) (s.getHitBox().x - xLvlOffset);
+            int y = (int) (s.getHitBox().y - yLvlOffset - SPIKE_DRAW_OFFSET_Y);
+
+            g.drawImage(spikeImg, x, y, SPIKE_WIDTH, SPIKE_HEIGHT, null);
         }
     }
 
@@ -225,6 +242,12 @@ public class ObjectManager {
                             POTION_HEIGHT,
                             null);
             }
+    }
+
+    public void checkSpikesTouched(Rectangle2D.Float hitbox) {
+        for (Spike s : spikes)
+            if (hitbox.intersects(s.getHitBox()))
+                playing.getPlayer().changeHealth(SPIKE_DMG);
     }
 
     public void checkObjectTouched(Rectangle2D.Float hitbox) {

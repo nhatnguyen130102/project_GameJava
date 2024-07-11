@@ -79,8 +79,10 @@ public class Player extends Entity {
         updateHealthBar();
         updateAttackBox();
         updatePos();
-        if (moving)
+        if (moving) {
             checkPotionTouched();
+            checkSpikesTouched();
+        }
         if (attacking)
             checkAttack();
         updateFramesTick();
@@ -169,6 +171,10 @@ public class Player extends Entity {
 
     private void checkPotionTouched() {
         playing.checkPotionTouched(hitBox);
+    }
+
+    private void checkSpikesTouched() {
+        playing.checkSpikesTouched(hitBox);
     }
 
     // pirate

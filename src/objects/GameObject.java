@@ -50,16 +50,13 @@ public class GameObject {
             }
         }
     }
+
     public void reset(){
         frameIndex = 0;
         frameTick = 0;
         active = true;
 
-        if(objType == BARREL || objType == BOX || objType == CANNON_LEFT || objType == CANNON_RIGHT)
-            doAnimation = false;
-        else
-            doAnimation = true;
-
+        doAnimation = objType != BARREL && objType != BOX && objType != CANNON_LEFT && objType != CANNON_RIGHT;
     }
 
     public int getObjType() {

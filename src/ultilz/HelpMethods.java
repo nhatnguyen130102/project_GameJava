@@ -159,6 +159,7 @@ public class HelpMethods {
     public static boolean IsProjectileHittingLevel(Projectile p, int[][] lvlData) {
         return IsSolid(p.getHitbox().x + p.getHitbox().width - 5 * Game.SCALE, p.getHitbox().y + p.getHitbox().height - 5 * Game.SCALE, lvlData);
     }
+
     public static boolean IsAllTilesClear(int xStart, int xEnd, int y, int[][] lvlData) {
         for (int i = 0; i < xEnd - xStart; i++)
             if (IsTileSolid(xStart + i, y, lvlData))
@@ -230,6 +231,21 @@ public class HelpMethods {
 
                 if (value == CANNON_LEFT || value == CANNON_RIGHT) {
                     list.add(new Cannon(i * Game.TILE_SIZE, j * Game.TILE_SIZE, value));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
+                }
+            }
+        }
+        return list;
+    }
+
+    public static ArrayList<Spike> GetSpikes(BufferedImage img) {
+        ArrayList<Spike> list = new ArrayList<>();
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getBlue();
+
+                if (value == SPIKE) {
+                    list.add(new Spike(i * Game.TILE_SIZE, j * Game.TILE_SIZE, SPIKE));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
                 }
             }
         }

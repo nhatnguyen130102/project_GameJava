@@ -260,6 +260,10 @@ public class Playing extends State implements StateMethods {
         objectManager.checkObjectTouched(hitBox);
     }
 
+    public void checkSpikesTouched(Rectangle2D.Float hitBox) {
+        objectManager.checkSpikesTouched(hitBox);
+    }
+
     public void setLevelCompleted(boolean levelCompleted) {
         this.lvlCompleted = levelCompleted;
         if (levelCompleted) game.getAudioPlayer().lvlCompleted();

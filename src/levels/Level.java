@@ -6,6 +6,7 @@ import main.Game;
 import objects.Cannon;
 import objects.GameContainer;
 import objects.Potion;
+import objects.Spike;
 import ultilz.HelpMethods;
 
 import java.awt.*;
@@ -22,6 +23,7 @@ public class Level {
     private ArrayList<Potion> potions;
     private ArrayList<GameContainer> containers;
     private ArrayList<Cannon> cannons;
+    private ArrayList<Spike> spikes;
 
     private int lvlTilesWideX;// Độ dài tối đa của map hiện tại ( toạ độ )
     private int lvlTilesWideY;// Độ cao tối đa của map hiện tại ( toạ độ )
@@ -38,6 +40,7 @@ public class Level {
         createEnemies();
         createPotions();
         createCannons();
+        createSpikes();
         createContainers();
         calcLvlOffsets();
         calcPlayerSpawn();
@@ -47,6 +50,11 @@ public class Level {
     private void createCannons() {
         cannons = HelpMethods.GetCannons(img);
     }
+
+    private void createSpikes() {
+        spikes = HelpMethods.GetSpikes(img);
+    }
+
     private void createContainers() {
         containers = HelpMethods.GetContainers(img);
     }
@@ -110,5 +118,8 @@ public class Level {
     }
     public ArrayList<Cannon> getCannons(){
         return cannons;
+    }
+    public ArrayList<Spike> getSpikes(){
+        return spikes;
     }
 }
