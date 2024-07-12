@@ -7,6 +7,7 @@ import main.Game;
 import objects.Cannon;
 import objects.GameContainer;
 import objects.Potion;
+import objects.Spike;
 import ultilz.HelpMethods;
 
 import java.awt.*;
@@ -33,7 +34,7 @@ public class Level {
     private int maxLvlOffsetX;// Độ dài ( toạ độ x tilesize ) của phần thừa
     private int maxLvlOffsetY;// Độ dài ( toạ độ x tilesize ) của phần thừa
     private Point playerSpawn;
-
+    private ArrayList<Spike> spikes;
 
     public Level(BufferedImage img){
         this.img = img;
@@ -44,9 +45,12 @@ public class Level {
         createContainers();
         calcLvlOffsets();
         calcPlayerSpawn();
+        createSpikes();
 
     }
-
+    private void createSpikes() {
+        spikes = HelpMethods.GetSpikes(img);
+    }
     private void createCannons() {
         cannons = HelpMethods.GetCannons(img);
     }
@@ -118,5 +122,8 @@ public class Level {
 
     public ArrayList<Captain> getCaptain() {
         return captains;
+    }
+    public ArrayList<Spike> getSpikes(){
+        return spikes;
     }
 }

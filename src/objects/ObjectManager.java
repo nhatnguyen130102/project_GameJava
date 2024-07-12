@@ -27,7 +27,8 @@ public class ObjectManager {
     private ArrayList<GameContainer> containers;
     private ArrayList<Cannon> cannons;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
-
+    private BufferedImage spikeImg;
+    private ArrayList<Spike> spikes;
 
     public ObjectManager(Playing playing) {
         this.playing = playing;
@@ -39,6 +40,7 @@ public class ObjectManager {
         containers = new ArrayList<>(newLevel.getContainer());
         cannons = newLevel.getCannons();
         projectiles.clear();
+        spikes = new ArrayList<>(newLevel.getSpikes());
     }
 
     private void loadImgs() {
@@ -71,6 +73,7 @@ public class ObjectManager {
         }
 
         cannonBallImg = LoadSave.GetSpriteAtlas(LoadSave.BALL_IMG);
+        spikeImg = LoadSave.GetSpriteAtlas(LoadSave.SPIKE_IMG);
 
         BufferedImage bombSprite = LoadSave.GetSpriteAtlas(LoadSave.BOMB_SPRITE);
         int colBomb = bombSprite.getWidth() / BOMB_WIDTH_DEFAULT;
@@ -167,9 +170,25 @@ public class ObjectManager {
         drawContainer(g, xLvlOffset, yLvlOffset);
         drawCannon(g, xLvlOffset, yLvlOffset);
         drawProjectile(g, xLvlOffset, yLvlOffset);
+        drawSpikes(g, xLvlOffset, yLvlOffset);
     }
+    private void drawSpikes(Graphics g, int xLvlOffset, int yLvlOffset) {
+        for (Spike s : spikes) {
+            int x = (int) (s.getHitBox().x - xLvlOffset);
+            int y = (int) (s.getHitBox().y - yLvlOffset - SPIKE_DRAW_OFFSET_Y);
 
-
+            g.drawImage(spikeImg, x, y, SPIKE_WIDTH, SPIKE_HEIGHT, null);
+        }
+    }
+    public void checkSpikesTouched(Rectangle2D.Float hitbox) {
+        for (Spike s : spikes)
+            if (hitbox.intersects(s.getHitBox())){
+                if(!playing.getPlayer().isSpikeState()){
+                    playing.getPlayer().changeHealth(-SPIKE_DMG);
+                    playing.getPlayer().setSpikeState(true);
+                }
+            }
+    }
     private void drawProjectile(Graphics g, int xLvlOffset, int yLvlOffset) {
         for (Projectile pr : projectiles)
             if (pr.isActive()) {

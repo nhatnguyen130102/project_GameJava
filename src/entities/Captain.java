@@ -44,19 +44,19 @@ public class Captain extends Enemy {
         updateFrameTick();
         updateCanSeeBox();
         updateBehavior(lvlData, player, bombs);
-        if (isExplode) {
-            if (IsChangDir(hitBox, lvlData)) {
-                changePlayerDir();
-            }
-            if (IsEntityOnFloor(hitBox, lvlData)) {
-                newState(DEAD_GROUND);
-                bounce();
-            }
-            if (bounce >= 2) {
-                resetExplode();
-            }
-
-        }
+//        if (isExplode) {
+//            if (IsChangDir(hitBox, lvlData)) {
+//                changePlayerDir();
+//            }
+//            if (IsEntityOnFloor(hitBox, lvlData)) {
+//                newState(DEAD_GROUND);
+//                bounce();
+//            }
+//            if (bounce >= 2) {
+//                resetExplode();
+//            }
+//
+//        }
     }
 
 

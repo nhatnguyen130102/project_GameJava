@@ -11,8 +11,8 @@ import java.net.URL;
 
 public class LoadSave {
     public static final String PLAYER_ATLAS = "Player/player_bombguy_sprites.png";
-//    public static final String PLAYER_ATLAS = "Player/player_sprites_2.png";
-    
+    //    public static final String PLAYER_ATLAS = "Player/player_sprites_2.png";
+    public static final String SPIKE_IMG = "Object/spikes.png";
     public static final String LEVEL_ATLAS = "Map/outside_sprites.png";
     public static final String MENU_BACKGROUND = "Menu/menu_background.png";
     public static final String BACKGROUND = "Menu/beautiful-anime-landscape-cartoon-scene.jpg";
@@ -37,8 +37,8 @@ public class LoadSave {
     public static final String DEATH_SCREEN = "Menu/death_screen.png";
     public static final String OPTIONS_MENU = "Menu/options_background.png";
     public static final String RAIN_PARTICLE = "Level/Obj&BackGround/rain_particle.png";
-//    public static final String BEHAVIOR_OPENING ="Object/4-Interrogation Dialog/1-Opening";
-    public static final String BEHAVIOR_CLOSING ="Object/4-Interrogation Dialog/2-Closing/1.png";
+    //    public static final String BEHAVIOR_OPENING ="Object/4-Interrogation Dialog/1-Opening";
+    public static final String BEHAVIOR_CLOSING = "Object/4-Interrogation Dialog/2-Closing/1.png";
 
 
     // đọc file img trả về img lớn

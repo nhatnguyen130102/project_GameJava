@@ -55,6 +55,9 @@ public class Player extends Entity {
     private ArrayList<Bomb> bombs = new ArrayList<>();
     private boolean isExplode = false;
     private float bounce;
+    private boolean spikeState = false;
+
+
 
     public Player(float x, float y, int width, int height, Playing playing) {
         super(x, y, width, height);
@@ -79,8 +82,10 @@ public class Player extends Entity {
         updateHealthBar();
         updateAttackBox();
         updatePos();
-        if (moving)
+        if (moving) {
             checkPotionTouched();
+            checkSpikesTouched();
+        }
         if (attacking)
             checkAttack();
         updateFramesTick();
@@ -100,6 +105,9 @@ public class Player extends Entity {
             }
 
         }
+    }
+    private void checkSpikesTouched() {
+        playing.checkSpikesTouched(hitBox);
     }
 
     public void bounce() {
@@ -233,7 +241,13 @@ public class Player extends Entity {
         g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, healthWidth, healthBarHeight);
     }
 
+    public boolean isSpikeState() {
+        return spikeState;
+    }
 
+    public void setSpikeState(boolean spikeState) {
+        this.spikeState = spikeState;
+    }
     public void changeHealth(int value) {
         if (value < 0)
             hurt(value);
@@ -409,6 +423,9 @@ public class Player extends Entity {
                 switch (playerAction) {
                     case ATTACK, HIT -> {
                         playerAction = IDLE;
+                        if(spikeState){
+                            spikeState = false;
+                        }
                     }
                 }
                 attacking = false;

@@ -180,7 +180,20 @@ public class HelpMethods {
         }
         return list;
     }
+    public static ArrayList<Spike> GetSpikes(BufferedImage img) {
+        ArrayList<Spike> list = new ArrayList<>();
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getBlue();
 
+                if (value == SPIKE) {
+                    list.add(new Spike(i * Game.TILE_SIZE, j * Game.TILE_SIZE, SPIKE));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
+                }
+            }
+        }
+        return list;
+    }
     public static ArrayList<Whale> GetWhales(BufferedImage img) {
         ArrayList<Whale> list = new ArrayList<>();
         for (int j = 0; j < img.getHeight(); j++) {//Row
