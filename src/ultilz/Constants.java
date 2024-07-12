@@ -36,7 +36,7 @@ public class Constants {
         public static final int HB_BOMB_HEIGHT = (int) (HB_BOMB_HEIGHT_DEFAULT * Game.SCALE);
         public static final int BOMB_DRAW_OFFSET_X = (int) (34 * Game.SCALE);
         public static final int BOMB_DRAW_OFFSET_Y = (int) (57 * Game.SCALE);
-        public static final int BOMB_DMG = 50;
+        public static final int BOMB_DMG = 1;
 
         public static int GetSpriteAmount(int object_type) {
             switch (object_type) {
@@ -148,11 +148,62 @@ public class Constants {
         public static final int WHALE_DRAW_OFFSET_Y = (int) (4 * Game.SCALE);//lech tren
         public static final int WHALE_MAX_HEALTH = 100;
         public static final int WHALE_DMG = 10;
+        //captain enemy info
+        public static final int CAPTAIN = 2;
+        public static final int CAPTAIN_IDLE = 0;
+        public static final int CAPTAIN_RUNNING = 1;
+        public static final int CAPTAIN_JUMP_ANTICIPATION = 2;
+        public static final int CAPTAIN_JUMP = 3;
+        public static final int CAPTAIN_FALL = 4;
+        public static final int CAPTAIN_GROUND = 5;
+        public static final int CAPTAIN_ATTACK = 6;
+        public static final int CAPTAIN_SCARE_RUN = 7;
+        public static final int CAPTAIN_HIT = 8;
+        public static final int CAPTAIN_DEAD_HIT = 9;
+        public static final int CAPTAIN_DEAD_GROUND = 10;
 
 
+        public static final int CAPTAIN_WIDTH_DEFAULT = 80;//size co ban cua 1 frames
+        public static final int CAPTAIN_HEIGHT_DEFAULT = 72;
+        public static final int CAPTAIN_WIDTH = (int) (CAPTAIN_WIDTH_DEFAULT * Game.SCALE);
+        public static final int CAPTAIN_HEIGHT = (int) (CAPTAIN_HEIGHT_DEFAULT * Game.SCALE);
+        public static final int HB_CAPTAIN_WIDTH_DEFAULT = 30;//size co ban cua hitbox
+        public static final int HB_CAPTAIN_HEIGHT_DEFAULT = 50;
+        public static final int HB_CAPTAIN_WIDTH = (int) (HB_CAPTAIN_WIDTH_DEFAULT * Game.SCALE );
+        public static final int HB_CAPTAIN_HEIGHT = (int) (HB_CAPTAIN_HEIGHT_DEFAULT * Game.SCALE);
+        public static final int CAPTAIN_DRAW_OFFSET_X = (int) (20 * Game.SCALE);//lech trai
+        public static final int CAPTAIN_DRAW_OFFSET_Y = (int) (22 * Game.SCALE);//lech tren
+        public static final int CAPTAIN_MAX_HEALTH = 100;
+        public static final int CAPTAIN_DMG = 10;
         //
         public static int GetSpriteAmount(int enemy_type, int enemy_state) {
             switch (enemy_type) {
+                case CAPTAIN -> {
+                    switch (enemy_state) {
+                        case CAPTAIN_IDLE:
+                            return 32;
+                        case CAPTAIN_RUNNING:
+                            return 14;
+                        case CAPTAIN_JUMP_ANTICIPATION:
+                            return 1;
+                        case CAPTAIN_JUMP:
+                            return 4;
+                        case CAPTAIN_FALL:
+                            return 2;
+                        case CAPTAIN_GROUND:
+                            return 3;
+                        case CAPTAIN_ATTACK:
+                            return 7;
+                        case CAPTAIN_SCARE_RUN:
+                            return 12;
+                        case CAPTAIN_HIT:
+                            return 8;
+                        case CAPTAIN_DEAD_HIT:
+                            return 6;
+                        case CAPTAIN_DEAD_GROUND:
+                            return 4;
+                    }
+                }
                 case CRABBY -> {
                     switch (enemy_state) {
                         case CRABBY_IDLE:
@@ -204,6 +255,8 @@ public class Constants {
                     return WHALE_MAX_HEALTH;
                 case CRABBY:
                     return CRABBY_MAX_HEALTH;// mau toi da cua enemy
+                case CAPTAIN:
+                    return CAPTAIN_MAX_HEALTH;
                 default:
                     return 1;
             }
@@ -216,6 +269,8 @@ public class Constants {
                     return WHALE_DMG;
                 case CRABBY:
                     return CRABBY_DMG;//dmg toi da cua enemy
+                case CAPTAIN:
+                    return CAPTAIN_DMG;
                 default:
                     return 0;
             }
@@ -269,7 +324,7 @@ public class Constants {
         public static final int DOWN = 3;
     }
 
-        public static class PlayerConstants {
+    public static class PlayerConstants {
         public static final int IDLE = 0;
         public static final int DOOR_IN = 1;
         public static final int DOOR_OUT = 2;
@@ -280,7 +335,7 @@ public class Constants {
         public static final int DEAD_GROUND = 7;
         public static final int GROUND = 8;
         public static final int FALLING = 9;
-//        public static final int JUMP_ANTICIPATION = 10;
+        //        public static final int JUMP_ANTICIPATION = 10;
         public static final int ATTACK = 10;
         public static int PLAYER_WIDTH_DEFAULT = 58;
         public static int PLAYER_HEIGHT_DEFAULT = 58;

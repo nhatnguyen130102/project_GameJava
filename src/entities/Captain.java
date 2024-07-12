@@ -9,32 +9,34 @@ import java.util.Random;
 
 import static java.awt.Color.RED;
 import static java.awt.Color.pink;
+import static ultilz.Constants.Directions.LEFT;
 import static ultilz.Constants.Directions.RIGHT;
 import static ultilz.Constants.EnemyConstants.*;
+import static ultilz.Constants.PlayerConstants.DEAD_GROUND;
+import static ultilz.HelpMethods.IsChangDir;
+import static ultilz.HelpMethods.IsEntityOnFloor;
 
-public class Whale extends Enemy {
+public class Captain extends Enemy {
+
     public Rectangle2D.Float attackBox;
     public float attackOffsetY;
     private Bomb bomb;
     private Random rnd = new Random();
-    private boolean firstTimeSeeBomb = false;
     private int value = -1;
-//    private int SCARE = 0;
-    private int SWALLOW = 0;
+    private int SCARE = 0;
     private int SKIP = 1;
 
 
-    public Whale(float x, float y) {
-        super(x, y, WHALE_WIDTH, WHALE_HEIGHT, WHALE);
-        initHitBox(x, y, (int) (HB_WHALE_WIDTH), HB_WHALE_HEIGHT);
+    public Captain(float x, float y) {
+        super(x, y, CAPTAIN_WIDTH, CAPTAIN_HEIGHT, CAPTAIN);
+        initHitBox(x, y, HB_CAPTAIN_WIDTH, HB_CAPTAIN_HEIGHT);
         initCanSeeRange(x, y, Game.TILE_SIZE *4 , Game.TILE_SIZE);
-
         initAttackBox();
     }
 
     private void initAttackBox() {
-        attackBox = new Rectangle2D.Float(x, y, HB_WHALE_WIDTH - 20 * Game.SCALE, HB_WHALE_HEIGHT - 20 * Game.SCALE);
-        attackOffsetY = 20 * Game.SCALE;
+        attackBox = new Rectangle2D.Float(x, y, HB_CAPTAIN_WIDTH + 30 * Game.SCALE, HB_CAPTAIN_HEIGHT);
+//        attackOffsetY = 20 * Game.SCALE;
     }
 
     public void update(int[][] lvlData, Player player, ArrayList<Bomb> bombs) {
@@ -42,11 +44,26 @@ public class Whale extends Enemy {
         updateFrameTick();
         updateCanSeeBox();
         updateBehavior(lvlData, player, bombs);
+        if (isExplode) {
+            if (IsChangDir(hitBox, lvlData)) {
+                changePlayerDir();
+            }
+            if (IsEntityOnFloor(hitBox, lvlData)) {
+                newState(DEAD_GROUND);
+                bounce();
+            }
+            if (bounce >= 2) {
+                resetExplode();
+            }
+
+        }
     }
+
+
 
     private void updateAttackBox() {
         attackBox.x = hitBox.x;
-        if (walkDir == RIGHT)
+        if (walkDir == LEFT)
             attackBox.x = hitBox.x + (hitBox.width - attackBox.width) + 10 * Game.SCALE;
         attackBox.y = hitBox.y;
     }
@@ -59,8 +76,11 @@ public class Whale extends Enemy {
             updateInAir(lvlData);
         } else {
             switch (enemyState) {
-                case WHALE_IDLE -> newState(WHALE_RUNNING);
-                case WHALE_RUNNING -> {
+                case CAPTAIN_IDLE -> newState(CAPTAIN_RUNNING);
+                case CAPTAIN_SCARE_RUN ->{
+                    move(lvlData);
+                }
+                case CAPTAIN_RUNNING -> {
                     if (canSeePlayer(lvlData, player)) {
                         changWalkSpeed(0.7f * Game.SCALE);
                         setStartBehaviorState(true);
@@ -69,9 +89,9 @@ public class Whale extends Enemy {
                         changWalkSpeed(0.5f * Game.SCALE);
                         setStartBehaviorState(false);
                     }
-                    if (isPlayerCloseForWhaleAttack(player)) {
+                    if (isPlayerCloseForCAPTAINAttack(player)) {
                         setStartBehaviorState(false);
-                        newState(WHALE_ATTACK);
+                        newState(CAPTAIN_ATTACK);
 
                     }
                     if (bombs != null) {
@@ -83,52 +103,38 @@ public class Whale extends Enemy {
                                 } else {
                                     setStartBehaviorState(false);
                                 }
-                                handleRndBehavior(bomb, lvlData);
+                                if (value != -1)
+                                    handleRndBehavior(bomb, lvlData);
                             }
                         }
                     }
                     move(lvlData);
                 }
-                case WHALE_ATTACK -> {
-
+                case CAPTAIN_ATTACK -> {
                     if (frameIndex == 0)
                         attackChecked = false;
-                    if (frameIndex == 6 && !attackChecked) {
+                    if (frameIndex == 5 && !attackChecked) {
                         checkEnemyHit(attackBox, player);
                     }
                 }
-                case WHALE_SWALOW -> {
-                    checkBombDir(this.bomb);
-                    if (frameIndex == 0)
-                        swallowed = false;
-                    if (frameIndex == 4 && !swallowed) {
-                        for (Bomb b : bombs) {
-                            checkEnemyHitBomb(attackBox, b);
-                        }
-                    }
-                }
-                case WHALE_HIT -> {
+                case CAPTAIN_HIT -> {
                 }
             }
         }
     }
 
     private void handleRndBehavior(Bomb bomb, int[][] lvlData) {
-        if (value == SWALLOW) {
-            turnTowardBomb(bomb);
-            if (isBombCloseForWhaleAttack(bomb)) {
-                newState(WHALE_SWALOW);
-                this.bomb = bomb;
-                value = -1;
-                System.out.println(value);
-            }
-        }
+        System.out.println(value);
         if (value == SKIP) {
             if (!canSeeBomb(lvlData, bomb)) {
                 value = -1;
             }
         }
-
+        if (value == SCARE) {
+            changeWalkDir();
+            newState(CAPTAIN_SCARE_RUN);
+            value = -1;
+        }
     }
 
     private void handleFirstTimeSeeBomb() {
@@ -137,21 +143,10 @@ public class Whale extends Enemy {
         }
     }
 
-    public void checkBombDir(Bomb bomb) {
-        if (hitBox.intersects(bomb.getHitbox())) {
-            float distance = bomb.getHitbox().x - hitBox.x;
-            if (distance > 0) { // bombRight
-                this.bomb.getHitbox().x -= 0.2f;
-            } else {
-                this.bomb.getHitbox().x += 0.2f;
-            }
-        }
-
-    }
 
     public void drawHitBox(Graphics g, int lvlOffset, int yLvlOffset) {
         g.setColor(pink);
-        g.drawRect((int) hitBox.x - WHALE_DRAW_OFFSET_X - lvlOffset + flipX(), (int) hitBox.y - WHALE_DRAW_OFFSET_Y - yLvlOffset, (int) hitBox.width * flipW(), (int) hitBox.height);
+        g.drawRect((int) hitBox.x - CAPTAIN_DRAW_OFFSET_X - lvlOffset + flipX(), (int) hitBox.y - CAPTAIN_DRAW_OFFSET_Y - yLvlOffset, (int) hitBox.width * flipW(), (int) hitBox.height);
     }
 
     public void drawAttackBox(Graphics g, int xLvlOffset, int yLvlOffset) {
@@ -161,20 +156,20 @@ public class Whale extends Enemy {
     }
 
     public int flipX() {
-        if (walkDir == RIGHT)
+        if (walkDir == LEFT)
             return width;
         else
             return 0;
     }
 
     public int flipW() {
-        if (walkDir == RIGHT)
+        if (walkDir == LEFT)
             return -1;
         else
             return 1;
     }
 
-    protected boolean isPlayerCloseForWhaleAttack(Player player) {
+    protected boolean isPlayerCloseForCAPTAINAttack(Player player) {
         int distance = (int) (player.hitBox.x - hitBox.x);
         if (distance <= 0) {// player left and enemy right
             if (Math.abs(hitBox.y - player.hitBox.y) < Game.TILE_SIZE) {
@@ -190,28 +185,11 @@ public class Whale extends Enemy {
         return false;
     }
 
-    //temp
-    protected boolean isBombCloseForWhaleAttack(Bomb bomb) {
-        int distance = (int) (bomb.getHitbox().x - hitBox.x);
-        if (distance <= 0) {//bomb left
-            if (Math.abs(hitBox.y - bomb.getHitbox().y) < Game.TILE_SIZE) {
-                float distanceBetween = attackBox.x - (bomb.getHitbox().x + bomb.getHitbox().width);
-                return distanceBetween < -10;
-            }
-        } else if (distance >= 0) {//bomb right
-            if (Math.abs(hitBox.y - bomb.getHitbox().y) < Game.TILE_SIZE) {
-                float distanceBetween = bomb.getHitbox().x - (attackBox.x + attackBox.width);
-                return distanceBetween < -10;
-            }
-        }
-        return false;
-    }
-
     public void hurt(int value) {
         currentHealth -= value;
         if (currentHealth <= 0)
-            newState(WHALE_DEAD_HIT);
+            newState(CAPTAIN_DEAD_HIT);
         else
-            newState(WHALE_HIT);
+            newState(CAPTAIN_DEAD_GROUND);
     }
 }

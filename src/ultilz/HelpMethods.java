@@ -1,6 +1,7 @@
 package ultilz;
 
 import entities.Bomb;
+import entities.Captain;
 import entities.Crabby;
 import entities.Whale;
 import main.Game;
@@ -192,7 +193,18 @@ public class HelpMethods {
         }
         return list;
     }
-
+    public static ArrayList<Captain> GetCaptains(BufferedImage img) {
+        ArrayList<Captain> list = new ArrayList<>();
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getGreen();
+                if (value == CAPTAIN)
+                    list.add(new Captain(i * Game.TILE_SIZE, j * Game.TILE_SIZE));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
+            }
+        }
+        return list;
+    }
     public static ArrayList<Potion> GetPotions(BufferedImage img) {
         ArrayList<Potion> list = new ArrayList<>();
         for (int j = 0; j < img.getHeight(); j++) {//Row
@@ -220,6 +232,7 @@ public class HelpMethods {
         }
         return list;
     }
+
 
     public static ArrayList<Cannon> GetCannons(BufferedImage img) {
         ArrayList<Cannon> list = new ArrayList<>();

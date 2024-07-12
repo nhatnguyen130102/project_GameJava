@@ -1,5 +1,6 @@
 package levels;
 
+import entities.Captain;
 import entities.Crabby;
 import entities.Whale;
 import main.Game;
@@ -22,6 +23,8 @@ public class Level {
     private ArrayList<Potion> potions;
     private ArrayList<GameContainer> containers;
     private ArrayList<Cannon> cannons;
+    private ArrayList<Captain> captains;
+
 
     private int lvlTilesWideX;// Độ dài tối đa của map hiện tại ( toạ độ )
     private int lvlTilesWideY;// Độ cao tối đa của map hiện tại ( toạ độ )
@@ -73,6 +76,7 @@ public class Level {
     private void createEnemies() {
         crabs = GetCrabs(img);
         whales = GetWhales(img);
+        captains = GetCaptains(img);
     }
 
     private void createLevelData() {
@@ -110,5 +114,9 @@ public class Level {
     }
     public ArrayList<Cannon> getCannons(){
         return cannons;
+    }
+
+    public ArrayList<Captain> getCaptain() {
+        return captains;
     }
 }

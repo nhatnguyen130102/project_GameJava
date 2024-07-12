@@ -57,6 +57,12 @@ public abstract class Enemy extends Entity {
                             case WHALE_DEAD_HIT -> active = false;
                         }
                     }
+                    case CAPTAIN -> {
+                        switch (enemyState) {
+                            case CAPTAIN_ATTACK, CAPTAIN_HIT, CAPTAIN_SCARE_RUN,CAPTAIN_DEAD_GROUND -> enemyState = CAPTAIN_IDLE;
+                            case CAPTAIN_DEAD_HIT -> active = false;
+                        }
+                    }
                 }
 
             }
@@ -162,11 +168,17 @@ public abstract class Enemy extends Entity {
 
     private boolean isPlayerInRange(Player player) {
         // lay khoang cach giua player va enemy vi nhan vat co the dung ben trai hoac ben phai nen lay ABS(tri tuyet doi)
-        int absValue = (int) Math.abs(player.hitBox.x - hitBox.x);
-        return absValue <= attackDistance * 5; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
+        return canSeeHitbox.intersects(player.hitBox);
+//        int absValue = (int) Math.abs(player.hitBox.x - hitBox.x);
+//        return absValue <= attackDistance * 2; // kiem tra xem khoang cach giua player va enemy co <= 5 tile khong
     }
 
-
+    protected void updateCanSeeBox() {
+        canSeeHitbox.x = hitBox.x - 2 * Game.TILE_SIZE;
+        if (walkDir == RIGHT)
+            canSeeHitbox.x = hitBox.x - Game.TILE_SIZE;
+        canSeeHitbox.y = hitBox.y + hitBox.height - Game.TILE_SIZE;
+    }
     protected void changeWalkDir() {
         if (walkDir == LEFT)
             walkDir = RIGHT;

@@ -13,6 +13,7 @@ import static ultilz.Constants.BehaviorClosing.*;
 import static ultilz.Constants.BehaviorOpening.*;
 import static ultilz.Constants.BombTiles.*;
 import static ultilz.Constants.EnemyConstants.*;
+import static ultilz.Constants.EnemyConstants.CAPTAIN_DRAW_OFFSET_Y;
 import static ultilz.Constants.PlayerConstants.*;
 import static ultilz.LoadSave.*;
 
@@ -21,6 +22,8 @@ public class EnemyManager {
     private static Playing playing;
     private static BufferedImage[][] crabbyArr;
     private static BufferedImage[][] whaleArr;
+    private static BufferedImage[][] captainArr;
+    private static ArrayList<Captain> captains = new ArrayList<>();
     private static ArrayList<Crabby> crabbies = new ArrayList<>();
     private static ArrayList<Whale> whales = new ArrayList<>();
     private static BufferedImage behaviorClosingImg;
@@ -32,12 +35,14 @@ public class EnemyManager {
         loadEnemyCrabbyImg();
         loadEnemyWhaleImg();
         loadBehaviorImg();
+        loadEnemyCaptainImg();
 //        updateHitBox();
     }
 
     public void loadEnemies(Level level) {
         crabbies = level.getCrabs();
         whales = level.getWhales();
+        captains = level.getCaptain();
     }
 
     public void checkEnemyExplode(Rectangle2D.Float explodeBox) {
@@ -56,6 +61,14 @@ public class EnemyManager {
                     return;
                 }
 
+            }
+        }
+        for (Captain c : captains) {
+            if (c.isActive()) {
+                if (explodeBox.intersects(c.getHitBox())) {
+                    c.hurt(BOMB_DMG);
+                    return;
+                }
             }
         }
     }
@@ -79,6 +92,14 @@ public class EnemyManager {
 
             }
         }
+        for (Captain c : captains) {
+            if(c.isActive()){
+                if (attackBox.intersects(c.getHitBox())) {
+                    c.hurt(PLAYER_DMG);
+                    return;
+                }
+            }
+        }
     }
 
     private void loadBehaviorImg() {
@@ -99,6 +120,18 @@ public class EnemyManager {
         for (int i = 0; i < crabbyArr.length; i++) {// cat tam hinh lon
             for (int j = 0; j < crabbyArr[i].length; j++) {
                 crabbyArr[i][j] = temp.getSubimage(j * CRABBY_WIDTH_DEFAULT, i * CRABBY_HEIGHT_DEFAULT, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT);
+            }
+        }
+    }
+
+    private void loadEnemyCaptainImg() {
+        BufferedImage temp = GetSpriteAtlas(CAPTAIN_SPRITE);// lay 1 img lon
+        int row = temp.getHeight() / CAPTAIN_HEIGHT_DEFAULT;
+        int col = temp.getWidth() / CAPTAIN_WIDTH_DEFAULT;
+        captainArr = new BufferedImage[row][col];// tao array lay animation
+        for (int i = 0; i < captainArr.length; i++) {// cat tam hinh lon
+            for (int j = 0; j < captainArr[i].length; j++) {
+                captainArr[i][j] = temp.getSubimage(j * CAPTAIN_WIDTH_DEFAULT, i * CAPTAIN_HEIGHT_DEFAULT, CAPTAIN_WIDTH_DEFAULT, CAPTAIN_HEIGHT_DEFAULT);
             }
         }
     }
@@ -126,7 +159,12 @@ public class EnemyManager {
         for (Whale w : whales) {
             if (w.isActive()) {
                 w.update(lvlData, player, bombs);
-
+                isAnyActive = true;
+            }
+        }
+        for (Captain c : captains) {
+            if (c.isActive()) {
+                c.update(lvlData, player, bombs);
                 isAnyActive = true;
             }
         }
@@ -137,6 +175,33 @@ public class EnemyManager {
     public static void draw(Graphics g, int xLvlOffset, int yLvlOffset) {
         drawCrabs(g, xLvlOffset, yLvlOffset);
         drawWhales(g, xLvlOffset, yLvlOffset);
+        drawCaptains(g, xLvlOffset, yLvlOffset);
+    }
+
+    private static void drawCaptains(Graphics g, int xLvlOffset, int yLvlOffset) {
+        for (Captain c : captains) {
+            if (c.isActive()) {
+                g.drawImage(captainArr[c.getEnemyState()][c.getFrameIndex()],
+                        (int) c.getHitBox().x - xLvlOffset - CAPTAIN_DRAW_OFFSET_X + c.flipX(),
+                        (int) c.getHitBox().y - yLvlOffset - CAPTAIN_DRAW_OFFSET_Y,
+                        CAPTAIN_WIDTH * c.flipW(), CAPTAIN_HEIGHT, null);
+                if (c.currentHealth <= 0)
+                    c.currentHealth = 0;
+                if (c.getStartBehaviorState()) {
+                    g.drawImage(behaviorClosingImg,
+                            (int) c.getHitBox().x - xLvlOffset,
+                            (int) c.getHitBox().y - yLvlOffset - 20,
+                            BEHAVIOR_CLOSING_WIDTH, BEHAVIOR_CLOSING_HEIGHT, null
+                    );
+                }
+//                float healthWidth = (int) ((c.currentHealth / (float) c.maxHealth) * c.getHitBox().width);
+//                g.setColor(Color.RED);
+//                g.fillRect((int) c.getHitBox().x - xLvlOffset, (int) c.getHitBox().y - 20, (int) healthWidth, 5);
+//                c.drawHitBox(g,xLvlOffset,yLvlOffset);
+//                c.drawAttackBox(g, xLvlOffset,yLvlOffset);
+//                c.drawCanSeeHitbox(g, xLvlOffset, yLvlOffset);
+            }
+        }
     }
 
     private static void drawCrabs(Graphics g, int xLvlOffset, int yLvlOffset) {
@@ -160,6 +225,8 @@ public class EnemyManager {
 //                g.fillRect((int) c.getHitBox().x - xLvlOffset, (int) c.getHitBox().y - 20, (int) healthWidth, 5);
 //                c.drawHitBox(g,xLvlOffset);
 //                c.drawAttackBox(g, xLvlOffset);
+//                c.drawCanSeeHitbox(g, xLvlOffset, yLvlOffset);
+
             }
         }
     }
@@ -177,7 +244,7 @@ public class EnemyManager {
                     g.drawImage(behaviorClosingImg,
                             (int) w.getHitBox().x - xLvlOffset + w.flipX(),
                             (int) w.getHitBox().y - yLvlOffset - 20,
-                            BEHAVIOR_CLOSING_WIDTH , BEHAVIOR_CLOSING_HEIGHT, null
+                            BEHAVIOR_CLOSING_WIDTH, BEHAVIOR_CLOSING_HEIGHT, null
                     );
                 }
 //                float healthWidth = (int) ((w.currentHealth / (float) w.maxHealth) * w.getHitBox().width);
@@ -193,10 +260,9 @@ public class EnemyManager {
     public void resetAllEnemies() {
         for (Crabby c : crabbies)
             c.resetEnemy();
-
         for (Whale w : whales)
             w.resetEnemy();
+        for (Captain c : captains)
+            c.resetEnemy();
     }
-
-
 }
