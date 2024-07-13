@@ -44,7 +44,8 @@ public class LoadSave {
     //    public static final String BEHAVIOR_OPENING ="Object/4-Interrogation Dialog/1-Opening";
     public static final String BEHAVIOR_CLOSING = "Object/4-Interrogation Dialog/2-Closing/1.png";
     public static final String PALM_TREE = "treasure-hunters/palm-tree-island/back-palm-tree-left(51x53).png";
-
+    public static final String BOTTOM_TREE = "Object/front-bottom-tree(32x32).png";
+    public static final String TOP_TREE = "Object/front_palm_tree(39x32).png";
 
     // đọc file img trả về img lớn
     public static BufferedImage GetSpriteAtlas(String fileName) {

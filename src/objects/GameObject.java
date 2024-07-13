@@ -4,7 +4,6 @@ import main.Game;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-import static ultilz.Constants.BombTiles.BOMB;
 import static ultilz.Constants.ObjectConstants.*;
 
 
@@ -45,9 +44,10 @@ public class GameObject {
             if (frameIndex >= GetSpriteAmount(objType)) {
                 frameIndex = 0;
                 if(objType == BARREL || objType == BOX){
-                    doAnimation =false;
+                    doAnimation = false;
                     active = false;
-                }else if(objType == CANNON_LEFT || objType == CANNON_RIGHT){
+                }
+                else if(objType == CANNON_LEFT || objType == CANNON_RIGHT){
                     doAnimation = false;
                 }
                 else if(objType == PALM_TREE){

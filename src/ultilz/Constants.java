@@ -113,6 +113,18 @@ public class Constants {
         public static final int HB_PALM_TREE_WIDTH = 37;
         public static final int HB_PALM_TREE_HEIGHT = 28;
 
+        public static final int BOTTOM_TREE_WIDTH_DEFAULT = 32;
+        public static final int BOTTOM_TREE_HEIGHT_DEFAULT = 32;
+        public static final int BOTTOM_TREE_WIDTH = (int) (BOTTOM_TREE_WIDTH_DEFAULT * Game.SCALE) ;
+        public static final int BOTTOM_TREE_HEIGHT = (int) (BOTTOM_TREE_HEIGHT_DEFAULT * Game.SCALE) ;
+
+        public static final int TOP_TREE = 10;
+        public static final int TOP_TREE_WIDTH_DEFAULT = 39;
+        public static final int TOP_TREE_HEIGHT_DEFAULT = 32;
+        public static final int TOP_TREE_WIDTH = (int) (TOP_TREE_WIDTH_DEFAULT * Game.SCALE) ;
+        public static final int TOP_TREE_HEIGHT = (int) (TOP_TREE_HEIGHT_DEFAULT * Game.SCALE) ;
+        public static final int TOP_TREE_DRAW_OFFSET_X = (int) (8 * Game.SCALE);//lech phai
+
         public static int GetSpriteAmount(int object_type) {
             switch (object_type) {
                 case RED_POTION, BLUE_POTION:
@@ -121,7 +133,7 @@ public class Constants {
                     return 8;
                 case CANNON_LEFT, CANNON_RIGHT:
                     return 7;
-                case PALM_TREE:
+                case PALM_TREE, TOP_TREE:
                     return 4;
             }
             return 1;

@@ -189,7 +189,7 @@ public class HelpMethods {
                 int value = color.getBlue();
 
                 if (value == SPIKE) {
-                    list.add(new Spike(i * Game.TILE_SIZE, j * Game.TILE_SIZE, SPIKE));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
+                    list.add(new Spike(i * Game.TILE_SIZE, j * Game.TILE_SIZE, value));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
                 }
             }
         }
@@ -227,6 +227,32 @@ public class HelpMethods {
                 int value = color.getBlue();
                 if (value == RED_POTION || value == BLUE_POTION)
                     list.add(new Potion(i * Game.TILE_SIZE, j * Game.TILE_SIZE, value));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
+            }
+        }
+        return list;
+    }
+    //get front top palm trees
+    public static ArrayList<FrontTopTree> GetTopTree(BufferedImage img) {
+        ArrayList<FrontTopTree> list = new ArrayList<>();
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getBlue();
+                if (value == TOP_TREE)
+                    list.add(new FrontTopTree(i * Game.TILE_SIZE, j * Game.TILE_SIZE, value));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
+            }
+        }
+        return list;
+    }
+    //get front bottom palm trees
+    public static ArrayList<FrontBottomTree> GetBottomTree(BufferedImage img) {
+        ArrayList<FrontBottomTree> list = new ArrayList<>();
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getBlue();
+                if (value >= 90 && value <= 96)
+                    list.add(new FrontBottomTree(i * Game.TILE_SIZE, j * Game.TILE_SIZE, value));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
             }
         }
         return list;

@@ -23,7 +23,8 @@ public class Level {
     private ArrayList<Cannon> cannons;
     private ArrayList<Captain> captains;
     private ArrayList<PalmTree> palmTrees;
-
+    private ArrayList<FrontTopTree> topTrees;
+    private ArrayList<FrontBottomTree> bottomTrees;
 
     private int lvlTilesWideX;// Độ dài tối đa của map hiện tại ( toạ độ )
     private int lvlTilesWideY;// Độ cao tối đa của map hiện tại ( toạ độ )
@@ -45,6 +46,8 @@ public class Level {
         calcPlayerSpawn();
         createSpikes();
         createPalmTree();
+        createTopTree();
+        createBottomTree();
     }
     private void createSpikes() {
         spikes = HelpMethods.GetSpikes(img);
@@ -57,6 +60,12 @@ public class Level {
     }
     private void createPalmTree(){
         palmTrees = HelpMethods.GetPalmTree(img);
+    }
+    private void createTopTree(){
+        topTrees = HelpMethods.GetTopTree(img);
+    }
+    private void createBottomTree(){
+        bottomTrees = HelpMethods.GetBottomTree(img);
     }
     private void createPotions() {
         potions = HelpMethods.GetPotions(img);
@@ -128,5 +137,11 @@ public class Level {
     }
     public ArrayList<PalmTree> getPalmTrees(){
         return palmTrees;
+    }
+    public ArrayList<FrontTopTree> getTopTrees(){
+        return topTrees;
+    }
+    public ArrayList<FrontBottomTree> getBottomTrees(){
+        return bottomTrees;
     }
 }

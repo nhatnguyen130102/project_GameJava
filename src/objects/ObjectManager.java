@@ -27,9 +27,13 @@ public class ObjectManager {
     private BufferedImage[] cannonAttackEffectImgs;
     private BufferedImage[] ballExplodeImgs;
     private BufferedImage[] palmTreeImgs;
+    private BufferedImage[] topTreeImgs;
+    private BufferedImage[] bottomTreeImgs;
     private BufferedImage cannonBallImg;
     private ArrayList<Potion> potions;
     private ArrayList<PalmTree> palmTrees;
+    private ArrayList<FrontTopTree> topTrees;
+    private ArrayList<FrontBottomTree> bottomTrees;
     private ArrayList<GameContainer> containers;
     private ArrayList<Cannon> cannons;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
@@ -48,7 +52,8 @@ public class ObjectManager {
         projectiles.clear();
         spikes = new ArrayList<>(newLevel.getSpikes());
         palmTrees = new ArrayList<>(newLevel.getPalmTrees());
-
+        topTrees = new ArrayList<>(newLevel.getTopTrees());
+        bottomTrees = new ArrayList<>(newLevel.getBottomTrees());
     }
 
     private void loadImgs() {
@@ -110,6 +115,18 @@ public class ObjectManager {
         for (int i = 0; i < 4; i++) {
             palmTreeImgs[i] = palmTreeSprite.getSubimage(i * PALM_TREE_WIDTH_DEFAULT, 0, PALM_TREE_WIDTH , PALM_TREE_HEIGHT);
         }
+
+        BufferedImage topTreeSprite = LoadSave.GetSpriteAtlas(LoadSave.TOP_TREE);
+        topTreeImgs = new BufferedImage[4];
+        for (int i = 0; i < 4; i++) {
+            topTreeImgs[i] = topTreeSprite.getSubimage(i * TOP_TREE_WIDTH_DEFAULT, 0, TOP_TREE_WIDTH , TOP_TREE_HEIGHT);
+        }
+
+        BufferedImage bottomTreeSprite = LoadSave.GetSpriteAtlas(LoadSave.BOTTOM_TREE);
+        bottomTreeImgs = new BufferedImage[7];
+        for (int i = 0; i < 7; i++) {
+            bottomTreeImgs[i] = bottomTreeSprite.getSubimage(i * BOTTOM_TREE_WIDTH_DEFAULT, 0, BOTTOM_TREE_WIDTH , BOTTOM_TREE_HEIGHT);
+        }
     }
 
     public void update(int[][] lvlData, Player player) {
@@ -121,9 +138,15 @@ public class ObjectManager {
             if (gc.isActive())
                 gc.update();
         }
+
         for(PalmTree p : palmTrees){
             if(p != null)
                 p.update();
+        }
+
+        for(FrontTopTree t : topTrees){
+            if(t != null)
+                t.update();
         }
         updateCannon(lvlData, player);
 //        updateProjectiles(lvlData, player);
@@ -193,7 +216,6 @@ public class ObjectManager {
         if (c.getObjType() == CANNON_LEFT) {
             if (c.getHitBox().x > player.getHitBox().x)
                 return true;
-
         } else if (c.getHitBox().x < player.getHitBox().x)
             return true;
         return false;
@@ -210,12 +232,26 @@ public class ObjectManager {
         drawCannon(g, xLvlOffset, yLvlOffset);
         drawProjectile(g, xLvlOffset, yLvlOffset);
         drawSpikes(g, xLvlOffset, yLvlOffset);
+        drawTopTree(g, xLvlOffset, yLvlOffset);
+        drawBottomTree(g, xLvlOffset, yLvlOffset);
 //        drawPalmTree(g,xLvlOffset,yLvlOffset);
     }
 
     public void drawPalmTree(Graphics g, int xLvlOffset, int yLvlOffset) {
         for(PalmTree p : palmTrees){
-            g.drawImage(palmTreeImgs[p.getFrameIndex()], (int) p.getHitBox().x, (int) p.getHitBox().y,PALM_TREE_WIDTH * 2,PALM_TREE_HEIGHT * 2,null);
+            g.drawImage(palmTreeImgs[p.getFrameIndex()], (int) p.getHitBox().x - xLvlOffset, (int) p.getHitBox().y - yLvlOffset,PALM_TREE_WIDTH * 2,PALM_TREE_HEIGHT * 2,null);
+        }
+    }
+
+    public void drawTopTree(Graphics g, int xLvlOffset, int yLvlOffset) {
+        for(FrontTopTree t : topTrees){
+            g.drawImage(topTreeImgs[t.getFrameIndex()], (int) t.getHitBox().x - xLvlOffset - TOP_TREE_DRAW_OFFSET_X, (int) t.getHitBox().y - yLvlOffset,TOP_TREE_WIDTH * 2,TOP_TREE_HEIGHT * 2,null);
+        }
+    }
+
+    public void drawBottomTree(Graphics g, int xLvlOffset, int yLvlOffset) {
+        for(FrontBottomTree b : bottomTrees){
+            g.drawImage(bottomTreeImgs[b.objType % 10], (int) b.getHitBox().x - xLvlOffset, (int) b.getHitBox().y - yLvlOffset,BOTTOM_TREE_WIDTH * 2,BOTTOM_TREE_HEIGHT * 2,null);
         }
     }
 
@@ -358,5 +394,7 @@ public class ObjectManager {
             c.reset();
         for(PalmTree p : palmTrees)
             p.reset();
+        for(FrontBottomTree b : bottomTrees)
+            b.reset();
     }
 }
