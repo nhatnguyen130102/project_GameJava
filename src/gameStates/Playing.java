@@ -190,6 +190,7 @@ public class Playing extends State implements StateMethods {
     public void draw(Graphics g) {
         g.drawImage(backGroundImg, 0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT, null);
         drawClouds(g);
+        objectManager.drawPalmTree(g,xLvlOffset,yLvlOffset);
         levelManager.draw(g, xLvlOffset, yLvlOffset);
         enemyManager.draw(g, xLvlOffset, yLvlOffset);
         player.draw(g, xLvlOffset, yLvlOffset);
@@ -210,7 +211,7 @@ public class Playing extends State implements StateMethods {
     private void drawClouds(Graphics g) {
         double bigCloudSpeed = xLvlOffset * 0.3;// biến số càng lớn thì tốc độ di chuyển càng cao khi player moving
         double smallCloudSpeed = xLvlOffset * 0.7;// biến số càng lớn thì tốc độ di chuyển càng cao khi player moving
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 7; i++)
             g.drawImage(bigCloudImg, (int) (i * BIG_CLOUD_WIDTH - bigCloudSpeed), (int) (204 * Game.SCALE), BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT, null);
         int smallCloudLoop = 3;// khoảng cách giữa các đám mấy nhỏ, càng lớn thì số lượng mây hiển thị càng thưa(ít)
         for (int i = 0; i < smallCloudPos.length; i++)

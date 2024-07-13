@@ -23,6 +23,7 @@ public class EnemyManager {
     private static BufferedImage[][] crabbyArr;
     private static BufferedImage[][] whaleArr;
     private static BufferedImage[][] captainArr;
+    private static BufferedImage[] crabbyAttackEffect;
     private static ArrayList<Captain> captains = new ArrayList<>();
     private static ArrayList<Crabby> crabbies = new ArrayList<>();
     private static ArrayList<Whale> whales = new ArrayList<>();
@@ -36,6 +37,7 @@ public class EnemyManager {
         loadEnemyWhaleImg();
         loadBehaviorImg();
         loadEnemyCaptainImg();
+        loadCrabbyAttackEffect();
 //        updateHitBox();
     }
 
@@ -121,6 +123,13 @@ public class EnemyManager {
             for (int j = 0; j < crabbyArr[i].length; j++) {
                 crabbyArr[i][j] = temp.getSubimage(j * CRABBY_WIDTH_DEFAULT, i * CRABBY_HEIGHT_DEFAULT, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT);
             }
+        }
+    }
+    private void loadCrabbyAttackEffect() {
+        BufferedImage temp = GetSpriteAtlas(CRABBY_ATTACK_EFFECT);// lay 1 img lon
+        crabbyAttackEffect = new BufferedImage[3];// tao array lay animation
+        for (int i = 0; i < 3; i++) {// cat tam hinh lon
+            crabbyAttackEffect[i] = temp.getSubimage(i * ATTACK_EFFECT_WIDTH_DEFAULT,  0, ATTACK_EFFECT_WIDTH_DEFAULT, ATTACK_EFFECT_HEIGHT_DEFAULT);
         }
     }
 
@@ -219,6 +228,15 @@ public class EnemyManager {
                             (int) c.getHitBox().y - yLvlOffset - 20,
                             BEHAVIOR_CLOSING_WIDTH, BEHAVIOR_CLOSING_HEIGHT, null
                     );
+                }
+                if(c.getEnemyState()==CRABBY_ATTACK && c.getFrameIndex()>=3){
+                    int FrameIndex = c.getFrameIndex()-3;
+                    if(FrameIndex < 3){
+                        g.drawImage(crabbyAttackEffect[c.getFrameIndex()-3],
+                                (int) c.getHitBox().x - xLvlOffset - 50* 2 ,
+                                (int) c.getHitBox().y - yLvlOffset ,
+                                ATTACK_EFFECT_WIDTH, ATTACK_EFFECT_HEIGHT, null);
+                    }
                 }
 //                float healthWidth = (int) ((c.currentHealth / (float) c.maxHealth) * c.getHitBox().width);
 //                g.setColor(Color.RED);

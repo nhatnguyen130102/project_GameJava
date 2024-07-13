@@ -49,7 +49,7 @@ public class HelpMethods {
             //Falling
             int tileYPos = currentTile * Game.TILE_SIZE;
             int yOffset = (int) (Game.TILE_SIZE - hitBox.height);
-            return tileYPos + yOffset -1;
+            return tileYPos + yOffset - 1;
         } else {
             //Jumping
             return currentTile * Game.TILE_SIZE;
@@ -82,10 +82,11 @@ public class HelpMethods {
 
 
     // kiểm tra nhân vật có đứng ở tile đã được duyệt hay k và kiểm tra nhân vật có chạm vào tile có collision = true hay k
-    public static boolean IsSolid(float x, float y, int[][] lvlData) {
+    public static boolean IsSolid(float x, float y, int[][] lvlData) {// x,y toa do can kt, lvlData
         // Cho phép nhân vật chạm vào phần rìa main screen
         int maxWidth = lvlData[0].length * Game.TILE_SIZE;
         int maxHeight = lvlData.length;
+        // qua to
         if (x < 0 || x >= maxWidth * Game.TILE_SIZE)
             return true;
         if (y < 0 || y >= maxHeight * Game.TILE_SIZE)
@@ -226,6 +227,18 @@ public class HelpMethods {
                 int value = color.getBlue();
                 if (value == RED_POTION || value == BLUE_POTION)
                     list.add(new Potion(i * Game.TILE_SIZE, j * Game.TILE_SIZE, value));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
+            }
+        }
+        return list;
+    }
+    public static ArrayList<PalmTree> GetPalmTree(BufferedImage img) {
+        ArrayList<PalmTree> list = new ArrayList<>();
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getBlue();
+                if (value == PALM_TREE)
+                    list.add(new PalmTree(i * Game.TILE_SIZE, j * Game.TILE_SIZE, value));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
             }
         }
         return list;

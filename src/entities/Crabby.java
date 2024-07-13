@@ -29,7 +29,6 @@ public class Crabby extends Enemy {
     public void update(int[][] lvlData, Player player) {
         updateFrameTick();
         updateCanSeeBox();
-
         updateBehavior(lvlData, player);
         updateAttackBox();
     }
@@ -64,6 +63,7 @@ public class Crabby extends Enemy {
                     if (frameIndex == 0)
                         attackChecked = false;
                     if (frameIndex == 3 && !attackChecked)
+
                         checkEnemyHit(attackBox, player);
                 }
                 case CRABBY_HIT -> {

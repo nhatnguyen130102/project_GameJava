@@ -17,13 +17,19 @@ import static ultilz.Constants.BombTiles.*;
 import static ultilz.Constants.ObjectConstants.*;
 import static ultilz.Constants.Projectiles.*;
 import static ultilz.HelpMethods.*;
+import static ultilz.LoadSave.*;
+import static ultilz.LoadSave.PALM_TREE;
 
 public class ObjectManager {
     private Playing playing;
     private BufferedImage[][] potionImgs, containerImgs, bombImgs;
     private BufferedImage[] cannonImgs;
+    private BufferedImage[] cannonAttackEffectImgs;
+    private BufferedImage[] ballExplodeImgs;
+    private BufferedImage[] palmTreeImgs;
     private BufferedImage cannonBallImg;
     private ArrayList<Potion> potions;
+    private ArrayList<PalmTree> palmTrees;
     private ArrayList<GameContainer> containers;
     private ArrayList<Cannon> cannons;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
@@ -41,6 +47,8 @@ public class ObjectManager {
         cannons = newLevel.getCannons();
         projectiles.clear();
         spikes = new ArrayList<>(newLevel.getSpikes());
+        palmTrees = new ArrayList<>(newLevel.getPalmTrees());
+
     }
 
     private void loadImgs() {
@@ -72,6 +80,19 @@ public class ObjectManager {
             cannonImgs[i] = cannonSprite.getSubimage(i * CANNON_WIDTH_DEFAULT, 0, CANNON_WIDTH_DEFAULT, CANNON_HEIGHT_DEFAULT);
         }
 
+
+        BufferedImage cannonAttackEffect = LoadSave.GetSpriteAtlas(CANNON_ATTACK_EFFECT);
+        cannonAttackEffectImgs = new BufferedImage[6];
+        for (int i = 0; i < 6; i++) {
+            cannonAttackEffectImgs[i] = cannonAttackEffect.getSubimage(i * CANNON_ATTACK_EFFECT_WIDTH_DEFAULT, 0, CANNON_ATTACK_EFFECT_WIDTH_DEFAULT, CANNON_ATTACK_EFFECT_HEIGHT_DEFAULT);
+        }
+
+        BufferedImage ballExplode = LoadSave.GetSpriteAtlas(BALL_EXPLODE);
+        ballExplodeImgs = new BufferedImage[7];
+        for (int i = 0; i < 6; i++) {
+            ballExplodeImgs[i] = ballExplode.getSubimage(i * BALL_EXPLODE_WIDTH, 0, BALL_EXPLODE_WIDTH, BALL_EXPLODE_HEIGHT);
+        }
+
         cannonBallImg = LoadSave.GetSpriteAtlas(LoadSave.BALL_IMG);
         spikeImg = LoadSave.GetSpriteAtlas(LoadSave.SPIKE_IMG);
 
@@ -82,6 +103,13 @@ public class ObjectManager {
         for (int i = 0; i < bombImgs.length; i++)//row
             for (int j = 0; j < bombImgs[i].length; j++)//col
                 bombImgs[i][j] = bombSprite.getSubimage(j * BOMB_WIDTH_DEFAULT, i * BOMB_HEIGHT_DEFAULT, BOMB_WIDTH_DEFAULT, BOMB_HEIGHT_DEFAULT);
+
+
+        BufferedImage palmTreeSprite = LoadSave.GetSpriteAtlas(PALM_TREE);
+        palmTreeImgs = new BufferedImage[4];
+        for (int i = 0; i < 4; i++) {
+            palmTreeImgs[i] = palmTreeSprite.getSubimage(i * PALM_TREE_WIDTH_DEFAULT, 0, PALM_TREE_WIDTH , PALM_TREE_HEIGHT);
+        }
     }
 
     public void update(int[][] lvlData, Player player) {
@@ -92,6 +120,10 @@ public class ObjectManager {
         for (GameContainer gc : containers) {
             if (gc.isActive())
                 gc.update();
+        }
+        for(PalmTree p : palmTrees){
+            if(p != null)
+                p.update();
         }
         updateCannon(lvlData, player);
 //        updateProjectiles(lvlData, player);
@@ -126,17 +158,24 @@ public class ObjectManager {
                 }
             }
             c.update();
-            if (c.getFrameIndex() == 4 && c.getFrameTick() == 0)
+            if (c.getFrameIndex() == 4 && c.getFrameTick() == 0) {
                 shootCannon(c);
+                c.setShooting(true);
+            }
+
             for (Projectile p : projectiles)
                 if (p.isActive()) {
                     p.updatePos();
                     if (p.getHitbox().intersects(player.getHitBox())) {
                         playing.getGame().getAudioPlayer().playEffect(AudioPlayer.EXPLODE);
-                        player.changeHealth(-25);
+                        p.setInfoExplodeBox(p);
                         p.setActive(false);
-                    } else if (IsProjectileHittingLevel(p, lvlData))
+                        player.changeHealth(-1);
+//                        p.setExplode(true);
+                    } else if (IsProjectileHittingLevel(p, lvlData)) {
                         p.setActive(false);
+//                        p.setExplode(true);
+                    }
                 }
         }
     }
@@ -171,7 +210,15 @@ public class ObjectManager {
         drawCannon(g, xLvlOffset, yLvlOffset);
         drawProjectile(g, xLvlOffset, yLvlOffset);
         drawSpikes(g, xLvlOffset, yLvlOffset);
+//        drawPalmTree(g,xLvlOffset,yLvlOffset);
     }
+
+    public void drawPalmTree(Graphics g, int xLvlOffset, int yLvlOffset) {
+        for(PalmTree p : palmTrees){
+            g.drawImage(palmTreeImgs[p.getFrameIndex()], (int) p.getHitBox().x, (int) p.getHitBox().y,PALM_TREE_WIDTH * 2,PALM_TREE_HEIGHT * 2,null);
+        }
+    }
+
     private void drawSpikes(Graphics g, int xLvlOffset, int yLvlOffset) {
         for (Spike s : spikes) {
             int x = (int) (s.getHitBox().x - xLvlOffset);
@@ -180,15 +227,17 @@ public class ObjectManager {
             g.drawImage(spikeImg, x, y, SPIKE_WIDTH, SPIKE_HEIGHT, null);
         }
     }
+
     public void checkSpikesTouched(Rectangle2D.Float hitbox) {
         for (Spike s : spikes)
-            if (hitbox.intersects(s.getHitBox())){
-                if(!playing.getPlayer().isSpikeState()){
+            if (hitbox.intersects(s.getHitBox())) {
+                if (!playing.getPlayer().isSpikeState()) {
                     playing.getPlayer().changeHealth(-SPIKE_DMG);
                     playing.getPlayer().setSpikeState(true);
                 }
             }
     }
+
     private void drawProjectile(Graphics g, int xLvlOffset, int yLvlOffset) {
         for (Projectile pr : projectiles)
             if (pr.isActive()) {
@@ -199,14 +248,22 @@ public class ObjectManager {
     private void drawCannon(Graphics g, int xLvlOffset, int yLvlOffset) {
         for (Cannon c : cannons) {
             int x = (int) (c.getHitBox().x - xLvlOffset);
+            int x_attack = (int) (x - c.getHitBox().width);
             int width = CANNON_WIDTH;
-
+            int widht_attack = CANNON_ATTACK_EFFECT_WIDTH;
             if (c.getObjType() == CANNON_RIGHT) {
                 x += width;
+                x_attack += (int) (82 * 2 * Game.SCALE);
                 width *= -1;
+                widht_attack *= -1;
             }
 
             g.drawImage(cannonImgs[c.getFrameIndex()], x, (int) (c.getHitBox().y - yLvlOffset + CANNON_DRAW_OFFSET_Y), width, CANNON_HEIGHT, null);
+
+            if (c.isShooting()) {
+                g.drawImage(cannonAttackEffectImgs[c.getFrameIndexA()], x_attack, (int) (c.getHitBox().y - yLvlOffset), widht_attack, CANNON_ATTACK_EFFECT_HEIGHT, null);
+            }
+
 
         }
     }
@@ -299,5 +356,7 @@ public class ObjectManager {
             gc.reset();
         for (Cannon c : cannons)
             c.reset();
+        for(PalmTree p : palmTrees)
+            p.reset();
     }
 }

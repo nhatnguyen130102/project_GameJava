@@ -175,7 +175,6 @@ public class Bomb {
             return;
         }  // kiem tra trang thai cua vat the, han che vat the co the nhay nhieu lan tren khong
         inAir = true; // dat lai trang thai cho vat the
-
         airSpeed = jumpSpeed; // dat lai toc do roi cua vat the
         if(airSpeed < 0){
             bounce += 0.3f;

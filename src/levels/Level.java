@@ -4,10 +4,7 @@ import entities.Captain;
 import entities.Crabby;
 import entities.Whale;
 import main.Game;
-import objects.Cannon;
-import objects.GameContainer;
-import objects.Potion;
-import objects.Spike;
+import objects.*;
 import ultilz.HelpMethods;
 
 import java.awt.*;
@@ -25,6 +22,7 @@ public class Level {
     private ArrayList<GameContainer> containers;
     private ArrayList<Cannon> cannons;
     private ArrayList<Captain> captains;
+    private ArrayList<PalmTree> palmTrees;
 
 
     private int lvlTilesWideX;// Độ dài tối đa của map hiện tại ( toạ độ )
@@ -46,7 +44,7 @@ public class Level {
         calcLvlOffsets();
         calcPlayerSpawn();
         createSpikes();
-
+        createPalmTree();
     }
     private void createSpikes() {
         spikes = HelpMethods.GetSpikes(img);
@@ -57,7 +55,9 @@ public class Level {
     private void createContainers() {
         containers = HelpMethods.GetContainers(img);
     }
-
+    private void createPalmTree(){
+        palmTrees = HelpMethods.GetPalmTree(img);
+    }
     private void createPotions() {
         potions = HelpMethods.GetPotions(img);
     }
@@ -125,5 +125,8 @@ public class Level {
     }
     public ArrayList<Spike> getSpikes(){
         return spikes;
+    }
+    public ArrayList<PalmTree> getPalmTrees(){
+        return palmTrees;
     }
 }

@@ -15,6 +15,9 @@ public class GameObject {
     protected int frameTick, frameIndex;
     protected int frameSpeed = 25;
     protected int xDrawOffset, yDrawOffset;
+    protected int count;
+    private int frameTickA;
+    private int frameIndexA;
 
     public GameObject(int x, int y, int objType) {
         this.x = x;
@@ -47,9 +50,25 @@ public class GameObject {
                 }else if(objType == CANNON_LEFT || objType == CANNON_RIGHT){
                     doAnimation = false;
                 }
+                else if(objType == PALM_TREE){
+                    doAnimation = true;
+                }
             }
         }
     }
+
+    protected void updateFrameTickAttack(Cannon c) {
+        frameTickA++;
+        if (frameTickA >= frameSpeed) {
+            frameTickA = 0;
+            frameIndexA++;
+            if(frameIndexA > 5){
+                frameIndexA = 0;
+                c.setShooting(false);
+            }
+        }
+    }
+
     public void reset(){
         frameIndex = 0;
         frameTick = 0;
@@ -85,7 +104,9 @@ public class GameObject {
     public int getFrameTick(){
         return frameTick;
     }
-
+    public int getFrameIndexA(){
+        return frameIndexA;
+    }
     public void setActive(boolean active){
         this.active = active;
     }

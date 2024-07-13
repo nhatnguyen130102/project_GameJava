@@ -25,6 +25,8 @@ public class LoadSave {
     public static final String BIG_CLOUDS = "Level/Obj&BackGround/big_clouds.png";
     public static final String SMALL_CLOUDS = "Level/Obj&BackGround/small_clouds.png";
     public static final String CRABBY_SPRITE = "Enemy/crabby_sprite.png";
+    public static final String CRABBY_ATTACK_EFFECT= "Enemy/crabby_attack.png";
+
     public static final String CAPTAIN_SPRITE = "Enemy/Captain.png";
     public static final String STATUS_BAR = "Menu/health_power_bar.png";
     public static final String COMPLETED_IMG = "Menu/completed_sprite.png";
@@ -33,12 +35,15 @@ public class LoadSave {
     public static final String POTION_ATLAS = "Object/potions_sprites.png";
     public static final String CONTAINER_ATLAS = "Object/objects_sprites.png";
     public static final String CANNON_ATLAS = "Object/cannon_atlas.png";
+    public static final String CANNON_ATTACK_EFFECT = "Object/cannon/cannon-fire-effect(20x28).png";
+    public static final String BALL_EXPLODE = "Object/cannon/cannon-ball-explosion(54x60).png";
     public static final String BALL_IMG = "Object/ball.png";
     public static final String DEATH_SCREEN = "Menu/death_screen.png";
     public static final String OPTIONS_MENU = "Menu/options_background.png";
     public static final String RAIN_PARTICLE = "Level/Obj&BackGround/rain_particle.png";
     //    public static final String BEHAVIOR_OPENING ="Object/4-Interrogation Dialog/1-Opening";
     public static final String BEHAVIOR_CLOSING = "Object/4-Interrogation Dialog/2-Closing/1.png";
+    public static final String PALM_TREE = "treasure-hunters/palm-tree-island/back-palm-tree-left(51x53).png";
 
 
     // đọc file img trả về img lớn

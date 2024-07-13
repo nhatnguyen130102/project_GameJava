@@ -99,7 +99,7 @@ public void update() {
 
     @Override
     public void run() {
-        double timePerFrame = 1000000000.0 / FPS_SET;
+        double timePerFrame = 1000000000.0 / FPS_SET; // 1s/FPS
         double timePerUpdate = 1000000000.0 / UPS_SET;
         long previousTime = System.nanoTime();
         int updates = 0;

@@ -57,9 +57,13 @@ public class Constants {
 
         public static final int CANNON_BALL_WIDTH = (int) (Game.SCALE * CANNON_BALL_DEFAULT_WIDTH) * 2;
         public static final int CANNON_BALL_HEIGHT = (int) (Game.SCALE * CANNON_BALL_DEFAULT_HEIGHT) * 2;
+
+        public static final int BALL_EXPLODE_WIDTH_DEFAULT = 54;
+        public static final int BALL_EXPLODE_HEIGHT_DEFAULT = 60;
+        public static final int BALL_EXPLODE_WIDTH = (int) (BALL_EXPLODE_WIDTH_DEFAULT * Game.SCALE);
+        public static final int BALL_EXPLODE_HEIGHT = (int) (BALL_EXPLODE_HEIGHT_DEFAULT * Game.SCALE);
         public static final float SPEED = 0.75f * Game.SCALE;
     }
-
     public static class ObjectConstants {
         public static final int BLUE_POTION = 0;
         public static final int RED_POTION = 1;
@@ -94,6 +98,21 @@ public class Constants {
         public static final int SPIKE_DRAW_OFFSET_Y = (int) (16 * Game.SCALE);//lech duoi
         public static final int SPIKE_DMG = 1;
 
+
+        public static final int CANNON_ATTACK_EFFECT_WIDTH_DEFAULT = 20;
+        public static final int CANNON_ATTACK_EFFECT_HEIGHT_DEFAULT = 28;
+        public static final int CANNON_ATTACK_EFFECT_WIDTH = (int) (CANNON_ATTACK_EFFECT_WIDTH_DEFAULT * Game.SCALE) * 2;
+        public static final int CANNON_ATTACK_EFFECT_HEIGHT= (int) (CANNON_ATTACK_EFFECT_HEIGHT_DEFAULT * Game.SCALE) * 2;
+
+
+        public static final int PALM_TREE = 8;
+        public static final int PALM_TREE_WIDTH_DEFAULT = 51;
+        public static final int PALM_TREE_HEIGHT_DEFAULT = 53;
+        public static final int PALM_TREE_WIDTH = (int) (PALM_TREE_WIDTH_DEFAULT * Game.SCALE) ;
+        public static final int PALM_TREE_HEIGHT = (int) (PALM_TREE_HEIGHT_DEFAULT * Game.SCALE) ;
+        public static final int HB_PALM_TREE_WIDTH = 37;
+        public static final int HB_PALM_TREE_HEIGHT = 28;
+
         public static int GetSpriteAmount(int object_type) {
             switch (object_type) {
                 case RED_POTION, BLUE_POTION:
@@ -102,6 +121,8 @@ public class Constants {
                     return 8;
                 case CANNON_LEFT, CANNON_RIGHT:
                     return 7;
+                case PALM_TREE:
+                    return 4;
             }
             return 1;
         }
@@ -128,7 +149,7 @@ public class Constants {
         public static final int CRABBY_DRAW_OFFSET_X = (int) (26 * 2 * Game.SCALE);//lech trai
         public static final int CRABBY_DRAW_OFFSET_Y = (int) (9 * 2 * Game.SCALE);//lech tren
         public static final int CRABBY_MAX_HEALTH = 50;
-        public static final int CRABBY_DMG = 10;
+        public static final int CRABBY_DMG = 1;
 
         //Whale enemy info
         public static final int WHALE = 1;
@@ -183,6 +204,11 @@ public class Constants {
         public static final int CAPTAIN_MAX_HEALTH = 100;
         public static final int CAPTAIN_DMG = 10;
         //
+        public static final int ATTACK_EFFECT_WIDTH_DEFAULT = 118;
+        public static final int ATTACK_EFFECT_HEIGHT_DEFAULT = 24 ;
+        public static final int ATTACK_EFFECT_WIDTH = (int) (ATTACK_EFFECT_WIDTH_DEFAULT *2 * Game.SCALE);
+        public static final int ATTACK_EFFECT_HEIGHT = (int) (ATTACK_EFFECT_HEIGHT_DEFAULT *2* Game.SCALE);
+
         public static int GetSpriteAmount(int enemy_type, int enemy_state) {
             switch (enemy_type) {
                 case CAPTAIN -> {

@@ -2,8 +2,11 @@ package objects;
 
 import main.Game;
 
+import static ultilz.Constants.ObjectConstants.*;
+
 public class Cannon extends GameObject {
     private int tileY;
+    private boolean isShooting;
 
     public Cannon(int x, int y, int objType) {
         super(x, y, objType);
@@ -14,11 +17,21 @@ public class Cannon extends GameObject {
     }
 
     public void update() {
-        if (doAnimation)
+        if (doAnimation) {
             updateFrameTick();
+        }
+        if(isShooting)
+            updateFrameTickAttack(this);
     }
 
     public int getTileY() {
         return tileY;
+    }
+
+    public void setShooting(boolean shooting){
+        this.isShooting = shooting;
+    }
+    public boolean isShooting(){
+        return this.isShooting;
     }
 }
