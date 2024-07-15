@@ -25,6 +25,7 @@ public class Level {
     private ArrayList<PalmTree> palmTrees;
     private ArrayList<FrontTopTree> topTrees;
     private ArrayList<FrontBottomTree> bottomTrees;
+    private ArrayList<House> house;
 
     private int lvlTilesWideX;// Độ dài tối đa của map hiện tại ( toạ độ )
     private int lvlTilesWideY;// Độ cao tối đa của map hiện tại ( toạ độ )
@@ -48,6 +49,7 @@ public class Level {
         createPalmTree();
         createTopTree();
         createBottomTree();
+        createHouse();
     }
     private void createSpikes() {
         spikes = HelpMethods.GetSpikes(img);
@@ -66,6 +68,9 @@ public class Level {
     }
     private void createBottomTree(){
         bottomTrees = HelpMethods.GetBottomTree(img);
+    }
+    private void createHouse(){
+        house = HelpMethods.GetHouse(img);
     }
     private void createPotions() {
         potions = HelpMethods.GetPotions(img);
@@ -143,5 +148,8 @@ public class Level {
     }
     public ArrayList<FrontBottomTree> getBottomTrees(){
         return bottomTrees;
+    }
+    public ArrayList<House> getHouse(){
+        return house;
     }
 }

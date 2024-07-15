@@ -125,6 +125,12 @@ public class Constants {
         public static final int TOP_TREE_HEIGHT = (int) (TOP_TREE_HEIGHT_DEFAULT * Game.SCALE) ;
         public static final int TOP_TREE_DRAW_OFFSET_X = (int) (8 * Game.SCALE);//lech phai
 
+        public static final int HOUSE_WIDTH_DEFAULT = 64;
+        public static final int HOUSE_HEIGHT_DEFAULT = 64;
+        public static final int HOUSE_WIDTH = (int) (HOUSE_WIDTH_DEFAULT * Game.SCALE) ;
+        public static final int HOUSE_HEIGHT = (int) (HOUSE_HEIGHT_DEFAULT * Game.SCALE) ;
+        public static final int HOUSE_DRAW_OFFSET_Y = (int) (64 * Game.SCALE);//lech duoi
+
         public static int GetSpriteAmount(int object_type) {
             switch (object_type) {
                 case RED_POTION, BLUE_POTION:

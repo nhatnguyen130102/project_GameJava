@@ -252,7 +252,20 @@ public class HelpMethods {
                 Color color = new Color(img.getRGB(i, j));
                 int value = color.getBlue();
                 if (value >= 90 && value <= 96)
-                    list.add(new FrontBottomTree(i * Game.TILE_SIZE, j * Game.TILE_SIZE, value));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
+                    list.add(new FrontBottomTree(i * Game.TILE_SIZE, j * Game.TILE_SIZE, value - 90));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
+            }
+        }
+        return list;
+    }
+    //get house
+    public static ArrayList<House> GetHouse(BufferedImage img) {
+        ArrayList<House> list = new ArrayList<>();
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getBlue();
+                if (value >= 100 && value <= 115)
+                    list.add(new House(i * Game.TILE_SIZE, j * Game.TILE_SIZE, value - 100));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
             }
         }
         return list;

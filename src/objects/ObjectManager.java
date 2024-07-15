@@ -29,11 +29,13 @@ public class ObjectManager {
     private BufferedImage[] palmTreeImgs;
     private BufferedImage[] topTreeImgs;
     private BufferedImage[] bottomTreeImgs;
+    private BufferedImage[] houseImgs;
     private BufferedImage cannonBallImg;
     private ArrayList<Potion> potions;
     private ArrayList<PalmTree> palmTrees;
     private ArrayList<FrontTopTree> topTrees;
     private ArrayList<FrontBottomTree> bottomTrees;
+    private ArrayList<House> house;
     private ArrayList<GameContainer> containers;
     private ArrayList<Cannon> cannons;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
@@ -54,6 +56,7 @@ public class ObjectManager {
         palmTrees = new ArrayList<>(newLevel.getPalmTrees());
         topTrees = new ArrayList<>(newLevel.getTopTrees());
         bottomTrees = new ArrayList<>(newLevel.getBottomTrees());
+        house = new ArrayList<>(newLevel.getHouse());
     }
 
     private void loadImgs() {
@@ -122,10 +125,17 @@ public class ObjectManager {
             topTreeImgs[i] = topTreeSprite.getSubimage(i * TOP_TREE_WIDTH_DEFAULT, 0, TOP_TREE_WIDTH , TOP_TREE_HEIGHT);
         }
 
-        BufferedImage bottomTreeSprite = LoadSave.GetSpriteAtlas(LoadSave.BOTTOM_TREE);
+        BufferedImage bottomTreeSprite = LoadSave.GetSpriteAtlas(BOTTOM_TREE);
         bottomTreeImgs = new BufferedImage[7];
         for (int i = 0; i < 7; i++) {
             bottomTreeImgs[i] = bottomTreeSprite.getSubimage(i * BOTTOM_TREE_WIDTH_DEFAULT, 0, BOTTOM_TREE_WIDTH , BOTTOM_TREE_HEIGHT);
+        }
+
+        BufferedImage houseSprite = LoadSave.GetSpriteAtlas(HOUSE);
+        houseImgs = new BufferedImage[16];
+        for (int i = 0; i < 4; i++) { //row
+            for (int j = 0; j < 4; j++) //col
+                houseImgs[4 * i + j] = houseSprite.getSubimage(j * HOUSE_WIDTH_DEFAULT, i * HOUSE_HEIGHT_DEFAULT, HOUSE_WIDTH , HOUSE_HEIGHT);
         }
     }
 
@@ -234,6 +244,7 @@ public class ObjectManager {
         drawSpikes(g, xLvlOffset, yLvlOffset);
         drawTopTree(g, xLvlOffset, yLvlOffset);
         drawBottomTree(g, xLvlOffset, yLvlOffset);
+        drawHouse(g, xLvlOffset, yLvlOffset);
 //        drawPalmTree(g,xLvlOffset,yLvlOffset);
     }
 
@@ -251,7 +262,13 @@ public class ObjectManager {
 
     public void drawBottomTree(Graphics g, int xLvlOffset, int yLvlOffset) {
         for(FrontBottomTree b : bottomTrees){
-            g.drawImage(bottomTreeImgs[b.objType % 10], (int) b.getHitBox().x - xLvlOffset, (int) b.getHitBox().y - yLvlOffset,BOTTOM_TREE_WIDTH * 2,BOTTOM_TREE_HEIGHT * 2,null);
+            g.drawImage(bottomTreeImgs[b.objType], (int) b.getHitBox().x - xLvlOffset, (int) b.getHitBox().y - yLvlOffset,BOTTOM_TREE_WIDTH * 2,BOTTOM_TREE_HEIGHT * 2,null);
+        }
+    }
+
+    public void drawHouse(Graphics g, int xLvlOffset, int yLvlOffset) {
+        for(House h : house){
+            g.drawImage(houseImgs[h.objType], (int) h.getHitBox().x - xLvlOffset, (int) h.getHitBox().y - yLvlOffset - HOUSE_DRAW_OFFSET_Y, HOUSE_WIDTH, HOUSE_HEIGHT,null);
         }
     }
 
@@ -394,7 +411,7 @@ public class ObjectManager {
             c.reset();
         for(PalmTree p : palmTrees)
             p.reset();
-        for(FrontBottomTree b : bottomTrees)
-            b.reset();
+        for(FrontTopTree t : topTrees)
+            t.reset();
     }
 }
