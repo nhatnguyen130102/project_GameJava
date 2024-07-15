@@ -25,7 +25,9 @@ public abstract class Enemy extends Entity {
     protected int currentHealth;
     protected boolean active = true;
     protected boolean attackChecked;
+
     protected boolean swallowed;
+    protected boolean pickBomb;
     protected int behaviorState;
     protected boolean startBehaviorState;
 
@@ -59,8 +61,17 @@ public abstract class Enemy extends Entity {
                     }
                     case CAPTAIN -> {
                         switch (enemyState) {
-                            case CAPTAIN_ATTACK, CAPTAIN_HIT, CAPTAIN_SCARE_RUN,CAPTAIN_DEAD_GROUND -> enemyState = CAPTAIN_IDLE;
+                            case CAPTAIN_ATTACK, CAPTAIN_HIT, CAPTAIN_SCARE_RUN, CAPTAIN_DEAD_GROUND ->
+                                    enemyState = CAPTAIN_IDLE;
                             case CAPTAIN_DEAD_HIT -> active = false;
+                        }
+                    }
+                    case BIGGUY -> {
+                        switch (enemyState) {
+                            case BIGGUY_ATTACK, BIGGUY_HIT, BIGGUY_DEAD_GROUND, BIGGUY_THROW_BOMB ->
+                                    enemyState = BIGGUY_IDLE;
+                            case BIGGUY_PICK_BOMB -> enemyState = BIGGUY_IDLE_BOMB;
+                            case BIGGUY_DEAD_HIT -> active = false;
                         }
                     }
                 }
@@ -76,11 +87,6 @@ public abstract class Enemy extends Entity {
         attackChecked = true;
     }
 
-    protected void checkEnemyHitBomb(Rectangle2D.Float attackBox, Bomb bomb) {
-        if (attackBox.intersects(bomb.getHitbox()))
-            bomb.setActive(false);
-        swallowed = true;
-    }
 
     protected void firstUpdateChecked(int[][] lvlData) {
         if (!IsEntityOnFloor(hitBox, lvlData))
@@ -179,6 +185,7 @@ public abstract class Enemy extends Entity {
             canSeeHitbox.x = hitBox.x - Game.TILE_SIZE;
         canSeeHitbox.y = hitBox.y + hitBox.height - Game.TILE_SIZE;
     }
+
     protected void changeWalkDir() {
         if (walkDir == LEFT)
             walkDir = RIGHT;
@@ -232,4 +239,6 @@ public abstract class Enemy extends Entity {
         active = true;
         fallSpeed = 0;
     }
+
+
 }

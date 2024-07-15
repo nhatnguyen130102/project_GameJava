@@ -35,10 +35,11 @@ public class Bomb {
     public float jumpSpeed;
     private final float fallSpeedAfterCollision = Game.SCALE;
     boolean inAir = false;
-    private final int timeToExplode = 3000;
+    private final int timeToExplode = 5000;
     private Timer explodeTimer;
     private float BombSpeed;
     private final Playing playing;
+    private boolean picked = false;
 
     public Bomb(Player player, int[][] lvlData, Playing playing, float jumpSpeed, float bombSpeed) {
         this.player = player;
@@ -81,6 +82,12 @@ public class Bomb {
         jumpSpeed = -1.5f;
         BombSpeed = 1f;
     }
+    public void newBombStateThrow() {
+        inAir = false;
+        bounce = 0;
+        jumpSpeed = -1.5f;
+        BombSpeed = 2f;
+    }
 
     private void checkExplode() {
         playing.checkEmenyExplode(explodeHitbox);
@@ -109,7 +116,9 @@ public class Bomb {
     public void changDir() {
         dir *= -1;
     }
-
+    public void setDir(int value){
+        dir = value;
+    }
     public Rectangle2D.Float getHitbox() {
         return hitbox;
     }
@@ -139,7 +148,7 @@ public class Bomb {
     }
 
     private void updatePos() {
-        if (!isExplode) {
+        if (!isExplode && !picked) {
             if (jump) {
                 jump();
             }
@@ -169,6 +178,13 @@ public class Bomb {
         }
     }
 
+    public boolean isPicked() {
+        return picked;
+    }
+
+    public void setPicked(boolean picked) {
+        this.picked = picked;
+    }
 
     private void jump() {
         if (inAir) {

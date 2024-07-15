@@ -7,24 +7,19 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static java.awt.Color.RED;
-import static java.awt.Color.pink;
-import static ultilz.Constants.Directions.LEFT;
-import static ultilz.Constants.Directions.RIGHT;
+import static java.awt.Color.*;
+import static ultilz.Constants.Directions.*;
 import static ultilz.Constants.EnemyConstants.*;
-import static ultilz.Constants.PlayerConstants.DEAD_GROUND;
-import static ultilz.HelpMethods.IsChangDir;
-import static ultilz.HelpMethods.IsEntityOnFloor;
 
 public class Captain extends Enemy {
 
     public Rectangle2D.Float attackBox;
     public float attackOffsetY;
-    private Bomb bomb;
     private Random rnd = new Random();
     private int value = -1;
     private int SCARE = 0;
     private int SKIP = 1;
+
 
 
     public Captain(float x, float y) {
@@ -44,20 +39,8 @@ public class Captain extends Enemy {
         updateFrameTick();
         updateCanSeeBox();
         updateBehavior(lvlData, player, bombs);
-//        if (isExplode) {
-//            if (IsChangDir(hitBox, lvlData)) {
-//                changePlayerDir();
-//            }
-//            if (IsEntityOnFloor(hitBox, lvlData)) {
-//                newState(DEAD_GROUND);
-//                bounce();
-//            }
-//            if (bounce >= 2) {
-//                resetExplode();
-//            }
-//
-//        }
     }
+
 
 
 
@@ -124,7 +107,6 @@ public class Captain extends Enemy {
     }
 
     private void handleRndBehavior(Bomb bomb, int[][] lvlData) {
-        System.out.println(value);
         if (value == SKIP) {
             if (!canSeeBomb(lvlData, bomb)) {
                 value = -1;

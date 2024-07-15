@@ -112,7 +112,11 @@ public class Whale extends Enemy {
             }
         }
     }
-
+    protected void checkEnemyHitBomb(Rectangle2D.Float attackBox, Bomb bomb) {
+        if (attackBox.intersects(bomb.getHitbox()))
+            bomb.setActive(false);
+        swallowed = true;
+    }
     private void handleRndBehavior(Bomb bomb, int[][] lvlData) {
         if (value == SWALLOW) {
             turnTowardBomb(bomb);
@@ -120,7 +124,7 @@ public class Whale extends Enemy {
                 newState(WHALE_SWALOW);
                 this.bomb = bomb;
                 value = -1;
-                System.out.println(value);
+//                System.out.println(value);
             }
         }
         if (value == SKIP) {
@@ -140,7 +144,7 @@ public class Whale extends Enemy {
     public void checkBombDir(Bomb bomb) {
         if (hitBox.intersects(bomb.getHitbox())) {
             float distance = bomb.getHitbox().x - hitBox.x;
-            if (distance > 0) { // bombRight
+            if (distance > 0) {
                 this.bomb.getHitbox().x -= 0.2f;
             } else {
                 this.bomb.getHitbox().x += 0.2f;

@@ -25,6 +25,8 @@ public class LoadSave {
     public static final String BIG_CLOUDS = "Level/Obj&BackGround/big_clouds.png";
     public static final String SMALL_CLOUDS = "Level/Obj&BackGround/small_clouds.png";
     public static final String CRABBY_SPRITE = "Enemy/crabby_sprite.png";
+    public static final String BIGGUY_SPRITE = "Enemy/Big_Guy.png";
+
     public static final String CRABBY_ATTACK_EFFECT= "Enemy/crabby_attack.png";
 
     public static final String CAPTAIN_SPRITE = "Enemy/Captain.png";

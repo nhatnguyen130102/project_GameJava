@@ -1,5 +1,6 @@
 package levels;
 
+import entities.BigGuy;
 import entities.Captain;
 import entities.Crabby;
 import entities.Whale;
@@ -22,6 +23,7 @@ public class Level {
     private ArrayList<GameContainer> containers;
     private ArrayList<Cannon> cannons;
     private ArrayList<Captain> captains;
+    private ArrayList<BigGuy> bigGuys;
     private ArrayList<PalmTree> palmTrees;
     private ArrayList<FrontTopTree> topTrees;
     private ArrayList<FrontBottomTree> bottomTrees;
@@ -90,6 +92,7 @@ public class Level {
         crabs = GetCrabs(img);
         whales = GetWhales(img);
         captains = GetCaptains(img);
+        bigGuys = GetBigGuy(img);
     }
 
     private void createLevelData() {
@@ -132,6 +135,11 @@ public class Level {
     public ArrayList<Captain> getCaptain() {
         return captains;
     }
+    public ArrayList<BigGuy> getBigGuy() {
+        return bigGuys;
+    }
+
+
     public ArrayList<Spike> getSpikes(){
         return spikes;
     }

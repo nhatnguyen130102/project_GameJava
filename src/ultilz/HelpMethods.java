@@ -1,9 +1,6 @@
 package ultilz;
 
-import entities.Bomb;
-import entities.Captain;
-import entities.Crabby;
-import entities.Whale;
+import entities.*;
 import main.Game;
 import objects.*;
 
@@ -82,7 +79,7 @@ public class HelpMethods {
 
 
     // kiểm tra nhân vật có đứng ở tile đã được duyệt hay k và kiểm tra nhân vật có chạm vào tile có collision = true hay k
-    public static boolean IsSolid(float x, float y, int[][] lvlData) {// x,y toa do can kt, lvlData
+    public static boolean IsSolid(float x, float y, int[][] lvlData) {
         // Cho phép nhân vật chạm vào phần rìa main screen
         int maxWidth = lvlData[0].length * Game.TILE_SIZE;
         int maxHeight = lvlData.length;
@@ -98,7 +95,6 @@ public class HelpMethods {
         return IsTileSolid((int) xIndex, (int) yIndex, lvlData);
     }
 
-
     public static boolean IsTileSolid(int xTile, int yTile, int[][] lvlData) {
         int maxWidth = lvlData[0].length;
         int maxHeight = lvlData.length;
@@ -112,7 +108,6 @@ public class HelpMethods {
         // cho phép nahan vật chạm vào phần tile chưa đc duyệt, kiểm soát lỗi thôi
         return value >= 48 || value < 0 || value != 11;
     }
-
     public static boolean IsAllTilesWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
         if (IsAllTilesClear(xStart, xEnd, y, lvlData))
             for (int i = 0; i < xEnd - xStart; i++) {
@@ -147,7 +142,6 @@ public class HelpMethods {
         }
         return lvlData;
     }
-
     public static boolean CanCannonSeePlayer(int[][] lvlData, Rectangle2D.Float firstHitbox, Rectangle2D.Float secondHitbox, int yTile) {
         int firstXTile = (int) (firstHitbox.x / Game.TILE_SIZE);
         int secondXTile = (int) (secondHitbox.x / Game.TILE_SIZE);
@@ -215,6 +209,19 @@ public class HelpMethods {
                 int value = color.getGreen();
                 if (value == CAPTAIN)
                     list.add(new Captain(i * Game.TILE_SIZE, j * Game.TILE_SIZE));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
+            }
+        }
+        return list;
+    }
+
+    public static ArrayList<BigGuy> GetBigGuy(BufferedImage img) {
+        ArrayList<BigGuy> list = new ArrayList<>();
+        for (int j = 0; j < img.getHeight(); j++) {//Row
+            for (int i = 0; i < img.getWidth(); i++) {//Col
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getGreen();
+                if (value == BIGGUY)
+                    list.add(new BigGuy(i * Game.TILE_SIZE, j * Game.TILE_SIZE));// tao 1 doi tuong enemy tuong ung tai vi tri dc chi dinh tren map
             }
         }
         return list;

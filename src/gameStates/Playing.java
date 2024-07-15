@@ -270,12 +270,15 @@ public class Playing extends State implements StateMethods {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (!gameOver)
-            if (!paused && !lvlCompleted) {
-                if (e.getButton() == MouseEvent.BUTTON3) {
-                    player.setKicking(true);
-                }
-            }
+//        if (!gameOver)
+//            if (!paused && !lvlCompleted) {
+//                if (e.getButton() == MouseEvent.BUTTON3) {
+//                    player.setKicking(true);
+//                }
+//            }
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            player.setKicking(true);
+        }
     }
 
     @Override

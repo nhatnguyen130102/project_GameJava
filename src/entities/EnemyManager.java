@@ -13,7 +13,6 @@ import static ultilz.Constants.BehaviorClosing.*;
 import static ultilz.Constants.BehaviorOpening.*;
 import static ultilz.Constants.BombTiles.*;
 import static ultilz.Constants.EnemyConstants.*;
-import static ultilz.Constants.EnemyConstants.CAPTAIN_DRAW_OFFSET_Y;
 import static ultilz.Constants.PlayerConstants.*;
 import static ultilz.LoadSave.*;
 
@@ -23,10 +22,12 @@ public class EnemyManager {
     private static BufferedImage[][] crabbyArr;
     private static BufferedImage[][] whaleArr;
     private static BufferedImage[][] captainArr;
+    private static BufferedImage[][] bigGuyArr;
     private static BufferedImage[] crabbyAttackEffect;
     private static ArrayList<Captain> captains = new ArrayList<>();
     private static ArrayList<Crabby> crabbies = new ArrayList<>();
     private static ArrayList<Whale> whales = new ArrayList<>();
+    private static ArrayList<BigGuy> bigGuys = new ArrayList<>();
     private static BufferedImage behaviorClosingImg;
     private static BufferedImage[] behaviorOpeningImg;
 
@@ -34,6 +35,7 @@ public class EnemyManager {
     public EnemyManager(Playing playing) {
         this.playing = playing;
         loadEnemyCrabbyImg();
+        loadEnemyBigGuy();
         loadEnemyWhaleImg();
         loadBehaviorImg();
         loadEnemyCaptainImg();
@@ -45,6 +47,7 @@ public class EnemyManager {
         crabbies = level.getCrabs();
         whales = level.getWhales();
         captains = level.getCaptain();
+        bigGuys = level.getBigGuy();
     }
 
     public void checkEnemyExplode(Rectangle2D.Float explodeBox) {
@@ -66,6 +69,14 @@ public class EnemyManager {
             }
         }
         for (Captain c : captains) {
+            if (c.isActive()) {
+                if (explodeBox.intersects(c.getHitBox())) {
+                    c.hurt(BOMB_DMG);
+                    return;
+                }
+            }
+        }
+        for (BigGuy c : bigGuys) {
             if (c.isActive()) {
                 if (explodeBox.intersects(c.getHitBox())) {
                     c.hurt(BOMB_DMG);
@@ -102,6 +113,14 @@ public class EnemyManager {
                 }
             }
         }
+        for (BigGuy c : bigGuys) {
+            if(c.isActive()){
+                if (attackBox.intersects(c.getHitBox())) {
+                    c.hurt(PLAYER_DMG);
+                    return;
+                }
+            }
+        }
     }
 
     private void loadBehaviorImg() {
@@ -122,6 +141,17 @@ public class EnemyManager {
         for (int i = 0; i < crabbyArr.length; i++) {// cat tam hinh lon
             for (int j = 0; j < crabbyArr[i].length; j++) {
                 crabbyArr[i][j] = temp.getSubimage(j * CRABBY_WIDTH_DEFAULT, i * CRABBY_HEIGHT_DEFAULT, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT);
+            }
+        }
+    }
+    private void loadEnemyBigGuy() {
+        BufferedImage temp = GetSpriteAtlas(BIGGUY_SPRITE);// lay 1 img lon
+        int row = temp.getHeight() / BIGGUY_HEIGHT_DEFAULT;
+        int col = temp.getWidth() /BIGGUY_WIDTH_DEFAULT;
+        bigGuyArr = new BufferedImage[row][col];// tao array lay animation
+        for (int i = 0; i < bigGuyArr.length; i++) {// cat tam hinh lon
+            for (int j = 0; j < bigGuyArr[i].length; j++) {
+                bigGuyArr[i][j] = temp.getSubimage(j * BIGGUY_WIDTH_DEFAULT, i * BIGGUY_HEIGHT_DEFAULT, BIGGUY_WIDTH_DEFAULT, BIGGUY_HEIGHT_DEFAULT);
             }
         }
     }
@@ -177,6 +207,12 @@ public class EnemyManager {
                 isAnyActive = true;
             }
         }
+        for (BigGuy c : bigGuys) {
+            if (c.isActive()) {
+                c.update(lvlData, player, bombs);
+                isAnyActive = true;
+            }
+        }
         if (!isAnyActive)
             playing.setLevelCompleted(true);
     }
@@ -185,6 +221,34 @@ public class EnemyManager {
         drawCrabs(g, xLvlOffset, yLvlOffset);
         drawWhales(g, xLvlOffset, yLvlOffset);
         drawCaptains(g, xLvlOffset, yLvlOffset);
+        drawBigGuy(g,xLvlOffset,yLvlOffset);
+    }
+
+    private static void drawBigGuy(Graphics g, int xLvlOffset, int yLvlOffset) {
+        for (BigGuy c : bigGuys) {
+            if (c.isActive()) {
+                g.drawImage(bigGuyArr[c.getEnemyState()][c.getFrameIndex()],
+                        (int) c.getHitBox().x - xLvlOffset - BIGGUY_DRAW_OFFSET_X + c.flipX(),
+                        (int) c.getHitBox().y - yLvlOffset - BIGGUY_DRAW_OFFSET_Y,
+                        BIGGUY_WIDTH * c.flipW(), BIGGUY_HEIGHT, null);
+                if (c.currentHealth <= 0)
+                    c.currentHealth = 0;
+                if (c.getStartBehaviorState()) {
+                    g.drawImage(behaviorClosingImg,
+                            (int) c.getHitBox().x - xLvlOffset,
+                            (int) c.getHitBox().y - yLvlOffset - 20,
+                            BEHAVIOR_CLOSING_WIDTH, BEHAVIOR_CLOSING_HEIGHT, null
+                    );
+                }
+//                float healthWidth = (int) ((c.currentHealth / (float) c.maxHealth) * c.getHitBox().width);
+//                g.setColor(Color.RED);
+//                g.fillRect((int) c.getHitBox().x - xLvlOffset, (int) c.getHitBox().y - 20, (int) healthWidth, 5);
+//                c.drawHitBox(g,xLvlOffset,yLvlOffset);
+//                c.drawAttackBox(g, xLvlOffset,yLvlOffset);
+//                c.drawCanSeeHitbox(g, xLvlOffset, yLvlOffset);
+//                c.drawPickBombBox(g,xLvlOffset,yLvlOffset);
+            }
+        }
     }
 
     private static void drawCaptains(Graphics g, int xLvlOffset, int yLvlOffset) {
@@ -282,5 +346,7 @@ public class EnemyManager {
             w.resetEnemy();
         for (Captain c : captains)
             c.resetEnemy();
+        for(BigGuy b : bigGuys)
+            b.resetEnemy();
     }
 }

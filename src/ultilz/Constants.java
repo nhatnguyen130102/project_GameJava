@@ -215,7 +215,39 @@ public class Constants {
         public static final int CAPTAIN_DRAW_OFFSET_Y = (int) (22 * Game.SCALE);//lech tren
         public static final int CAPTAIN_MAX_HEALTH = 100;
         public static final int CAPTAIN_DMG = 10;
-        //
+        //bigguy
+        public static final int BIGGUY = 3;
+        public static final int BIGGUY_IDLE = 0;
+        public static final int BIGGUY_RUNNING = 1;
+        public static final int BIGGUY_JUMP_ANTICIPATION = 2;
+        public static final int BIGGUY_JUMP = 3;
+        public static final int BIGGUY_FALL = 4;
+        public static final int BIGGUY_GROUND = 5;
+        public static final int BIGGUY_ATTACK = 6;
+        public static final int BIGGUY_PICK_BOMB = 7;
+        public static final int BIGGUY_IDLE_BOMB = 8;
+        public static final int BIGGUY_RUN_BOMB = 9;
+
+        public static final int BIGGUY_THROW_BOMB = 10;
+        public static final int BIGGUY_HIT = 11;
+
+        public static final int BIGGUY_DEAD_HIT = 12;
+        public static final int BIGGUY_DEAD_GROUND = 13;
+
+
+        public static final int BIGGUY_WIDTH_DEFAULT = 77;//size co ban cua 1 frames
+        public static final int BIGGUY_HEIGHT_DEFAULT = 74;
+        public static final int BIGGUY_WIDTH = (int) (BIGGUY_WIDTH_DEFAULT * Game.SCALE);
+        public static final int BIGGUY_HEIGHT = (int) (BIGGUY_HEIGHT_DEFAULT * Game.SCALE);
+        public static final int HB_BIGGUY_WIDTH_DEFAULT = 54;//size co ban cua hitbox
+        public static final int HB_BIGGUY_HEIGHT_DEFAULT = 59;
+        public static final int HB_BIGGUY_WIDTH = (int) (HB_BIGGUY_WIDTH_DEFAULT * Game.SCALE );
+        public static final int HB_BIGGUY_HEIGHT = (int) (HB_BIGGUY_HEIGHT_DEFAULT * Game.SCALE);
+        public static final int BIGGUY_DRAW_OFFSET_X = (int) (5 * Game.SCALE);//lech trai
+        public static final int BIGGUY_DRAW_OFFSET_Y = (int) (15 * Game.SCALE);//lech tren
+        public static final int BIGGUY_MAX_HEALTH = 100;
+        public static final int BIGGUY_DMG = 10;
+        //attack crabby effect
         public static final int ATTACK_EFFECT_WIDTH_DEFAULT = 118;
         public static final int ATTACK_EFFECT_HEIGHT_DEFAULT = 24 ;
         public static final int ATTACK_EFFECT_WIDTH = (int) (ATTACK_EFFECT_WIDTH_DEFAULT *2 * Game.SCALE);
@@ -223,6 +255,38 @@ public class Constants {
 
         public static int GetSpriteAmount(int enemy_type, int enemy_state) {
             switch (enemy_type) {
+                case BIGGUY -> {
+                    switch (enemy_state) {
+                        case BIGGUY_IDLE:
+                            return 38;
+                        case BIGGUY_RUNNING:
+                            return 16;
+                        case BIGGUY_JUMP_ANTICIPATION:
+                            return 1;
+                        case BIGGUY_JUMP:
+                            return 4;
+                        case BIGGUY_FALL:
+                            return 2;
+                        case BIGGUY_GROUND:
+                            return 3;
+                        case BIGGUY_ATTACK:
+                            return 11;
+                        case BIGGUY_PICK_BOMB:
+                            return 8;
+                        case BIGGUY_IDLE_BOMB:
+                            return 1;
+                        case BIGGUY_RUN_BOMB:
+                            return 16;
+                        case BIGGUY_THROW_BOMB:
+                            return 11;
+                        case BIGGUY_HIT:
+                            return 8;
+                        case BIGGUY_DEAD_HIT:
+                            return 6;
+                        case BIGGUY_DEAD_GROUND:
+                            return 4;
+                    }
+                }
                 case CAPTAIN -> {
                     switch (enemy_state) {
                         case CAPTAIN_IDLE:
@@ -302,6 +366,8 @@ public class Constants {
                     return CRABBY_MAX_HEALTH;// mau toi da cua enemy
                 case CAPTAIN:
                     return CAPTAIN_MAX_HEALTH;
+                case BIGGUY:
+                    return BIGGUY_MAX_HEALTH;
                 default:
                     return 1;
             }
@@ -316,6 +382,8 @@ public class Constants {
                     return CRABBY_DMG;//dmg toi da cua enemy
                 case CAPTAIN:
                     return CAPTAIN_DMG;
+                case BIGGUY:
+                    return BIGGUY_DMG;
                 default:
                     return 0;
             }
