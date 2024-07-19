@@ -15,11 +15,10 @@ public class Captain extends Enemy {
 
     public Rectangle2D.Float attackBox;
     public float attackOffsetY;
+    public Rectangle2D.Float canSeeBombBox;
     private Random rnd = new Random();
     private int value = -1;
-    private int SCARE = 0;
-    private int SKIP = 1;
-
+    private Bomb bombHandler;
 
 
     public Captain(float x, float y) {
@@ -27,6 +26,13 @@ public class Captain extends Enemy {
         initHitBox(x, y, HB_CAPTAIN_WIDTH, HB_CAPTAIN_HEIGHT);
         initCanSeeRange(x, y, Game.TILE_SIZE *4 , Game.TILE_SIZE);
         initAttackBox();
+        initCanSeeBombBox();
+
+    }
+
+    private void initCanSeeBombBox() {
+        canSeeBombBox = new Rectangle2D.Float(x, y, Game.TILE_SIZE, (float) Game.TILE_SIZE / 2);
+
     }
 
     private void initAttackBox() {
@@ -38,10 +44,17 @@ public class Captain extends Enemy {
         updateAttackBox();
         updateFrameTick();
         updateCanSeeBox();
+        updateCanSeeBombBox();
+
         updateBehavior(lvlData, player, bombs);
     }
 
-
+    private void updateCanSeeBombBox() {
+        canSeeBombBox.x = hitBox.x + (float) Game.TILE_SIZE / 2;
+        if (walkDir == LEFT)
+            canSeeBombBox.x = hitBox.x - (float) Game.TILE_SIZE / 2;
+        canSeeBombBox.y = hitBox.y + (float) Game.TILE_SIZE / 2 - 10;
+    }
 
 
     private void updateAttackBox() {
@@ -75,19 +88,22 @@ public class Captain extends Enemy {
                     if (isPlayerCloseForCAPTAINAttack(player)) {
                         setStartBehaviorState(false);
                         newState(CAPTAIN_ATTACK);
-
                     }
                     if (bombs != null) {
                         for (Bomb bomb : bombs) {
                             if (bomb.isActive()) {
                                 if (canSeeBomb(lvlData, bomb)) {
-                                    handleFirstTimeSeeBomb();
-                                    setStartBehaviorState(true);
-                                } else {
-                                    setStartBehaviorState(false);
+                                    if (bomb.captainSeeBomb(this) && !bomb.isCanSeeByEnemy()) {
+                                        bombHandler = bomb;
+                                        bombHandler.setCanSeeByEnemy(true);
+                                        handleFirstTimeSeeBomb();
+                                    }
                                 }
-                                if (value != -1)
-                                    handleRndBehavior(bomb, lvlData);
+                                if (value != -1) {
+                                    if (bomb.isActive() && !bomb.isExplode() && bomb.isCanSeeByEnemy()) {
+                                        handleRndBehavior(lvlData);
+                                    }
+                                }
                             }
                         }
                     }
@@ -106,22 +122,24 @@ public class Captain extends Enemy {
         }
     }
 
-    private void handleRndBehavior(Bomb bomb, int[][] lvlData) {
-        if (value == SKIP) {
-            if (!canSeeBomb(lvlData, bomb)) {
-                value = -1;
-            }
-        }
-        if (value == SCARE) {
+    private void handleRndBehavior( int[][] lvlData) {
+        if (value % 2 == 0) {
             changeWalkDir();
             newState(CAPTAIN_SCARE_RUN);
             value = -1;
+            bombHandler.setCanSeeByEnemy(false);
+        }
+        else {
+            if (!canSeeBomb(lvlData, bombHandler)) {
+                value = -1;
+                bombHandler.setCanSeeByEnemy(false);
+            }
         }
     }
 
     private void handleFirstTimeSeeBomb() {
         if (value == -1) {
-            value = rnd.nextInt(2);
+            value = rnd.nextInt(100);
         }
     }
 

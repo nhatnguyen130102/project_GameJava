@@ -26,6 +26,7 @@ public class LoadSave {
     public static final String SMALL_CLOUDS = "Level/Obj&BackGround/small_clouds.png";
     public static final String CRABBY_SPRITE = "Enemy/crabby_sprite.png";
     public static final String BIGGUY_SPRITE = "Enemy/Big_Guy.png";
+    public static final String BALD_SPRITE = "Enemy/Bald_Pirate.png";
 
     public static final String CRABBY_ATTACK_EFFECT= "Enemy/crabby_attack.png";
 
@@ -48,7 +49,7 @@ public class LoadSave {
     public static final String PALM_TREE = "treasure-hunters/palm-tree-island/back-palm-tree-left(51x53).png";
     public static final String BOTTOM_TREE = "Object/front-bottom-tree(32x32).png";
     public static final String TOP_TREE = "Object/front_palm_tree(39x32).png";
-
+    public static final String HOUSE = "Object/village_house.png";
     // đọc file img trả về img lớn
     public static BufferedImage GetSpriteAtlas(String fileName) {
         BufferedImage image = null;// biến img lớn

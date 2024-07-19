@@ -44,7 +44,7 @@ public class Player extends Entity {
     private final int healthBarHeight = (int) (4 * Game.SCALE);
     private final int healthBarXStart = (int) (34 * Game.SCALE);
     private final int healthBarYStart = (int) (14 * Game.SCALE);
-    private final int maxHealth = 100;
+    private final int maxHealth = 10000;
     private int currentHealth = maxHealth;
     private int healthWidth = healthBarWidth;
     private Rectangle2D.Float attackBox;

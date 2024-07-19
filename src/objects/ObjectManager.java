@@ -39,7 +39,8 @@ public class ObjectManager {
     private ArrayList<Projectile> projectiles = new ArrayList<>();
     private BufferedImage spikeImg;
     private ArrayList<Spike> spikes;
-
+    private BufferedImage[] houseImgs;
+    private ArrayList<House> house;
     public ObjectManager(Playing playing) {
         this.playing = playing;
         loadImgs();
@@ -54,6 +55,7 @@ public class ObjectManager {
         palmTrees = new ArrayList<>(newLevel.getPalmTrees());
         topTrees = new ArrayList<>(newLevel.getTopTrees());
         bottomTrees = new ArrayList<>(newLevel.getBottomTrees());
+        house = new ArrayList<>(newLevel.getHouse());
     }
 
     private void loadImgs() {
@@ -126,6 +128,12 @@ public class ObjectManager {
         bottomTreeImgs = new BufferedImage[7];
         for (int i = 0; i < 7; i++) {
             bottomTreeImgs[i] = bottomTreeSprite.getSubimage(i * BOTTOM_TREE_WIDTH_DEFAULT, 0, BOTTOM_TREE_WIDTH , BOTTOM_TREE_HEIGHT);
+        }
+        BufferedImage houseSprite = LoadSave.GetSpriteAtlas(HOUSE);
+        houseImgs = new BufferedImage[16];
+        for (int i = 0; i < 4; i++) { //row
+            for (int j = 0; j < 4; j++) //col
+                houseImgs[4 * i + j] = houseSprite.getSubimage(j * HOUSE_WIDTH_DEFAULT, i * HOUSE_HEIGHT_DEFAULT, HOUSE_WIDTH , HOUSE_HEIGHT);
         }
     }
 
@@ -234,9 +242,14 @@ public class ObjectManager {
         drawSpikes(g, xLvlOffset, yLvlOffset);
         drawTopTree(g, xLvlOffset, yLvlOffset);
         drawBottomTree(g, xLvlOffset, yLvlOffset);
+        drawHouse(g, xLvlOffset, yLvlOffset);
 //        drawPalmTree(g,xLvlOffset,yLvlOffset);
     }
-
+    public void drawHouse(Graphics g, int xLvlOffset, int yLvlOffset) {
+        for(House h : house){
+            g.drawImage(houseImgs[h.objType], (int) h.getHitBox().x - xLvlOffset, (int) h.getHitBox().y - yLvlOffset - HOUSE_DRAW_OFFSET_Y, HOUSE_WIDTH, HOUSE_HEIGHT,null);
+        }
+    }
     public void drawPalmTree(Graphics g, int xLvlOffset, int yLvlOffset) {
         for(PalmTree p : palmTrees){
             g.drawImage(palmTreeImgs[p.getFrameIndex()], (int) p.getHitBox().x - xLvlOffset, (int) p.getHitBox().y - yLvlOffset,PALM_TREE_WIDTH * 2,PALM_TREE_HEIGHT * 2,null);
