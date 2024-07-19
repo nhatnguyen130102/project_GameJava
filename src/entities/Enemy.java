@@ -74,6 +74,13 @@ public abstract class Enemy extends Entity {
                             case BIGGUY_DEAD_HIT -> active = false;
                         }
                     }
+                    case BALD -> {
+                        switch (enemyState) {
+                            case BALD_ATTACK, BALD_HIT, BALD_DEAD_GROUND ->
+                                    enemyState = BALD_IDLE;
+                            case BALD_DEAD_HIT -> active = false;
+                        }
+                    }
                 }
 
             }
@@ -156,6 +163,7 @@ public abstract class Enemy extends Entity {
             }
         return false;
     }
+
 
     //temp
     protected boolean canSeeBomb(int[][] lvlData, Bomb bomb) {

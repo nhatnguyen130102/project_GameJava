@@ -14,12 +14,12 @@ import static ultilz.Constants.EnemyConstants.*;
 public class BigGuy extends Enemy {
 
     public Rectangle2D.Float attackBox;
+    public Rectangle2D.Float canSeeBombBox;
+
     public Rectangle2D.Float pickBombBox;
     public float attackOffsetY;
     private Random rnd = new Random();
     private int value = -1;
-    private int PICK = 0;
-    private int SKIP = 1;
     private Bomb bombHandler;
     private boolean throwBomb = false;
 
@@ -28,7 +28,12 @@ public class BigGuy extends Enemy {
         initHitBox(x, y, HB_BIGGUY_WIDTH, HB_BIGGUY_HEIGHT);
         initCanSeeRange(x, y, Game.TILE_SIZE * 4, Game.TILE_SIZE);
         initPickBombBox();
+        initCanSeeBombBox();
         initAttackBox();
+    }
+
+    private void initCanSeeBombBox() {
+        canSeeBombBox = new Rectangle2D.Float(x, y, Game.TILE_SIZE, (float) Game.TILE_SIZE / 2);
     }
 
     private void initAttackBox() {
@@ -45,7 +50,15 @@ public class BigGuy extends Enemy {
         updateFrameTick();
         updateCanSeeBox();
         updatePickBombBox();
+        updateCanSeeBombBox();
         updateBehavior(lvlData, player, bombs);
+    }
+
+    private void updateCanSeeBombBox() {
+        canSeeBombBox.x = hitBox.x + (float) Game.TILE_SIZE / 2;
+        if (walkDir == LEFT)
+            canSeeBombBox.x = hitBox.x - (float) Game.TILE_SIZE / 2;
+        canSeeBombBox.y = hitBox.y + (float) Game.TILE_SIZE / 2 - 10;
     }
 
     private void updateAttackBox() {
@@ -66,8 +79,6 @@ public class BigGuy extends Enemy {
         if (firstUpdate) {
             firstUpdateChecked(lvlData);
         }
-
-
         if (inAir) {
             updateInAir(lvlData);
         } else {
@@ -82,7 +93,7 @@ public class BigGuy extends Enemy {
                         newState(BIGGUY_THROW_BOMB);
                     }
                     if (bombHandler.isActive() && !bombHandler.isExplode()) {
-                        if (bombHandler.isPicked()) {
+                        if (bombHandler.getState() == bombHandler.PICKED) {
                             bombHandler.getHitbox().x = pickBombBox.x;
                             bombHandler.getHitbox().y = pickBombBox.y;
                         }
@@ -93,12 +104,7 @@ public class BigGuy extends Enemy {
                 }
                 case BIGGUY_RUNNING -> {
                     if (canSeePlayer(lvlData, player)) {
-                        changWalkSpeed(0.5f * Game.SCALE);
-                        setStartBehaviorState(true);
                         turnTowardsPlayer(player);
-                    } else {
-                        changWalkSpeed(0.5f * Game.SCALE);
-                        setStartBehaviorState(false);
                     }
                     if (isPlayerCloseForBIGGUYAttack(player)) {
                         setStartBehaviorState(false);
@@ -108,14 +114,16 @@ public class BigGuy extends Enemy {
                         for (Bomb bomb : bombs) {
                             if (bomb.isActive()) {
                                 if (canSeeBomb(lvlData, bomb)) {
-                                    handleFirstTimeSeeBomb();
-                                    setStartBehaviorState(true);
-                                } else {
-                                    setStartBehaviorState(false);
+                                    if (bomb.bigGuySeeBomb(this) && !bomb.isCanSeeByEnemy()) {
+                                        bombHandler = bomb;
+                                        bombHandler.setCanSeeByEnemy(true);
+                                        handleFirstTimeSeeBomb();
+                                    }
                                 }
-                                if (value != -1){
-                                    if(bomb.isActive() && !bomb.isExplode())
-                                        handleRndBehavior(bomb, lvlData);
+                                if (value != -1) {
+                                    if (bomb.isActive() && !bomb.isExplode() && bomb.isCanSeeByEnemy()) {
+                                        handleRndBehavior(lvlData);
+                                    }
                                 }
                             }
                         }
@@ -134,17 +142,14 @@ public class BigGuy extends Enemy {
                     if (frameIndex == 0)
                         throwBomb = false;
                     if (frameIndex == 3 && !throwBomb) {
-                        checkEnemyBombDir(bombHandler);
-                        bombHandler.newBombStateThrow();
-                        bombHandler.setPicked(false);
-                        throwBomb = true;
+                        throwBomb();
                     }
                 }
                 case BIGGUY_PICK_BOMB -> {
                     if (frameIndex == 0)
                         pickBomb = false;
                     if (frameIndex == 6 && !pickBomb) {
-                        bombHandler.setPicked(true);
+                        bombHandler.setState(bombHandler.PICKED);
                         checkEnemyHitBomb(attackBox, bombHandler);
                     }
                 }
@@ -152,6 +157,15 @@ public class BigGuy extends Enemy {
                 }
             }
         }
+    }
+
+    private void throwBomb() {
+        checkEnemyBombDir(bombHandler);
+        bombHandler.newBombStateThrow();
+        bombHandler.setState(-1);
+        bombHandler.setCanSeeByEnemy(false);
+        throwBomb = true;
+        value = -1;
     }
 
     protected void checkEnemyBombDir(Bomb bomb) {
@@ -168,44 +182,31 @@ public class BigGuy extends Enemy {
         if (attackBox.intersects(bomb.getHitbox())) {
             checkBombDir(bomb);
         }
-//            bomb.setActive(false);
         pickBomb = true;
+
     }
 
-    private void handleRndBehavior(Bomb bomb, int[][] lvlData) {
-        if (value == SKIP) {
-            if (!canSeeBomb(lvlData, bomb)) {
-                value = -1;
-            }
-        }
-        if (enemyState != BIGGUY_PICK_BOMB)
-            if (value == PICK) {
-                turnTowardBomb(bomb);
-                if(!bomb.inAir)
-                    if (isBombCloseForBigGuyPick(bomb)) {
+    private void handleRndBehavior(int[][] lvlData) {
+
+        if (enemyState != BIGGUY_PICK_BOMB) {
+            if (value % 2 == 0) {
+                turnTowardBomb(bombHandler);
+                if (!bombHandler.inAir)
+                    if (isBombCloseForBigGuyPick(bombHandler)) {
                         newState(BIGGUY_PICK_BOMB);
-                        bombHandler = bomb;
-                        bombHandler.setPicked(true);
+                        bombHandler.setState(bombHandler.PICKED);
                         value = -1;
                     }
             }
+        }
+        else {
+            if (!canSeeBomb(lvlData, bombHandler)) {
+                value = -1;
+                bombHandler.setCanSeeByEnemy(false);
+            }
+        }
     }
 
-//    protected boolean isBombCloseForBigGuyAttack(Bomb bomb) {
-//        int distance = (int) (bomb.getHitbox().x - hitBox.x);
-//        if (distance <= 0) {//bomb left
-//            if (Math.abs(hitBox.y - bomb.getHitbox().y) < Game.TILE_SIZE) {
-//                float distanceBetween = attackBox.x - (bomb.getHitbox().x + bomb.getHitbox().width);
-//                return distanceBetween < -10;
-//            }
-//        } else if (distance >= 0) {//bomb right
-//            if (Math.abs(hitBox.y - bomb.getHitbox().y) < Game.TILE_SIZE) {
-//                float distanceBetween = bomb.getHitbox().x - (attackBox.x + attackBox.width);
-//                return distanceBetween < -10;
-//            }
-//        }
-//        return false;
-//    }
     protected boolean isBombCloseForBigGuyPick(Bomb bomb) {
         int distance = (int) (bomb.getHitbox().x - hitBox.x);
         if (distance <= 0) {//bomb left
@@ -222,9 +223,10 @@ public class BigGuy extends Enemy {
         return false;
     }
 
+    // lay hanh dong rnd
     private void handleFirstTimeSeeBomb() {
         if (value == -1) {
-            value = rnd.nextInt(2);
+            value = rnd.nextInt(100);
         }
     }
 
@@ -248,6 +250,12 @@ public class BigGuy extends Enemy {
         g.setColor(RED);
 //        g.fillRect((int) (attackBox.x - xLvlOffset), (int) (attackBox.y + attackOffsetY - yLvlOffset), (int) attackBox.width, (int) attackBox.height);
         g.drawRect((int) (pickBombBox.x - xLvlOffset), (int) (pickBombBox.y + attackOffsetY - yLvlOffset), (int) pickBombBox.width, (int) pickBombBox.height);
+    }
+
+    public void drawCanSeeBombBox(Graphics g, int xLvlOffset, int yLvlOffset) {
+        g.setColor(RED);
+//        g.fillRect((int) (attackBox.x - xLvlOffset), (int) (attackBox.y + attackOffsetY - yLvlOffset), (int) attackBox.width, (int) attackBox.height);
+        g.drawRect((int) (canSeeBombBox.x - xLvlOffset), (int) (canSeeBombBox.y + attackOffsetY - yLvlOffset), (int) canSeeBombBox.width, (int) canSeeBombBox.height);
     }
 
     public int flipX() {

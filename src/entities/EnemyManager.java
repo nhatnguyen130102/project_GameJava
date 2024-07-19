@@ -23,11 +23,13 @@ public class EnemyManager {
     private static BufferedImage[][] whaleArr;
     private static BufferedImage[][] captainArr;
     private static BufferedImage[][] bigGuyArr;
+    private static BufferedImage[][] baldArr;
     private static BufferedImage[] crabbyAttackEffect;
     private static ArrayList<Captain> captains = new ArrayList<>();
     private static ArrayList<Crabby> crabbies = new ArrayList<>();
     private static ArrayList<Whale> whales = new ArrayList<>();
     private static ArrayList<BigGuy> bigGuys = new ArrayList<>();
+    private static ArrayList<Bald> balds = new ArrayList<>();
     private static BufferedImage behaviorClosingImg;
     private static BufferedImage[] behaviorOpeningImg;
 
@@ -36,6 +38,7 @@ public class EnemyManager {
         this.playing = playing;
         loadEnemyCrabbyImg();
         loadEnemyBigGuy();
+        loadEnemyBaldPirate();
         loadEnemyWhaleImg();
         loadBehaviorImg();
         loadEnemyCaptainImg();
@@ -48,6 +51,7 @@ public class EnemyManager {
         whales = level.getWhales();
         captains = level.getCaptain();
         bigGuys = level.getBigGuy();
+        balds = level.getBaldPirate();
     }
 
     public void checkEnemyExplode(Rectangle2D.Float explodeBox) {
@@ -80,6 +84,14 @@ public class EnemyManager {
             if (c.isActive()) {
                 if (explodeBox.intersects(c.getHitBox())) {
                     c.hurt(BOMB_DMG);
+                    return;
+                }
+            }
+        }
+        for (Bald b : balds) {
+            if (b.isActive()) {
+                if (explodeBox.intersects(b.getHitBox())) {
+                    b.hurt(BOMB_DMG);
                     return;
                 }
             }
@@ -121,6 +133,14 @@ public class EnemyManager {
                 }
             }
         }
+        for (Bald b : balds) {
+            if(b.isActive()){
+                if (attackBox.intersects(b.getHitBox())) {
+                    b.hurt(PLAYER_DMG);
+                    return;
+                }
+            }
+        }
     }
 
     private void loadBehaviorImg() {
@@ -152,6 +172,17 @@ public class EnemyManager {
         for (int i = 0; i < bigGuyArr.length; i++) {// cat tam hinh lon
             for (int j = 0; j < bigGuyArr[i].length; j++) {
                 bigGuyArr[i][j] = temp.getSubimage(j * BIGGUY_WIDTH_DEFAULT, i * BIGGUY_HEIGHT_DEFAULT, BIGGUY_WIDTH_DEFAULT, BIGGUY_HEIGHT_DEFAULT);
+            }
+        }
+    }
+    private void loadEnemyBaldPirate() {
+        BufferedImage temp = GetSpriteAtlas(BALD_SPRITE);// lay 1 img lon
+        int row = temp.getHeight() / BALD_HEIGHT_DEFAULT;
+        int col = temp.getWidth() /BALD_WIDTH_DEFAULT;
+        baldArr = new BufferedImage[row][col];// tao array lay animation
+        for (int i = 0; i < baldArr.length; i++) {// cat tam hinh lon
+            for (int j = 0; j < baldArr[i].length; j++) {
+                baldArr[i][j] = temp.getSubimage(j * BALD_WIDTH_DEFAULT, i * BALD_HEIGHT_DEFAULT, BALD_WIDTH_DEFAULT, BALD_HEIGHT_DEFAULT);
             }
         }
     }
@@ -213,6 +244,12 @@ public class EnemyManager {
                 isAnyActive = true;
             }
         }
+        for (Bald c : balds) {
+            if (c.isActive()) {
+                c.update(lvlData, player, bombs);
+                isAnyActive = true;
+            }
+        }
         if (!isAnyActive)
             playing.setLevelCompleted(true);
     }
@@ -222,6 +259,7 @@ public class EnemyManager {
         drawWhales(g, xLvlOffset, yLvlOffset);
         drawCaptains(g, xLvlOffset, yLvlOffset);
         drawBigGuy(g,xLvlOffset,yLvlOffset);
+        drawBalds(g, xLvlOffset, yLvlOffset);
     }
 
     private static void drawBigGuy(Graphics g, int xLvlOffset, int yLvlOffset) {
@@ -246,6 +284,34 @@ public class EnemyManager {
 //                c.drawHitBox(g,xLvlOffset,yLvlOffset);
 //                c.drawAttackBox(g, xLvlOffset,yLvlOffset);
 //                c.drawCanSeeHitbox(g, xLvlOffset, yLvlOffset);
+//                c.drawPickBombBox(g,xLvlOffset,yLvlOffset);
+//                c.drawCanSeeBombBox(g,xLvlOffset,yLvlOffset);
+            }
+        }
+    }
+
+    private static void drawBalds(Graphics g, int xLvlOffset, int yLvlOffset) {
+        for (Bald c : balds) {
+            if (c.isActive()) {
+                g.drawImage(baldArr[c.getEnemyState()][c.getFrameIndex()],
+                        (int) c.getHitBox().x - xLvlOffset - BALD_DRAW_OFFSET_X + c.flipX(),
+                        (int) c.getHitBox().y - yLvlOffset - BALD_DRAW_OFFSET_Y,
+                        BALD_WIDTH * c.flipW(), BALD_HEIGHT, null);
+                if (c.currentHealth <= 0)
+                    c.currentHealth = 0;
+                if (c.getStartBehaviorState()) {
+                    g.drawImage(behaviorClosingImg,
+                            (int) c.getHitBox().x - xLvlOffset,
+                            (int) c.getHitBox().y - yLvlOffset - 20,
+                            BEHAVIOR_CLOSING_WIDTH, BEHAVIOR_CLOSING_HEIGHT, null
+                    );
+                }
+//                float healthWidth = (int) ((c.currentHealth / (float) c.maxHealth) * c.getHitBox().width);
+//                g.setColor(Color.RED);
+//                g.fillRect((int) c.getHitBox().x - xLvlOffset, (int) c.getHitBox().y - 20, (int) healthWidth, 5);
+//                c.drawHitBox(g,xLvlOffset,yLvlOffset);
+                c.drawAttackBox(g, xLvlOffset,yLvlOffset);
+                c.drawCanSeeHitbox(g, xLvlOffset, yLvlOffset);
 //                c.drawPickBombBox(g,xLvlOffset,yLvlOffset);
             }
         }
@@ -347,6 +413,8 @@ public class EnemyManager {
         for (Captain c : captains)
             c.resetEnemy();
         for(BigGuy b : bigGuys)
+            b.resetEnemy();
+        for(Bald b : balds)
             b.resetEnemy();
     }
 }

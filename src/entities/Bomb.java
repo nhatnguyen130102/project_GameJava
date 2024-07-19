@@ -35,12 +35,16 @@ public class Bomb {
     public float jumpSpeed;
     private final float fallSpeedAfterCollision = Game.SCALE;
     boolean inAir = false;
-    private final int timeToExplode = 5000;
+    private final int timeToExplode = 50000;
     private Timer explodeTimer;
     private float BombSpeed;
     private final Playing playing;
     private boolean picked = false;
-
+    public boolean kicked = false;
+    protected int PICKED = 0;
+    protected int KICKED = 1;
+    private int state = -1;
+    private boolean canSeeByEnemy;
     public Bomb(Player player, int[][] lvlData, Playing playing, float jumpSpeed, float bombSpeed) {
         this.player = player;
         this.lvlData = lvlData;
@@ -51,7 +55,6 @@ public class Bomb {
         loadImg();
         startExplodeTimer();
         BombSpeed = bombSpeed;
-
     }
 
     private void startExplodeTimer() {
@@ -59,7 +62,7 @@ public class Bomb {
         explodeTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if(isActive){
+                if (isActive) {
                     setExplode(true);
                     explodeHitbox = new Rectangle2D.Float(hitbox.x - BOMB_DRAW_OFFSET_X, hitbox.y - BOMB_DRAW_OFFSET_Y / 2, hitbox.width * 3, hitbox.height * 2);
                     checkExplode();
@@ -80,8 +83,9 @@ public class Bomb {
         inAir = false;
         bounce = 0;
         jumpSpeed = -1.5f;
-        BombSpeed = 1f;
+        BombSpeed = 1f;// bombSpeed la do dai x bom bay dc
     }
+
     public void newBombStateThrow() {
         inAir = false;
         bounce = 0;
@@ -110,15 +114,17 @@ public class Bomb {
 //        drawhitBox(g, xLvlOffset, yLvlOffset);
 //        if(explodeHitbox != null)
 //            drawExplodeBox(g, xLvlOffset, yLvlOffset);
-
+        g.drawString(canSeeByEnemy+"",(int) (hitbox.x - BOMB_DRAW_OFFSET_X - xLvlOffset),(int) (hitbox.y - BOMB_DRAW_OFFSET_Y - yLvlOffset));
     }
 
     public void changDir() {
         dir *= -1;
     }
-    public void setDir(int value){
+
+    public void setDir(int value) {
         dir = value;
     }
+
     public Rectangle2D.Float getHitbox() {
         return hitbox;
     }
@@ -148,7 +154,7 @@ public class Bomb {
     }
 
     private void updatePos() {
-        if (!isExplode && !picked) {
+        if (!isExplode && state != PICKED) {
             if (jump) {
                 jump();
             }
@@ -178,13 +184,7 @@ public class Bomb {
         }
     }
 
-    public boolean isPicked() {
-        return picked;
-    }
 
-    public void setPicked(boolean picked) {
-        this.picked = picked;
-    }
 
     private void jump() {
         if (inAir) {
@@ -192,9 +192,9 @@ public class Bomb {
         }  // kiem tra trang thai cua vat the, han che vat the co the nhay nhieu lan tren khong
         inAir = true; // dat lai trang thai cho vat the
         airSpeed = jumpSpeed; // dat lai toc do roi cua vat the
-        if(airSpeed < 0){
+        if (airSpeed < 0) {
             bounce += 0.3f;
-            if(bounce >= 2){
+            if (bounce >= 2) {
                 bounce = 4;
             }
             airSpeed += bounce;
@@ -255,9 +255,11 @@ public class Bomb {
             }
         }
     }
-    protected Rectangle2D.Float getExplodeHitbox(){
+
+    protected Rectangle2D.Float getExplodeHitbox() {
         return explodeHitbox;
     }
+
     protected boolean canKickBomb() {
         return player.getAttackBox().intersects(hitbox);
     }
@@ -269,5 +271,32 @@ public class Bomb {
         if (player.getDir() == 1) {
             dir = 1;
         }
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+    protected boolean bigGuySeeBomb(BigGuy bigGuy){
+        return (hitbox.intersects(bigGuy.canSeeBombBox));
+    }
+    protected boolean whaleSeeBomb(Whale whale){
+        return (hitbox.intersects(whale.canSeeBombBox));
+    }
+    protected boolean baldSeeBomb(Bald bald){
+        return (hitbox.intersects(bald.canSeeBombBox));
+    }
+    protected boolean captainSeeBomb(Captain captain){
+        return (hitbox.intersects(captain.canSeeBombBox));
+    }
+    protected void setCanSeeByEnemy(boolean canSeeByEnemy){
+        this.canSeeByEnemy = canSeeByEnemy;
+    }
+
+    protected boolean isCanSeeByEnemy(){
+        return canSeeByEnemy;
     }
 }

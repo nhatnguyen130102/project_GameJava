@@ -193,8 +193,9 @@ public class Playing extends State implements StateMethods {
         objectManager.drawPalmTree(g,xLvlOffset,yLvlOffset);
         levelManager.draw(g, xLvlOffset, yLvlOffset);
         enemyManager.draw(g, xLvlOffset, yLvlOffset);
-        player.draw(g, xLvlOffset, yLvlOffset);
         objectManager.draw(g, xLvlOffset, yLvlOffset);
+        player.draw(g, xLvlOffset, yLvlOffset);
+//        objectManager.draw(g, xLvlOffset, yLvlOffset);
         if (paused) {
             g.setColor(new Color(0, 0, 0, 150));
             g.fillRect(0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT);

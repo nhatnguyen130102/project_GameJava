@@ -125,6 +125,11 @@ public class Constants {
         public static final int TOP_TREE_HEIGHT = (int) (TOP_TREE_HEIGHT_DEFAULT * Game.SCALE) ;
         public static final int TOP_TREE_DRAW_OFFSET_X = (int) (8 * Game.SCALE);//lech phai
 
+        public static final int HOUSE_WIDTH_DEFAULT = 64;
+        public static final int HOUSE_HEIGHT_DEFAULT = 64;
+        public static final int HOUSE_WIDTH = (int) (HOUSE_WIDTH_DEFAULT * Game.SCALE) ;
+        public static final int HOUSE_HEIGHT = (int) (HOUSE_HEIGHT_DEFAULT * Game.SCALE) ;
+        public static final int HOUSE_DRAW_OFFSET_Y = (int) (64 * Game.SCALE);//lech duoi
         public static int GetSpriteAmount(int object_type) {
             switch (object_type) {
                 case RED_POTION, BLUE_POTION:
@@ -247,6 +252,34 @@ public class Constants {
         public static final int BIGGUY_DRAW_OFFSET_Y = (int) (15 * Game.SCALE);//lech tren
         public static final int BIGGUY_MAX_HEALTH = 100;
         public static final int BIGGUY_DMG = 10;
+
+        public static final int BALD = 4;
+        public static final int BALD_IDLE = 0;
+        public static final int BALD_RUNNING = 1;
+        public static final int BALD_JUMP_ANTICIPATION = 2;
+        public static final int BALD_JUMP = 3;
+        public static final int BALD_FALL = 4;
+        public static final int BALD_GROUND = 5;
+        public static final int BALD_ATTACK = 6;
+        public static final int BALD_HIT = 7;
+
+        public static final int BALD_DEAD_HIT = 8;
+        public static final int BALD_DEAD_GROUND = 9;
+
+
+        public static final int BALD_WIDTH_DEFAULT = 63;//size co ban cua 1 frames
+        public static final int BALD_HEIGHT_DEFAULT = 67;
+        public static final int BALD_WIDTH = (int) (BALD_WIDTH_DEFAULT * Game.SCALE);
+        public static final int BALD_HEIGHT = (int) (BALD_HEIGHT_DEFAULT * Game.SCALE);
+        public static final int HB_BALD_WIDTH_DEFAULT = 30;//size co ban cua hitbox
+        public static final int HB_BALD_HEIGHT_DEFAULT = 60;
+        public static final int HB_BALD_WIDTH = (int) (HB_BALD_WIDTH_DEFAULT * Game.SCALE );
+        public static final int HB_BALD_HEIGHT = (int) (HB_BALD_HEIGHT_DEFAULT * Game.SCALE);
+        public static final int BALD_DRAW_OFFSET_X = (int) (15 * Game.SCALE);//lech trai
+        public static final int BALD_DRAW_OFFSET_Y = (int) (7 * Game.SCALE);//lech tren
+        public static final int BALD_MAX_HEALTH = 100;
+        public static final int BALD_DMG = 10;
+
         //attack crabby effect
         public static final int ATTACK_EFFECT_WIDTH_DEFAULT = 118;
         public static final int ATTACK_EFFECT_HEIGHT_DEFAULT = 24 ;
@@ -284,6 +317,30 @@ public class Constants {
                         case BIGGUY_DEAD_HIT:
                             return 6;
                         case BIGGUY_DEAD_GROUND:
+                            return 4;
+                    }
+                }
+                case BALD -> {
+                    switch (enemy_state) {
+                        case BALD_IDLE:
+                            return 34;
+                        case BALD_RUNNING:
+                            return 14;
+                        case BALD_JUMP_ANTICIPATION:
+                            return 1;
+                        case BALD_JUMP:
+                            return 4;
+                        case BALD_FALL:
+                            return 2;
+                        case BALD_GROUND:
+                            return 3;
+                        case BALD_ATTACK:
+                            return 12;
+                        case BALD_HIT:
+                            return 8;
+                        case BALD_DEAD_HIT:
+                            return 6;
+                        case BALD_DEAD_GROUND:
                             return 4;
                     }
                 }
@@ -368,6 +425,8 @@ public class Constants {
                     return CAPTAIN_MAX_HEALTH;
                 case BIGGUY:
                     return BIGGUY_MAX_HEALTH;
+                case BALD:
+                    return BALD_MAX_HEALTH;
                 default:
                     return 1;
             }
@@ -384,6 +443,8 @@ public class Constants {
                     return CAPTAIN_DMG;
                 case BIGGUY:
                     return BIGGUY_DMG;
+                case BALD:
+                    return BALD_DMG;
                 default:
                     return 0;
             }
