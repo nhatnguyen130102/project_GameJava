@@ -9,6 +9,7 @@ import entities.Player;
 import entities.Whale;
 import levels.LevelManager;
 import main.Game;
+import net.GameClient;
 import objects.ObjectManager;
 import ui.GameOverOverlay;
 import ui.LevelCompleteOverlay;
@@ -192,6 +193,7 @@ public class Playing extends State implements StateMethods {
         enemyManager.draw(g, xLvlOffset, yLvlOffset);
         objectManager.draw(g, xLvlOffset, yLvlOffset);
         player.draw(g, xLvlOffset, yLvlOffset);
+        GameClient.getPlayerClone().render(g,xLvlOffset,yLvlOffset);
 //        objectManager.draw(g, xLvlOffset, yLvlOffset);
         if (paused) {
             g.setColor(new Color(0, 0, 0, 150));
