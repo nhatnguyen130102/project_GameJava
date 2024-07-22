@@ -56,9 +56,17 @@ public class Player extends Entity {
     private boolean isExplode = false;
     private float bounce;
     private boolean spikeState = false;
+    private String name;
 
 
-
+    public Player(float x, float y, int width, int height, Playing playing, String name) {
+        super(x, y, width, height);
+        this.playing = playing;
+        this.name = name;
+        loadAnimations();
+        initHitBox(x, y, HB_PLAYER_WIDTH, HB_PLAYER_HEIGHT);
+        initAttackBox();
+    }
     public Player(float x, float y, int width, int height, Playing playing) {
         super(x, y, width, height);
         this.playing = playing;
@@ -66,14 +74,18 @@ public class Player extends Entity {
         initHitBox(x, y, HB_PLAYER_WIDTH, HB_PLAYER_HEIGHT);
         initAttackBox();
     }
-
+    public void setName(String name){
+        this.name = name;
+    }
+    public Player getPlayer(){
+        return this;
+    }
     public void setSpawn(Point spawn) {
         this.x = spawn.x;
         this.y = spawn.y;
         hitBox.x = x;
         hitBox.y = y;
     }
-
     private void initAttackBox() {
         attackBox = new Rectangle2D.Float(x, y, HB_PLAYER_WIDTH / 2, HB_PLAYER_HEIGHT);
     }
@@ -219,6 +231,8 @@ public class Player extends Entity {
                 null);
 //        drawHitBox(g, xLvlOffset, yLvlOffset);
 //        drawAttackBox(g, xLvlOffset, yLvlOffset);
+        if(name != null)
+            g.drawString(name, (int) (hitBox.x - PLAYER_DRAW_OFFSET_X) - xLvlOffset + flipX,   (int) (hitBox.y - PLAYER_DRAW_OFFSET_Y) - yLvlOffset);
         drawUI(g);
     }
 

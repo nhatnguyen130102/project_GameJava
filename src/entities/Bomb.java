@@ -114,7 +114,7 @@ public class Bomb {
 //        drawhitBox(g, xLvlOffset, yLvlOffset);
 //        if(explodeHitbox != null)
 //            drawExplodeBox(g, xLvlOffset, yLvlOffset);
-        g.drawString(canSeeByEnemy+"",(int) (hitbox.x - BOMB_DRAW_OFFSET_X - xLvlOffset),(int) (hitbox.y - BOMB_DRAW_OFFSET_Y - yLvlOffset));
+//        g.drawString(canSeeByEnemy+"",(int) (hitbox.x - BOMB_DRAW_OFFSET_X - xLvlOffset),(int) (hitbox.y - BOMB_DRAW_OFFSET_Y - yLvlOffset));
     }
 
     public void changDir() {

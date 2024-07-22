@@ -70,7 +70,6 @@ public class Playing extends State implements StateMethods {
         initEnviroments();
         setDrawRainBoolean();
         setGameState(GameState.MENU);
-
     }
 
     private void setDrawRainBoolean() {
@@ -129,7 +128,6 @@ public class Playing extends State implements StateMethods {
         gameOverOverlay = new GameOverOverlay(this);
         levelCompleteOverlay = new LevelCompleteOverlay(this);
         rain = new Rain();
-
     }
 
     @Override
@@ -183,7 +181,6 @@ public class Playing extends State implements StateMethods {
             yLvlOffset = maxLvlOffsetY;
         else if (yLvlOffset < 0) // khi player đi đến đầu phần rìa, thì phần chênh lệch = 0
             yLvlOffset = 0;
-
     }
 
     @Override
@@ -225,9 +222,7 @@ public class Playing extends State implements StateMethods {
         lvlCompleted = false;
         playerDying = false;
         drawRain = false;
-
         setDrawRainBoolean();
-
         player.resetAll();
         enemyManager.resetAllEnemies();
         objectManager.resetAllObject();

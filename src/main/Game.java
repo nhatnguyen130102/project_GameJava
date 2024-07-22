@@ -1,6 +1,7 @@
 package main;
 
 import audio.AudioPlayer;
+import entities.Player;
 import gameStates.GameOptions;
 import gameStates.GameState;
 import gameStates.Menu;
@@ -38,7 +39,6 @@ public class Game implements Runnable {
     public static int SCREEN_WIDTH = MAX_COL * TILE_SIZE; // 832
     public static int SCREEN_HEIGHT = MAX_ROW * TILE_SIZE; // 448
 
-
     public Game() {
         initClasses();
         LoadSave.GetAllLevels();
@@ -63,24 +63,26 @@ public class Game implements Runnable {
         gameThread.start();
     }
 
-public void update() {
-    switch (GameState.state) {
-        case MENU:
-            menu.update();
-            break;
-        case PLAYING:
-            playing.update();
-            break;
-        case OPTIONS:
-            gameOptions.update();
-            break;
-        case QUIT:
-        default:
-            System.exit(0);
-            break;
+    public void update() {
+        switch (GameState.state) {
+            case MENU:
+                menu.update();
+                break;
+            case PLAYING:
+                playing.update();
+                break;
+            case OPTIONS:
+                gameOptions.update();
+                break;
+            case QUIT:
+            default:
+                System.exit(0);
+                break;
+        }
     }
-}
-
+    public Player getPlayer(){
+        return playing.getPlayer();
+    }
     public void render(Graphics g) {
         switch (GameState.state) {
             case MENU:
@@ -131,6 +133,7 @@ public void update() {
             }
         }
     }
+
     public void windowFocusLost() {
         if (GameState.state == GameState.PLAYING) {
             playing.getPlayer().resetDirBooleans();
@@ -144,6 +147,7 @@ public void update() {
     public Playing getPlaying() {
         return playing;
     }
+
     public GameOptions getGameOptions() {
         return gameOptions;
     }

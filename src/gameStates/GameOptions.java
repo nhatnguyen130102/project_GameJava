@@ -6,6 +6,7 @@ import ui.PauseButton;
 import ui.UrmButton;
 import ultilz.LoadSave;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -18,21 +19,24 @@ public class GameOptions  extends State implements StateMethods {
     private BufferedImage bgImg, optionsBgImg;
     private int bgX, bgY, bgW, bgH;
     private UrmButton menuB;
-    
+//    private boolean firstUpdate;
     public GameOptions(Game game) {
         super(game);
         loadBackGround();
         audioOptions = game.getAudioOptions();
         loadButton();
+
     }
 
     private void loadButton() {
+
         int menuX = (int) ((Game.SCREEN_WIDTH / 2 - URM_SIZE / 2) * Game.SCALE);
         int menuY = (int) ((Game.SCREEN_HEIGHT / 2 + bgH / 4 + 15) * Game.SCALE);
         menuB = new UrmButton(menuX, menuY, URM_SIZE, URM_SIZE, 2);
     }
 
     private void loadBackGround() {
+
         bgImg = LoadSave.GetSpriteAtlas(LoadSave.BACKGROUND);
         optionsBgImg = LoadSave.GetSpriteAtlas(LoadSave.OPTIONS_MENU);
         bgW = (int) (optionsBgImg.getWidth() * Game.SCALE);
@@ -49,6 +53,24 @@ public class GameOptions  extends State implements StateMethods {
 
     @Override
     public void draw(Graphics g) {
+//        if(firstUpdate){
+//            if(GameState.state == GameState.OPTIONS)
+//            {
+//                String[] options = {"Lựa chọn 1", "Lựa chọn 2"};
+//
+//                // Hiển thị dialog với các lựa chọn
+//                int choice = JOptionPane.showOptionDialog(
+//                        null,
+//                        "Chọn một trong các lựa chọn sau:",
+//                        "Lựa chọn",
+//                        JOptionPane.DEFAULT_OPTION,
+//                        JOptionPane.INFORMATION_MESSAGE,
+//                        null,
+//                        options,
+//                        options[0]
+//                );
+//            }
+//        }
         g.drawImage(bgImg, 0, 0, Game.SCREEN_WIDTH, Game.SCREEN_HEIGHT, null);
         g.drawImage(optionsBgImg, bgX, bgY, bgW, bgH, null);
 
